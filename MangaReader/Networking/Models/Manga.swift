@@ -9,7 +9,7 @@ struct Manga: Codable {
     let bayesianRating: String?
     let ratingCount: Int?
     let followCount: Int?
-    let desc: String
+    let desc: String?
     let status: Int
     let lastChapter: Double?
     let translationCompleted: Bool?
@@ -24,4 +24,30 @@ struct Manga: Codable {
     let mdCovers: [Cover]?
     let muComics: MUComics?
     let coverUrl: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case hid
+        case slug
+        case title
+        case rating
+        case bayesianRating = "bayesian_rating"
+        case ratingCount = "rating_count"
+        case followCount = "follow_count"
+        case desc = "description"
+        case status = "status"
+        case lastChapter = "last_chapter"
+        case translationCompleted = "translation_completed"
+        case viewCount = "view_count"
+        case contentRating = "content_Rating"
+        case demographic
+        case genres
+        case createdAt = "created_at"
+        case userFollowCount = "user_follow_count"
+        case year
+        case mdTitles = "md_titles"
+        case mdCovers = "md_covers"
+        case muComics = "md_comics"
+        case coverUrl = "cover_url"
+    }
 }
