@@ -1,63 +1,46 @@
-//
-//  ContentView.swift
-//  MangaReader
-//
-//  Created by Jakub Gencer on 04.08.23.
-//
-
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
+        #if os(iOS)
+            TabView {
+                MangaListScreen()
+                    .tabItem {
+                        Label("All", systemImage: "books.vertical")
+                    }
+
+                Text("Favorites")
+                    .tabItem {
+                        Label("Favorites", systemImage: "star")
+                    }
+            }
+        #else
+            NavigationSplitView {
+                List {
                     NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                        VStack {
+                            Text("Ich bin ein Text")
+                        }
                     } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                        Text("Test")
                     }
                 }
-                .onDelete(perform: deleteItems)
+            } detail: {
+                Text("Detail Screen Empty")
             }
-            .toolbar {
-#if os(iOS)
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-#endif
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
+        #endif
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .preferredColorScheme(.dark)
+        .previewDevice("iPad Pro (11-inch)")
+}
+
+#Preview {
+    ContentView()
+        .preferredColorScheme(.light)
+        .previewDevice("Mac")
 }
