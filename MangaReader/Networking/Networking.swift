@@ -2,7 +2,7 @@ import Foundation
 
 enum API: String {
     case trending = "/top"
-    case search = "/v1.0/search/?page=1&limit=1&tachiyomi=true&t=false"
+    case search = "/v1.0/search/?page=1&limit=50&tachiyomi=true&t=false"
     
     private var url: URL {
         let baseURL = "https://api.comick.fun"

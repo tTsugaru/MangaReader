@@ -5,23 +5,23 @@ struct Manga: Codable {
     let hid: String
     let slug: String
     let title: String
-    let rating: String
-    let bayesian_rating: String
-    let rating_count: Int
-    let follow_count: Int
+    let rating: String?
+    let bayesianRating: String?
+    let ratingCount: Int?
+    let followCount: Int?
     let desc: String
     let status: Int
-    let last_chapter: Int
-    let translation_completed: Bool
-    let view_count: Int
-    let content_rating: String
+    let lastChapter: Double?
+    let translationCompleted: Bool?
+    let viewCount: Int?
+    let contentRating: String?
     let demographic: Int?
     let genres: [Int]
-    let created_at: String
-    let user_follow_count: Int
+    let createdAt: String?
+    let userFollowCount: Int?
     let year: Int
-    let md_titles: [MDTitle]
-    let md_covers: [Cover]
-    let mu_comics: MUComics
-    let cover_url: String
+    let mdTitles: [MDTitle]?
+    let mdCovers: [Cover]?
+    let muComics: MUComics?
+    let coverUrl: String?
 }
