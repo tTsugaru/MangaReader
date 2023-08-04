@@ -25,17 +25,3 @@ struct Manga: Codable {
     let mu_comics: MUComics
     let cover_url: String
 }
-
-struct MDTitle: Codable {
-    let title: String
-}
-
-struct Cover: Codable {
-    let w: Int
-    let h: Int
-    let b2key: String
-}
-
-struct MUComics: Codable {
-    let year: Int
-}
