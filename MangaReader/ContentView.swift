@@ -7,7 +7,7 @@ struct ContentView: View {
             TabView {
                 MangaListScreen()
                     .tabItem {
-                        Label("All", systemImage: "books.vertical")
+                        Label("Mangas", systemImage: "books.vertical")
                     }
 
                 Text("Favorites")
@@ -19,11 +19,9 @@ struct ContentView: View {
             NavigationSplitView {
                 List {
                     NavigationLink {
-                        VStack {
-                            Text("Ich bin ein Text")
-                        }
+                        MangaListScreen()
                     } label: {
-                        Text("Test")
+                        Label("Mangas", systemImage: "books.vertical")
                     }
                 }
             } detail: {
