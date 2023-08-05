@@ -18,7 +18,7 @@ struct ContentView: View {
         #else
             NavigationSplitView {
                 List {
-                    NavigationLink {
+                    NavigationLink(isActive: .constant(true)) {
                         MangaListScreen()
                     } label: {
                         Label("Mangas", systemImage: "books.vertical")
