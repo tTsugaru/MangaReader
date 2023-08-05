@@ -9,7 +9,7 @@ class MangaListViewModel: ObservableObject {
 
     func getAllMangas() async {
         do {
-            mangas = try await Networking.shared.getAllMangas().map { MangaViewModel(model: $0) }
+            mangas = try await Networking.shared.search().map { MangaViewModel(model: $0) }
 
             mangasAreLoadingImages = mangas.map(\.$isLoadingCoverImage)
             setupCoverLoadingBinding()

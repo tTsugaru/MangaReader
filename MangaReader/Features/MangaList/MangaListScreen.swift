@@ -6,7 +6,7 @@ struct MangaListScreen: View {
     #if os(iOS)
         var columns = [GridItem(), GridItem()]
     #elseif os(macOS)
-        var columns = [GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0)]
+        var columns = [GridItem(), GridItem(), GridItem(), GridItem()]
     #endif
 
     @State var hoveringOverManga: MangaViewModel?
@@ -14,39 +14,25 @@ struct MangaListScreen: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
+                LazyVGrid(columns: columns, alignment: .center, spacing: 32) {
                     ForEach(viewModel.mangas, id: \.slug) { manga in
                         ZStack {
-                            VStack(spacing: 0) {
+                            VStack {
                                 if let coverImage = manga.image, !viewModel.isLoadingImages {
-                                    coverImage
-                                        .resizable()
-                                        .frame(width: 176 * 2, height: 224 * 2)
-                                        .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
-                                        .overlay(
-                                            Color.black
-                                                .opacity((hoveringOverManga?.slug != manga.slug) && hoveringOverManga != nil ? 0.4 : 0)
-                                                .animation(.easeInOut)
-                                        )
-                                        .scaleEffect(hoveringOverManga?.slug == manga.slug ? 1.1 : 1)
-                                        .animation(.interpolatingSpring(stiffness: 999, damping: 19), value: hoveringOverManga?.slug == manga.slug)
-                                        .onHover { isHovering in
-                                            if isHovering {
-                                                hoveringOverManga = manga
-                                            } else {
-                                                hoveringOverManga = nil
-                                            }
-                                        }
+                                    CoverImageView(image: coverImage, mangaName: manga.title)
                                 } else {
                                     ProgressView()
                                         .progressViewStyle(.circular)
                                 }
                             }
+                            .onHover { _ in
+                                hoveringOverManga = manga
+                            }
                         }
                         .zIndex(hoveringOverManga?.slug == manga.slug ? 1 : -1)
                     }
                 }
-                .padding(64)
+                .padding(32)
             }
             .task {
                 await viewModel.getAllMangas()

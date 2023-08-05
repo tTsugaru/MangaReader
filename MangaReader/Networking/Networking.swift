@@ -17,14 +17,16 @@ enum API: String {
 
     func request<T: Decodable>(param: [String: [String]]? = nil) async throws -> [T] {
         var editedURL = url
-        
+
         if let param, var components = URLComponents(url: url, resolvingAgainstBaseURL: true) {
             components.queryItems = param.map { URLQueryItem(name: $0.key, value: $0.value.joined(separator: ",")) }
             if let urlWithParams = components.url {
                 editedURL = urlWithParams
             }
         }
-        
+
+        print("🌎 - Requesting data from \(editedURL.absoluteString)")
+
         let (data, _) = try await URLSession.shared.data(from: editedURL)
         let fetchedData = try JSONDecoder().decode([T].self, from: data)
 
@@ -47,6 +49,23 @@ enum API: String {
     }
 }
 
+enum SearchType: String {
+    case author
+    case user
+    case group
+    case comic
+    case none = ""
+}
+
+enum SearchSortType: String {
+    case follow
+    case view
+    case createdAt = "created_at"
+    case uploaded
+    case rating
+    case userFollowCount = "user_follow_count"
+}
+
 class Networking {
     public static let shared = Networking()
     private init() {}
@@ -54,46 +73,30 @@ class Networking {
     func getAllMangas() async throws -> [Manga] {
         try await API.search.request()
     }
-    
-    enum SearchType: String {
-        case author
-        case user
-        case group
-        case comic
-        case none = ""
-    }
-    
-    enum SearchSortType: String {
-        case follow
-        case view
-        case createdAt = "created_at"
-        case uploaded
-        case rating
-        case userFollowCount = "user_follow_count"
-    }
-    
+
+    // TODO: Try to simplify
     func search(with genres: [String] = [],
                 excludes: [String] = [],
-                type: SearchType = .none,
+                type _: SearchType = .none,
                 tags: [String] = [],
                 demographic: [Int] = [],
                 page: Int = 1,
                 limit: Int = 30,
                 time: Int? = nil,
-                country: [String] = [],
+                country: [String]? = nil,
                 minChapterCount: Int? = nil,
                 fromYear: Int? = nil,
                 toYear: Int? = nil,
                 status: MangaStatus? = nil,
-                tachiyomi: Bool = true,
+                tachiyomi _: Bool = true,
                 completed: Bool? = nil,
-                sort: SearchSortType?,
+                sort: SearchSortType? = nil,
                 excludeMyList: Bool? = nil,
                 searchString: String = "",
-                showAltTitle: Bool? = nil) async throws -> [Manga] {
-        
+                showAltTitle: Bool? = nil) async throws -> [Manga]
+    {
         var params: [String: [String]] = [:]
-        
+
         if searchString.isEmpty {
             params["genres"] = genres
             params["excludes"] = excludes
@@ -101,49 +104,51 @@ class Networking {
             params["demograpic"] = demographic.map { String($0) }
             params["page"] = [String(page)]
             params["limit"] = [String(limit)]
-            params["country"] = country
-            
+
+            if let country {
+                params["country"] = country
+            }
+
             if let time {
                 params["time"] = [String(time)]
             }
-            
+
             if let minChapterCount {
                 params["minimum"] = [String(minChapterCount)]
             }
-            
+
             if let fromYear {
                 params["from"] = [String(fromYear)]
             }
-            
-            
+
             if let toYear {
                 params["to"] = [String(toYear)]
             }
-            
+
             if let status {
                 params["from"] = [String(status.rawValue)]
             }
-            
+
             if let completed {
                 params["completed"] = [String(completed)]
             }
-            
+
             if let sort {
                 params["sort"] = [sort.rawValue]
             }
-            
+
             if let excludeMyList {
                 params["exclude-mylist"] = [String(excludeMyList)]
             }
-            
+
             if let showAltTitle {
-                params("t") = [String(showAltTitle)]
+                params["t"] = [String(showAltTitle)]
             }
-            
         } else {
             params["q"] = [searchString]
             return try await API.search.request(param: params)
         }
-        return return try await API.search.request(param: params)
+
+        return try await API.search.request(param: params)
     }
 }
