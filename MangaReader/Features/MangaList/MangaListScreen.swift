@@ -4,9 +4,9 @@ struct MangaListScreen: View {
     @StateObject var viewModel = MangaListViewModel()
 
     #if os(iOS)
-        var columns = [GridItem(), GridItem()]
+        @State var columns = [GridItem(), GridItem()]
     #elseif os(macOS)
-        var columns = [GridItem(), GridItem(), GridItem(), GridItem()]
+        @State var columns = [GridItem(), GridItem(), GridItem(), GridItem()]
     #endif
 
     @State var hoveringOverManga: MangaViewModel?
@@ -34,8 +34,25 @@ struct MangaListScreen: View {
                 }
                 .padding(32)
             }
+            .onChange(of: geometry.size.width) { _, newWidth in
+                handleChangeOfWidth(newWidth: newWidth)
+            }
             .task {
                 await viewModel.getAllMangas()
+            }
+        }
+    }
+    
+    #warning("Is there a better way then geometry reader? (research)")
+    private func handleChangeOfWidth(newWidth: CGFloat) {
+        let availableColumnCount = Int(newWidth / ((176 * 2) + 32))
+        if availableColumnCount < columns.count {
+            while availableColumnCount < columns.count {
+                columns.remove(at: 0)
+            }
+        } else {
+            while availableColumnCount > columns.count {
+                columns.append(GridItem())
             }
         }
     }

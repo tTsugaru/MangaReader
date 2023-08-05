@@ -18,14 +18,14 @@ struct ContentView: View {
         #else
             NavigationSplitView {
                 List {
-                    NavigationLink(isActive: .constant(true)) {
+                    NavigationLink {
                         MangaListScreen()
                     } label: {
                         Label("Mangas", systemImage: "books.vertical")
                     }
                 }
             } detail: {
-                Text("Detail Screen Empty")
+                MangaListScreen()
             }
         #endif
     }
