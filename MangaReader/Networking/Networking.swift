@@ -1,10 +1,5 @@
 import Foundation
 import SwiftUI
-#if canImport(UIKit)
-    import UIKit
-#elseif canImport(AppKit)
-    import AppKit
-#endif
 
 enum API: String {
     case trending = "/top"
@@ -31,21 +26,6 @@ enum API: String {
         let fetchedData = try JSONDecoder().decode([T].self, from: data)
 
         return fetchedData
-    }
-
-    static func loadImage(with id: String) async throws -> Image {
-        let imageURL = URL(string: "https://meo.comick.pictures/\(id)")!
-        let (data, _) = try await URLSession.shared.data(from: imageURL)
-
-        #if os(iOS)
-            let fetchedImage = UIImage(data: data)
-            guard let fetchedImage else { return Image(systemName: "exclamationmark.triangle.fill") }
-            return Image(uiImage: fetchedImage)
-        #elseif os(macOS)
-            let fetchedImage = NSImage(data: data)
-            guard let fetchedImage else { return Image(systemName: "exclamationmark.triangle.fill") }
-            return Image(nsImage: fetchedImage)
-        #endif
     }
 }
 

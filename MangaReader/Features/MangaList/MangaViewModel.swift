@@ -43,8 +43,6 @@ class MangaViewModel: ObservableObject {
 
     init(model: Manga) {
         self.model = model
-        
-        self.loadCoverImage()
     }
 
     var id: Int {
@@ -131,6 +129,11 @@ class MangaViewModel: ObservableObject {
         model.mdCovers
     }
 
+    var imageDownloadURL: URL? {
+        guard let imageId = mdCovers?.first?.b2key else { return nil }
+        return URL(string: "https://meo.comick.pictures/\(imageId)")
+    }
+
     var muComics: MUComics? {
         model.muComics
     }
@@ -142,29 +145,14 @@ class MangaViewModel: ObservableObject {
             return nil
         }
     }
-    
-    @Published var image: Image? = nil
-    @Published var isLoadingCoverImage: Bool = false
-    
-    func loadCoverImage() {
-        guard let imageID = mdCovers?.first?.b2key, image == nil else { return }
-        isLoadingCoverImage = true
-        
-        Task.detached(priority: .background) {
-            do {
-                let fetchedImage = try await API.loadImage(with: imageID)
-                
-                Task { @MainActor in
-                    self.image = fetchedImage
-                    self.isLoadingCoverImage = false
-                }
-            } catch {
-                print(error)
-                
-                Task { @MainActor in
-                    self.isLoadingCoverImage = false
-                }
-            }
-        }
+}
+
+extension MangaViewModel: Hashable {
+    static func == (lhs: MangaViewModel, rhs: MangaViewModel) -> Bool {
+        ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
     }
 }

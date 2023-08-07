@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B333B322A80B1E900368534 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3B333B312A80B1E900368534 /* Kingfisher */; };
 		3B8AA74E2A7D92FE0051E61C /* MangaListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA74D2A7D92FE0051E61C /* MangaListScreen.swift */; };
 		3B8AA7502A7D93280051E61C /* MangaListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA74F2A7D93280051E61C /* MangaListViewModel.swift */; };
 		3B8AA7532A7D93680051E61C /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA7522A7D93680051E61C /* Networking.swift */; };
@@ -45,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B333B322A80B1E900368534 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,6 +146,9 @@
 			dependencies = (
 			);
 			name = MangaReader;
+			packageProductDependencies = (
+				3B333B312A80B1E900368534 /* Kingfisher */,
+			);
 			productName = MangaReader;
 			productReference = 3BD8F0262A7D6E0000A84F8E /* MangaReader.app */;
 			productType = "com.apple.product-type.application";
@@ -172,6 +177,9 @@
 				Base,
 			);
 			mainGroup = 3BD8F01D2A7D6E0000A84F8E;
+			packageReferences = (
+				3B333B302A80B1E900368534 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			productRefGroup = 3BD8F0272A7D6E0000A84F8E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -427,6 +435,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3B333B302A80B1E900368534 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3B333B312A80B1E900368534 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B333B302A80B1E900368534 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3BD8F01E2A7D6E0000A84F8E /* Project object */;
 }

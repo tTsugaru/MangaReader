@@ -1,3 +1,4 @@
+import Kingfisher
 import SwiftUI
 
 struct CoverImageView: View {
@@ -5,11 +6,11 @@ struct CoverImageView: View {
 
     private var animationSpeed: CGFloat = 0.2
 
-    let image: Image
+    let imageDownloadURL: URL?
     let mangaName: String
 
-    init(image: Image, mangaName: String) {
-        self.image = image
+    init(imageDownloadURL: URL?, mangaName: String) {
+        self.imageDownloadURL = imageDownloadURL
         self.mangaName = mangaName
     }
 
@@ -21,7 +22,10 @@ struct CoverImageView: View {
     }
 
     var body: some View {
-        image
+        KFImage(imageDownloadURL)
+        #if os(iOS)
+            .setProcessor(DownsamplingImageProcessor(size: CGSize(width: 180 * 2, height: 230 * 2)))
+        #endif
             .resizable()
             .aspectRatio(11 / 14, contentMode: .fit)
             .overlay {
@@ -59,5 +63,5 @@ struct CoverImageView: View {
 }
 
 #Preview {
-    CoverImageView(image: Image(systemName: "star"), mangaName: "MangaName")
+    CoverImageView(imageDownloadURL: URL(string: "https://picsum.photos/200/300")!, mangaName: "MangaName")
 }

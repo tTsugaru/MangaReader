@@ -4,44 +4,32 @@ import Foundation
 @MainActor
 class MangaListViewModel: ObservableObject {
     @Published var mangas: [MangaViewModel] = []
-    @Published var isLoadingImages = false
-    @Published var mangasAreLoadingImages: [Published<Bool>.Publisher] = []
+    @Published var isLoading: Bool = false
     @Published var currentPageLoaded = 1
     
     func getAllMangas() async {
         guard mangas.isEmpty else { return }
         
+        isLoading = true
         do {
             mangas = try await Networking.shared.search(page: 1).map { MangaViewModel(model: $0) }
-
-            mangasAreLoadingImages = mangas.map(\.$isLoadingCoverImage)
-            setupCoverLoadingBinding()
+            isLoading = false
         } catch {
             print(error) // TODO: Handle error
         }
     }
     
-    func loadNextPage() async {
+    func loadNextPage(with limit: Int) async {
+        guard !isLoading else { return }
         currentPageLoaded += 1
         
+        isLoading = true
         do {
-            let loadedNextMangas = try await Networking.shared.search(page: currentPageLoaded).map { MangaViewModel(model: $0) }
+            let loadedNextMangas = try await Networking.shared.search(page: currentPageLoaded, limit: limit).map { MangaViewModel(model: $0) }
             mangas += loadedNextMangas
-            mangasAreLoadingImages = loadedNextMangas.map(\.$isLoadingCoverImage)
+            isLoading = false
         } catch {
             print(error)
         }
-    }
-
-    var cancellable: AnyCancellable? = nil
-    func setupCoverLoadingBinding() {
-        cancellable?.cancel()
-        cancellable = Publishers.MergeMany(mangasAreLoadingImages).sink { [weak self] isLoadingImages in
-            self?.isLoadingImages = isLoadingImages
-        }
-    }
-
-    func forceUpdateView() {
-        objectWillChange.send()
     }
 }

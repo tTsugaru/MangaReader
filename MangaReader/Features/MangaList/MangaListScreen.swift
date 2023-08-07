@@ -11,29 +11,21 @@ struct MangaListScreen: View {
 
     @State var hoveringOverManga: MangaViewModel?
 
-    @State var columnCount: CGFloat = 4
+    var columnCount: CGFloat = 4
 
     var body: some View {
-        GeometryReader { _ in
-            ScrollView {
-                #if os(macOS)
-                    Slider(value: $columnCount, in: 2 ... 10, step: 1)
-                        .frame(width: 200)
-                #endif
-
-                LazyVGrid(columns: columns, alignment: .center) {
-                    ForEach(viewModel.mangas, id: \.slug) { manga in
-                        ZStack {
-                            VStack {
-                                if let coverImage = manga.image, !manga.isLoadingCoverImage {
-                                    CoverImageView(image: coverImage, mangaName: manga.title)
-                                } else {
-                                    ProgressView()
-                                        .progressViewStyle(.circular)
-                                }
-                            }
-                            .onHover { _ in
-                                hoveringOverManga = manga
+        ScrollView {
+            LazyVGrid(columns: columns, alignment: .center) {
+                ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
+                    CoverImageView(imageDownloadURL: manga.imageDownloadURL, mangaName: manga.title)
+                        .onHover { _ in
+                            hoveringOverManga = manga
+                        }
+                        .onAppear {
+                            let bufferSize = Int(columnCount)
+                            guard (viewModel.mangas.count - bufferSize) == index else { return }
+                            Task.detached(priority: .background) {
+                                await viewModel.loadNextPage(with: bufferSize * 10)
                             }
                         }
                         .zIndex(hoveringOverManga?.slug == manga.slug ? 1 : -1)
@@ -41,18 +33,22 @@ struct MangaListScreen: View {
                             content
                                 .opacity(phase.isIdentity ? 1 : 0.2)
                                 .scaleEffect(phase.isIdentity ? 1 : 0.85)
-                                .blur(radius: phase.isIdentity  ? 0 : 10)
+                                .blur(radius: phase.isIdentity ? 0 : 10)
                         }
-                    }
                 }
-                .padding(32)
             }
-            .task {
-                await viewModel.getAllMangas()
+            .padding(32)
+
+            if viewModel.isLoading {
+                ProgressView()
             }
-            .onChange(of: columnCount) { _, newColumnCount in
-                handleChangeOfColumnCount(newColumnCount: newColumnCount)
-            }
+        }
+        .background(Color("background", bundle: Bundle.main))
+        .task {
+            await viewModel.getAllMangas()
+        }
+        .onChange(of: columnCount) { _, newColumnCount in
+            handleChangeOfColumnCount(newColumnCount: newColumnCount)
         }
     }
 
