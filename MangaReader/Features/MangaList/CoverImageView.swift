@@ -23,12 +23,7 @@ struct CoverImageView: View {
     var body: some View {
         image
             .resizable()
-        #if os(iOS)
-            .scaledToFit()
-        #elseif os(macOS)
-            .frame(width: 176 * 2, height: 224 * 2)
-        #endif
-
+            .aspectRatio(11 / 14, contentMode: .fit)
             .overlay {
                 Color.black
                     .opacity(isHovering ? 0 : 0.3)

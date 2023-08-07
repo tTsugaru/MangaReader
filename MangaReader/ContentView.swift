@@ -2,10 +2,12 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var listViewModel = MangaListViewModel()
+    
     var body: some View {
         #if os(iOS)
             TabView {
-                MangaListScreen()
+                MangaListScreen(viewModel: listViewModel)
                     .tabItem {
                         Label("Mangas", systemImage: "books.vertical")
                     }
@@ -19,13 +21,13 @@ struct ContentView: View {
             NavigationSplitView {
                 List {
                     NavigationLink {
-                        MangaListScreen()
+                        MangaListScreen(viewModel: listViewModel)
                     } label: {
                         Label("Mangas", systemImage: "books.vertical")
                     }
                 }
             } detail: {
-                MangaListScreen()
+                MangaListScreen(viewModel: listViewModel)
             }
         #endif
     }

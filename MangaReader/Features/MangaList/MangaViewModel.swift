@@ -143,11 +143,11 @@ class MangaViewModel: ObservableObject {
         }
     }
     
-    @Published var image: Image?
+    @Published var image: Image? = nil
     @Published var isLoadingCoverImage: Bool = false
     
     func loadCoverImage() {
-        guard let imageID = mdCovers?.first?.b2key else { return }
+        guard let imageID = mdCovers?.first?.b2key, image == nil else { return }
         isLoadingCoverImage = true
         
         Task.detached(priority: .background) {
