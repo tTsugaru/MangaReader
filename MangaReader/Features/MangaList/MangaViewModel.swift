@@ -1,42 +1,6 @@
 import Foundation
 import SwiftUI
 
-enum MangaStatus: Int {
-    case unknown = 0
-    case ongoing = 1
-    case completed = 2
-    case hiatus = 3
-    case cancelled = 4
-}
-
-enum ContentRating: String {
-    case safe
-    case suggestive
-    // Add more cases
-}
-
-enum Demographic: Int {
-    case unknown = 0
-    case shounen = 1
-    case shoujo = 2
-    // Add more cases
-}
-
-struct MangaCover: Codable {
-    let w: Int
-    let h: Int
-    let b2key: String
-}
-
-struct MuComics: Codable {
-    let year: Int
-}
-
-enum Genre: Int {
-    case action = 246
-    case adventure = 305
-}
-
 @MainActor
 class MangaViewModel: ObservableObject {
     let model: Manga
