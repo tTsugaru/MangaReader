@@ -27,7 +27,7 @@ struct ContentView: View {
                     }
                 }
             } detail: {
-                MangaListScreen(viewModel: listViewModel)
+                Text("Select")
             }
         #endif
     }

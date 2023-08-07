@@ -19,7 +19,7 @@ enum API: String {
             }
         }
 
-        print("🌎 - Requesting data from \(editedURL.absoluteString)")
+        print(Date(), "🌎 - Requesting data from \(editedURL.absoluteString)")
 
         let (data, _) = try await URLSession.shared.data(from: editedURL)
         let fetchedData = try JSONDecoder().decode([T].self, from: data)

@@ -3,52 +3,67 @@ import SwiftUI
 struct MangaListScreen: View {
     @ObservedObject var viewModel: MangaListViewModel
 
+    init(viewModel: MangaListViewModel) {
+        self.viewModel = viewModel
+    }
+    
     #if os(iOS)
-        @State var columns = [GridItem(), GridItem()]
+        @State private var columns = [GridItem(), GridItem()]
     #elseif os(macOS)
-        @State var columns = [GridItem(), GridItem(), GridItem(), GridItem()]
+        @State private var columns = [GridItem(), GridItem(), GridItem(), GridItem()]
     #endif
 
-    @State var hoveringOverManga: MangaViewModel?
+    @State private var hoveringOverManga: MangaViewModel?
+    @State private var presentMangaDetail = false
 
-    var columnCount: CGFloat = 4
+    private var columnCount: CGFloat = 4
 
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, alignment: .center) {
-                ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
-                    CoverImageView(imageDownloadURL: manga.imageDownloadURL, mangaName: manga.title)
-                        .onHover { _ in
-                            hoveringOverManga = manga
-                        }
-                        .onAppear {
-                            let bufferSize = Int(columnCount)
-                            guard (viewModel.mangas.count - bufferSize) == index else { return }
-                            Task.detached(priority: .background) {
-                                await viewModel.loadNextPage(with: bufferSize * 10)
+        NavigationStack {
+            ScrollView {
+                LazyVGrid(columns: columns, alignment: .center) {
+                    ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
+                        CoverImageView(imageDownloadURL: manga.imageDownloadURL, mangaName: manga.title)
+                            .onHover { _ in
+                                hoveringOverManga = manga
                             }
-                        }
-                        .zIndex(hoveringOverManga?.slug == manga.slug ? 1 : -1)
-                        .scrollTransition(.animated(.bouncy).threshold(.visible(0.3))) { content, phase in
-                            content
-                                .opacity(phase.isIdentity ? 1 : 0.2)
-                                .scaleEffect(phase.isIdentity ? 1 : 0.85)
-                                .blur(radius: phase.isIdentity ? 0 : 10)
-                        }
+                            .onAppear {
+                                let bufferSize = Int(columnCount)
+                                guard (viewModel.mangas.count - bufferSize) == index else { return }
+                                Task.detached(priority: .background) {
+                                    await viewModel.loadNextPage(with: bufferSize * 10)
+                                }
+                            }
+                            .zIndex(hoveringOverManga?.slug == manga.slug ? 1 : -1)
+                            .scrollTransition(.animated(.bouncy).threshold(.visible(0.3))) { content, phase in
+                                content
+                                    .opacity(phase.isIdentity ? 1 : 0.2)
+                                    .scaleEffect(phase.isIdentity ? 1 : 0.85)
+                                    .blur(radius: phase.isIdentity ? 0 : 10)
+                            }
+                            .onTapGesture {
+                                presentMangaDetail = true
+                            }
+                    }
+                }
+                .padding(32)
+                
+                if viewModel.isLoading {
+                    ProgressView()
                 }
             }
-            .padding(32)
-
-            if viewModel.isLoading {
-                ProgressView()
+            .navigationDestination(isPresented: $presentMangaDetail, destination: {
+                if let selectedManga = hoveringOverManga {
+                    MangaDetailScreen(manga: selectedManga)
+                }
+            })
+            .background(Color("background", bundle: Bundle.main))
+            .task {
+                await viewModel.getAllMangas()
             }
-        }
-        .background(Color("background", bundle: Bundle.main))
-        .task {
-            await viewModel.getAllMangas()
-        }
-        .onChange(of: columnCount) { _, newColumnCount in
-            handleChangeOfColumnCount(newColumnCount: newColumnCount)
+            .onChange(of: columnCount) { _, newColumnCount in
+                handleChangeOfColumnCount(newColumnCount: newColumnCount)
+            }
         }
     }
 
