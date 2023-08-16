@@ -6,34 +6,49 @@ struct CoverImageView: View {
 
     private var animationSpeed: CGFloat = 0.2
 
-    let imageDownloadURL: URL?
-    let mangaName: String
+    var manga: MangaViewModel
 
-    init(imageDownloadURL: URL?, mangaName: String) {
-        self.imageDownloadURL = imageDownloadURL
-        self.mangaName = mangaName
+    init(manga: MangaViewModel) {
+        self.manga = manga
     }
 
+    @MainActor // ?? What happend here
     var mangaTitle: some View {
-        Text(mangaName)
+        Text(manga.title)
             .padding([.bottom, .horizontal], 16)
             .transition(.move(edge: .bottom))
             .font(.title.bold())
     }
 
     var body: some View {
-        KFImage(imageDownloadURL)
+        KFImage(manga.imageDownloadURL)
+            .onSuccess { result in
+                
+                //Move back into DetailView!
+                Task.detached(priority: .background) {
+                    let image = result.image
+                    let prominentColors = image.prominentColors
+                    let avrageCoverColor = image.avrageColor
+
+                    Task { @MainActor in
+                        manga.prominentColors = prominentColors
+                        manga.avrageCoverColor = avrageCoverColor
+                    }
+                }
+            }
+            .cacheOriginalImage()
+            .startLoadingBeforeViewAppear()
         #if os(iOS)
             .setProcessor(DownsamplingImageProcessor(size: CGSize(width: 180 * 2, height: 230 * 2)))
         #endif
-            .cacheOriginalImage()
-            .startLoadingBeforeViewAppear()
             .resizable()
             .aspectRatio(11 / 14, contentMode: .fit)
             .overlay {
-                Color.black
-                    .opacity(isHovering ? 0 : 0.3)
-                    .animation(.easeInOut)
+                #if os(macOS)
+                    Color.black
+                        .opacity(isHovering ? 0 : 0.3)
+                        .animation(.easeInOut)
+                #endif
             }
             .animation(.easeInOut(duration: animationSpeed)) { content in
                 content
@@ -62,8 +77,4 @@ struct CoverImageView: View {
                 }
             }
     }
-}
-
-#Preview {
-    CoverImageView(imageDownloadURL: URL(string: "https://picsum.photos/200/300")!, mangaName: "MangaName")
 }

@@ -23,7 +23,7 @@ struct MangaListScreen: View {
             ScrollView {
                 LazyVGrid(columns: columns, alignment: .center) {
                     ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
-                        CoverImageView(imageDownloadURL: manga.imageDownloadURL, mangaName: manga.title)
+                        CoverImageView(manga: manga)
                             .onHover { _ in
                                 hoveringOverManga = manga
                             }
@@ -42,6 +42,7 @@ struct MangaListScreen: View {
                                     .blur(radius: phase.isIdentity ? 0 : 10)
                             }
                             .onTapGesture {
+                                hoveringOverManga = manga
                                 presentMangaDetail = true
                             }
                     }

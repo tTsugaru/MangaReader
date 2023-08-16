@@ -109,6 +109,9 @@ class MangaViewModel: ObservableObject {
             return nil
         }
     }
+    
+    var avrageCoverColor: Color?
+    var prominentColors: [Color] = []
 }
 
 extension MangaViewModel: Hashable {

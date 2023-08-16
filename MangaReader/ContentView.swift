@@ -4,7 +4,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var listViewModel = MangaListViewModel()
     @State var defaultSelection = 0
-    
+
     var body: some View {
         #if os(iOS)
             TabView {
@@ -19,7 +19,6 @@ struct ContentView: View {
                     }
             }
         #else
-        
             NavigationSplitView {
                 List(selection: $defaultSelection) {
                     NavigationLink {
@@ -29,7 +28,7 @@ struct ContentView: View {
                     }
                 }
                 .background(Color("background", bundle: Bundle.main).blendMode(.darken))
-                
+
             } detail: {
                 MangaListScreen(viewModel: listViewModel)
             }

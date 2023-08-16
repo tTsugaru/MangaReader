@@ -1,3 +1,4 @@
+import CoreImage
 import Kingfisher
 import SwiftUI
 
@@ -7,21 +8,16 @@ import SwiftUI
 
 struct MangaDetailScreen: View {
     let manga: MangaViewModel
-
-    @State var backgroundColor: Color? = nil
-
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
                 VStack {
                     HStack {
                         KFImage(manga.imageDownloadURL)
-                            .onSuccess { result in
-                                backgroundColor = result.image.dominantColor
-                            }
                             .resizable()
                             .scaledToFit()
-                            .frame(minWidth: 200, maxWidth: 500)
+                            .frame(minWidth: 100, maxWidth: 500)
                             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                             .shadow(radius: 5)
                             .transition(.slide)
@@ -39,79 +35,96 @@ struct MangaDetailScreen: View {
                 .frame(minHeight: geometry.size.height)
             }
             .background {
-                if let backgroundColor {
-                    backgroundColor
-                        .ignoresSafeArea()
-                }
+                FloatingCloudsView(colors: manga.prominentColors)
+            }
+            .background {
+                manga.avrageCoverColor
+                    .ignoresSafeArea()
             }
             .frame(width: geometry.size.width)
-            .toolbar(.hidden, for: .windowToolbar)
             .navigationTitle(manga.title)
         }
     }
 }
 
-#if os(macOS)
-    extension NSImage {
-        var dominantColor: Color? {
-            guard let cgImage = cgImage(forProposedRect: nil, context: nil, hints: nil) else {
-                return nil
-            }
+extension KFCrossPlatformImage {
+    var avrageColor: Color? {
+        #if os(macOS)
+            guard let cgImage = cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
+        #elseif os(iOS)
+            guard let cgImage = self.cgImage else { return nil }
+        #endif
+        let inputImage = CIImage(cgImage: cgImage)
+        let extentVector = CIVector(x: inputImage.extent.origin.x, y: inputImage.extent.origin.y, z: inputImage.extent.size.width, w: inputImage.extent.size.height)
 
-            let colorSpace = CGColorSpaceCreateDeviceRGB()
-            let pixels = UnsafeMutablePointer<UInt8>.allocate(capacity: 4)
-            defer {
-                pixels.deallocate()
-            }
+        guard let filter = CIFilter(name: "CIAreaAverage", parameters: [kCIInputImageKey: inputImage, kCIInputExtentKey: extentVector]) else { return nil }
+        guard let outputImage = filter.outputImage else { return nil }
 
-            let context = CGContext(
-                data: pixels,
-                width: 1,
-                height: 1,
-                bitsPerComponent: 8,
-                bytesPerRow: 4,
-                space: colorSpace,
-                bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
-            )
+        var bitmap = [UInt8](repeating: 0, count: 4)
+        let context = CIContext(options: [.workingColorSpace: kCFNull as Any])
+        context.render(outputImage, toBitmap: &bitmap, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: nil)
 
-            context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: 1, height: 1))
-
-            let red = CGFloat(pixels[0]) / 255.0
-            let green = CGFloat(pixels[1]) / 255.0
-            let blue = CGFloat(pixels[2]) / 255.0
-
-            return Color(red: red, green: green, blue: blue)
-        }
+        return Color(red: CGFloat(bitmap[0]) / 255, green: CGFloat(bitmap[1]) / 255, blue: CGFloat(bitmap[2]) / 255)
     }
 
-#elseif os(iOS)
-    extension UIImage {
-        var avarageColor: Color? {
-            guard let imageData = pngData() else { return nil }
+    var prominentColors: [Color] {
+        #if os(macOS)
+            guard let cgImage = cgImage(forProposedRect: nil, context: nil, hints: nil) else { return [] }
+        #elseif os(iOS)
+            guard let cgImage = self.cgImage else { return [] }
+        #endif
+        let inputImage = CIImage(cgImage: cgImage)
+        let inputExtent = CIVector(cgRect: inputImage.extent)
 
-            var totalRed: CGFloat = 0
-            var totalGreen: CGFloat = 0
-            var totalBlue: CGFloat = 0
+        guard let kMeansFilter = CIFilter(name: "CIKMeans") else { return [] }
+        kMeansFilter.setValue(inputImage, forKey: kCIInputImageKey)
+        kMeansFilter.setValue(inputExtent, forKey: "inputExtent")
+        // How many clusters should be used 0-128
+        kMeansFilter.setValue(5, forKey: "inputCount")
+        // How many passes should be performed 0-20
+        kMeansFilter.setValue(20, forKey: "inputPasses")
+        kMeansFilter.setValue(true, forKey: "inputPerceptual")
 
-            let pixelCount = size.width * size.height
+        guard let outputImage = kMeansFilter.outputImage else { return [] }
 
-            imageData.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) in
-                for pixelIndex in stride(from: 0, to: bytes.count, by: 4) {
-                    let red = CGFloat(bytes[pixelIndex]) / 255.0
-                    let green = CGFloat(bytes[pixelIndex + 1]) / 255.0
-                    let blue = CGFloat(bytes[pixelIndex + 2]) / 255.0
+        let context = CIContext()
 
-                    totalRed += red
-                    totalGreen += green
-                    totalBlue += blue
-                }
+        guard let contextCGImage = context.createCGImage(outputImage, from: outputImage.extent) else { return [] }
+
+        let width = contextCGImage.width
+        let height = contextCGImage.height
+        let bytesPerPixel = 4
+        let bytesPerRow = 4 * width
+        let totalBytes = bytesPerRow * height
+
+        var rawData = [UInt8](repeating: 0, count: totalBytes)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+
+        let bitsPerComponent = 8
+
+        guard let outputImageContext = CGContext(data: &rawData,
+                                                 width: width,
+                                                 height: height,
+                                                 bitsPerComponent: bitsPerComponent,
+                                                 bytesPerRow: bytesPerRow,
+                                                 space: colorSpace,
+                                                 bitmapInfo: bitmapInfo.rawValue) else { return [] }
+
+        outputImageContext.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+
+        var colors = [Color]()
+        for y in 0 ..< height {
+            for x in 0 ..< width {
+                let index = (y * bytesPerRow) + (x * bytesPerPixel)
+                let red = CGFloat(rawData[index]) / 255.0
+                let green = CGFloat(rawData[index + 1]) / 255.0
+                let blue = CGFloat(rawData[index + 2]) / 255.0
+                let alpha = CGFloat(rawData[index + 3]) / 255.0
+                colors.append(Color(red: red, green: green, blue: blue, opacity: alpha))
             }
-
-            let averageRed = totalRed / CGFloat(pixelCount)
-            let averageGreen = totalGreen / CGFloat(pixelCount)
-            let averageBlue = totalBlue / CGFloat(pixelCount)
-
-            return Color(red: Double(averageRed), green: Double(averageGreen), blue: Double(averageBlue))
         }
+
+        return colors
     }
-#endif
+}
