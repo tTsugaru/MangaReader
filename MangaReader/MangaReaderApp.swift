@@ -7,5 +7,6 @@ struct MangaReaderApp: App {
         WindowGroup {
             ContentView()
         }
+        .windowStyle(.hiddenTitleBar)
     }
 }

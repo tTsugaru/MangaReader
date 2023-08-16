@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var listViewModel = MangaListViewModel()
+    @State var defaultSelection = 0
     
     var body: some View {
         #if os(iOS)
@@ -18,16 +19,19 @@ struct ContentView: View {
                     }
             }
         #else
+        
             NavigationSplitView {
-                List {
+                List(selection: $defaultSelection) {
                     NavigationLink {
                         MangaListScreen(viewModel: listViewModel)
                     } label: {
                         Label("Mangas", systemImage: "books.vertical")
                     }
                 }
+                .background(Color("background", bundle: Bundle.main).blendMode(.darken))
+                
             } detail: {
-                Text("Select")
+                MangaListScreen(viewModel: listViewModel)
             }
         #endif
     }

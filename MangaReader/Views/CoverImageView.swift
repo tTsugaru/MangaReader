@@ -26,6 +26,8 @@ struct CoverImageView: View {
         #if os(iOS)
             .setProcessor(DownsamplingImageProcessor(size: CGSize(width: 180 * 2, height: 230 * 2)))
         #endif
+            .cacheOriginalImage()
+            .startLoadingBeforeViewAppear()
             .resizable()
             .aspectRatio(11 / 14, contentMode: .fit)
             .overlay {
