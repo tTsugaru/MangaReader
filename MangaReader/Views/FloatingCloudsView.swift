@@ -30,7 +30,7 @@ class CloudProvider: ObservableObject {
     let frameHeightRatio: CGFloat
 
     init() {
-        frameHeightRatio = CGFloat.random(in: 0.7 ..< 1.4)
+        frameHeightRatio = CGFloat.random(in: 0.9 ..< 1.4)
         offset = CGSize(width: CGFloat.random(in: -150 ..< 150),
                         height: CGFloat.random(in: -150 ..< 150))
     }
@@ -60,7 +60,7 @@ struct FloatingCloudsView: View {
                     ForEach(Array(colors.enumerated()), id: \.offset) { index, color in
                         Cloud(proxy: proxy,
                               color: color,
-                              rotationStart: Double.random(in: 100 ... 200),
+                              rotationStart: Double.random(in: 50 ... 200),
                               duration: TimeInterval(Int.random(in: 5 ... 10)),
                               alignment: frameAlignments[Int.random(in: 0...frameAlignments.count - 1)])
                     }

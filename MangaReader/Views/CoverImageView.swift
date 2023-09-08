@@ -22,20 +22,6 @@ struct CoverImageView: View {
 
     var body: some View {
         KFImage(manga.imageDownloadURL)
-            .onSuccess { result in
-                
-                //Move back into DetailView!
-                Task.detached(priority: .background) {
-                    let image = result.image
-                    let prominentColors = image.prominentColors
-                    let avrageCoverColor = image.avrageColor
-
-                    Task { @MainActor in
-                        manga.prominentColors = prominentColors
-                        manga.avrageCoverColor = avrageCoverColor
-                    }
-                }
-            }
             .cacheOriginalImage()
             .startLoadingBeforeViewAppear()
         #if os(iOS)

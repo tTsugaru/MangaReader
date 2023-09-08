@@ -6,15 +6,15 @@ struct MangaListScreen: View {
     init(viewModel: MangaListViewModel) {
         self.viewModel = viewModel
     }
-    
+
     #if os(iOS)
         @State private var columns = [GridItem(), GridItem()]
     #elseif os(macOS)
         @State private var columns = [GridItem(), GridItem(), GridItem(), GridItem()]
     #endif
 
+    @State private var showDetailScreen = false
     @State private var hoveringOverManga: MangaViewModel?
-    @State private var presentMangaDetail = false
 
     private var columnCount: CGFloat = 4
 
@@ -24,6 +24,9 @@ struct MangaListScreen: View {
                 LazyVGrid(columns: columns, alignment: .center) {
                     ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
                         CoverImageView(manga: manga)
+                            .onTapGesture {
+                                showDetailScreen = true
+                            }
                             .onHover { _ in
                                 hoveringOverManga = manga
                             }
@@ -41,23 +44,20 @@ struct MangaListScreen: View {
                                     .scaleEffect(phase.isIdentity ? 1 : 0.85)
                                     .blur(radius: phase.isIdentity ? 0 : 10)
                             }
-                            .onTapGesture {
-                                hoveringOverManga = manga
-                                presentMangaDetail = true
-                            }
+                            .zIndex(900)
                     }
                 }
                 .padding(32)
-                
+
                 if viewModel.isLoading {
                     ProgressView()
                 }
             }
-            .navigationDestination(isPresented: $presentMangaDetail, destination: {
-                if let selectedManga = hoveringOverManga {
-                    MangaDetailScreen(manga: selectedManga)
+            .navigationDestination(isPresented: $showDetailScreen) {
+                if let manga = hoveringOverManga {
+                    MangaDetailScreen(manga: manga)
                 }
-            })
+            }
             .background(Color("background", bundle: Bundle.main))
             .task {
                 await viewModel.getAllMangas()

@@ -20,14 +20,13 @@ struct ContentView: View {
             }
         #else
             NavigationSplitView {
-                List(selection: $defaultSelection) {
+                List {
                     NavigationLink {
                         MangaListScreen(viewModel: listViewModel)
                     } label: {
                         Label("Mangas", systemImage: "books.vertical")
                     }
                 }
-                .background(Color("background", bundle: Bundle.main).blendMode(.darken))
 
             } detail: {
                 MangaListScreen(viewModel: listViewModel)
