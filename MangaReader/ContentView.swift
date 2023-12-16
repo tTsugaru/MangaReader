@@ -4,6 +4,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var listViewModel = MangaListViewModel()
     @State var defaultSelection = 0
+    @State var path = NavigationPath()
 
     var body: some View {
         #if os(iOS)
@@ -22,14 +23,14 @@ struct ContentView: View {
             NavigationSplitView {
                 List {
                     NavigationLink {
-                        MangaListScreen(viewModel: listViewModel)
+                        MangaListScreen(viewModel: listViewModel, path: $path)
                     } label: {
                         Label("Mangas", systemImage: "books.vertical")
                     }
                 }
 
             } detail: {
-                MangaListScreen(viewModel: listViewModel)
+                MangaListScreen(viewModel: listViewModel, path: $path)
             }
         #endif
     }

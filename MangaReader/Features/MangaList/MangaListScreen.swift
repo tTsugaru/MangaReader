@@ -2,10 +2,9 @@ import SwiftUI
 
 struct MangaListScreen: View {
     @ObservedObject var viewModel: MangaListViewModel
+    @Binding var path: NavigationPath
 
-    init(viewModel: MangaListViewModel) {
-        self.viewModel = viewModel
-    }
+    @State private var hoveringOverManga: MangaViewModel?
 
     #if os(iOS)
         @State private var columns = [GridItem(), GridItem()]
@@ -13,19 +12,16 @@ struct MangaListScreen: View {
         @State private var columns = [GridItem(), GridItem(), GridItem(), GridItem()]
     #endif
 
-    @State private var showDetailScreen = false
-    @State private var hoveringOverManga: MangaViewModel?
-
-    private var columnCount: CGFloat = 4
+    @State private var columnCount: CGFloat = 4
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path.animation(.none)) {
             ScrollView {
                 LazyVGrid(columns: columns, alignment: .center) {
                     ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
                         CoverImageView(manga: manga)
                             .onTapGesture {
-                                showDetailScreen = true
+                                path.append(manga)
                             }
                             .onHover { _ in
                                 hoveringOverManga = manga
@@ -37,14 +33,14 @@ struct MangaListScreen: View {
                                     await viewModel.loadNextPage(with: bufferSize * 10)
                                 }
                             }
-                            .zIndex(hoveringOverManga?.slug == manga.slug ? 1 : -1)
+                            .zIndex(hoveringOverManga?.slug == manga.slug ? 999 : 0)
                             .scrollTransition(.animated(.bouncy).threshold(.visible(0.3))) { content, phase in
                                 content
                                     .opacity(phase.isIdentity ? 1 : 0.2)
                                     .scaleEffect(phase.isIdentity ? 1 : 0.85)
                                     .blur(radius: phase.isIdentity ? 0 : 10)
                             }
-                            .zIndex(900)
+                            .zIndex(0)
                     }
                 }
                 .padding(32)
@@ -53,10 +49,8 @@ struct MangaListScreen: View {
                     ProgressView()
                 }
             }
-            .navigationDestination(isPresented: $showDetailScreen) {
-                if let manga = hoveringOverManga {
-                    MangaDetailScreen(manga: manga)
-                }
+            .navigationDestination(for: MangaViewModel.self) { manga in
+                MangaDetailScreen(manga: manga)
             }
             .background(Color("background", bundle: Bundle.main))
             .task {
@@ -65,6 +59,7 @@ struct MangaListScreen: View {
             .onChange(of: columnCount) { _, newColumnCount in
                 handleChangeOfColumnCount(newColumnCount: newColumnCount)
             }
+            .toolbar { Spacer() }
         }
     }
 
@@ -84,5 +79,5 @@ struct MangaListScreen: View {
 }
 
 #Preview {
-    MangaListScreen(viewModel: MangaListViewModel())
+    MangaListScreen(viewModel: MangaListViewModel(), path: .constant(NavigationPath()))
 }

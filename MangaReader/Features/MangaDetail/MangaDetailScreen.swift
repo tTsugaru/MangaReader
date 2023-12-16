@@ -2,6 +2,7 @@ import CoreImage
 import Kingfisher
 import SwiftUI
 
+@MainActor
 struct MangaDetailScreen: View {
     @State private var animate = false
     @ObservedObject var manga: MangaViewModel
@@ -18,35 +19,31 @@ struct MangaDetailScreen: View {
             .frame(minWidth: 100, maxWidth: 500)
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             .shadow(radius: 5)
-            .transition(.slide)
+            .animation(.none, value: manga)
     }
 
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                if animate {
-                    VStack {
-                        HStack {
-                            coverImage
+                VStack {
+                    HStack {
+                        coverImage
 
-                            VStack {
-                                Text(manga.title)
+                        VStack {
+                            Text(manga.title)
+
+                            if let titles = manga.mdTitles {
+                                Text(titles.joined(separator: " | "))
                             }
-
-                            Spacer()
                         }
-                        .padding(16)
 
                         Spacer()
                     }
-                    .frame(minHeight: geometry.size.height)
-                    .transition(.slide)
+                    .padding(16)
+
+                    Spacer()
                 }
-            }
-            .onAppear {
-                withAnimation {
-                    animate = true
-                }
+                .frame(minHeight: geometry.size.height)
             }
             .background {
                 FloatingCloudsView(colors: manga.prominentColors)
