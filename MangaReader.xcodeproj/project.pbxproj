@@ -27,6 +27,8 @@
 		3B8AA75C2A7DA26A0051E61C /* MUComics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA75B2A7DA26A0051E61C /* MUComics.swift */; };
 		3B8AA75E2A7DB3930051E61C /* MangaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA75D2A7DB3930051E61C /* MangaViewModel.swift */; };
 		3B91340C2A7EBACA00A2CBA7 /* CoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B91340B2A7EBACA00A2CBA7 /* CoverImageView.swift */; };
+		3BB2386F2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB2386E2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift */; };
+		3BB238712B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB238702B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift */; };
 		3BD8F02A2A7D6E0000A84F8E /* MangaReaderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD8F0292A7D6E0000A84F8E /* MangaReaderApp.swift */; };
 		3BD8F02C2A7D6E0000A84F8E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD8F02B2A7D6E0000A84F8E /* ContentView.swift */; };
 		3BD8F0302A7D6E0300A84F8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BD8F02F2A7D6E0300A84F8E /* Assets.xcassets */; };
@@ -53,6 +55,8 @@
 		3B8AA75B2A7DA26A0051E61C /* MUComics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUComics.swift; sourceTree = "<group>"; };
 		3B8AA75D2A7DB3930051E61C /* MangaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaViewModel.swift; sourceTree = "<group>"; };
 		3B91340B2A7EBACA00A2CBA7 /* CoverImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverImageView.swift; sourceTree = "<group>"; };
+		3BB2386E2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KFCrossPlatformImage+AverageColor.swift"; sourceTree = "<group>"; };
+		3BB238702B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KFCrossPlatformImage+ProminentColors.swift"; sourceTree = "<group>"; };
 		3BD8F0262A7D6E0000A84F8E /* MangaReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MangaReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BD8F0292A7D6E0000A84F8E /* MangaReaderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaReaderApp.swift; sourceTree = "<group>"; };
 		3BD8F02B2A7D6E0000A84F8E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -137,6 +141,15 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		3BB2386D2B2E3CB400A00F2E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				3BB2386E2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift */,
+				3BB238702B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		3BD8F01D2A7D6E0000A84F8E = {
 			isa = PBXGroup;
 			children = (
@@ -159,6 +172,7 @@
 				3B8AA7512A7D93540051E61C /* Networking */,
 				3B8AA74B2A7D92DC0051E61C /* Features */,
 				3B333B332A80BD1C00368534 /* Views */,
+				3BB2386D2B2E3CB400A00F2E /* Extensions */,
 				3BD8F0292A7D6E0000A84F8E /* MangaReaderApp.swift */,
 				3BD8F02B2A7D6E0000A84F8E /* ContentView.swift */,
 				3BD8F02F2A7D6E0300A84F8E /* Assets.xcassets */,
@@ -265,10 +279,12 @@
 				3B8AA75C2A7DA26A0051E61C /* MUComics.swift in Sources */,
 				3B333B392A80BD6F00368534 /* Demographic.swift in Sources */,
 				3BD8F02A2A7D6E0000A84F8E /* MangaReaderApp.swift in Sources */,
+				3BB238712B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift in Sources */,
 				3B333B412A80BE2800368534 /* SearchSortType.swift in Sources */,
 				3B333B462A80BF4100368534 /* MangaDetailScreen.swift in Sources */,
 				3B91340C2A7EBACA00A2CBA7 /* CoverImageView.swift in Sources */,
 				3B8AA75A2A7DA25D0051E61C /* Cover.swift in Sources */,
+				3BB2386F2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift in Sources */,
 				3B8AA75E2A7DB3930051E61C /* MangaViewModel.swift in Sources */,
 				3B333B3F2A80BE1200368534 /* SearchType.swift in Sources */,
 				3B8AA7502A7D93280051E61C /* MangaListViewModel.swift in Sources */,
