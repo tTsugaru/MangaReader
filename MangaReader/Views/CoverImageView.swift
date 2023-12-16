@@ -1,6 +1,7 @@
 import Kingfisher
 import SwiftUI
 
+@MainActor
 struct CoverImageView: View {
     @State private var isHovering = false
 
@@ -12,7 +13,6 @@ struct CoverImageView: View {
         self.manga = manga
     }
 
-    @MainActor // ?? What happend here
     var mangaTitle: some View {
         Text(manga.title)
             .padding([.bottom, .horizontal], 16)

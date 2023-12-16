@@ -4,8 +4,6 @@ struct MangaListScreen: View {
     @ObservedObject var viewModel: MangaListViewModel
     @Binding var path: NavigationPath
 
-    @State private var hoveringOverManga: MangaViewModel?
-
     #if os(iOS)
         @State private var columns = [GridItem(), GridItem()]
     #elseif os(macOS)
@@ -14,6 +12,7 @@ struct MangaListScreen: View {
 
     @State private var columnCount: CGFloat = 4
 
+    @ViewBuilder
     var body: some View {
         NavigationStack(path: $path.animation(.none)) {
             ScrollView {
@@ -23,9 +22,6 @@ struct MangaListScreen: View {
                             .onTapGesture {
                                 path.append(manga)
                             }
-                            .onHover { _ in
-                                hoveringOverManga = manga
-                            }
                             .onAppear {
                                 let bufferSize = Int(columnCount)
                                 guard (viewModel.mangas.count - bufferSize) == index else { return }
@@ -33,17 +29,15 @@ struct MangaListScreen: View {
                                     await viewModel.loadNextPage(with: bufferSize * 10)
                                 }
                             }
-                            .zIndex(hoveringOverManga?.slug == manga.slug ? 999 : 0)
                             .scrollTransition(.animated(.bouncy).threshold(.visible(0.3))) { content, phase in
                                 content
                                     .opacity(phase.isIdentity ? 1 : 0.2)
                                     .scaleEffect(phase.isIdentity ? 1 : 0.85)
                                     .blur(radius: phase.isIdentity ? 0 : 10)
                             }
-                            .zIndex(0)
                     }
                 }
-                .padding(32)
+                .padding(.horizontal, 16)
 
                 if viewModel.isLoading {
                     ProgressView()
