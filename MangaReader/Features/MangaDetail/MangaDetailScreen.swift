@@ -4,12 +4,27 @@ import SwiftUI
 
 @MainActor
 class MangaDetailScreenViewModel: ObservableObject {
-    func getMangaDetail(slug _: String) {}
+    @Published var isLoading: Bool = false
+    @Published var mangaDetail: MangaDetail?
+    
+    func getMangaDetail(slug: String) async {
+        do {
+            isLoading = true
+            let mangaDetail = try await Networking.shared.getMangaDetails(slug: slug)
+            self.mangaDetail = mangaDetail
+            isLoading = false
+        } catch {
+            print(error)
+        }
+        
+    }
 }
 
 @MainActor
 struct MangaDetailScreen: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
+    @StateObject var viewModel = MangaDetailScreenViewModel()
     
     @State private var animate = false
     @ObservedObject var manga: MangaViewModel
@@ -39,7 +54,6 @@ struct MangaDetailScreen: View {
             Text(manga.title)
                 .font(horizontalSizeClass == .compact ? .body : .largeTitle)
                 .bold()
-            
 
             if let titles = manga.mdTitles {
                 Text(titles.joined(separator: horizontalSizeClass == .compact ? "\n" : " | "))
@@ -47,7 +61,6 @@ struct MangaDetailScreen: View {
                     .font(horizontalSizeClass == .compact ? .body : .title2)
             }
         }
-        .foregroundStyle(manga.isLightCoverColor ? .black : .white)
     }
 
     private var coverSection: some View {
@@ -75,23 +88,27 @@ struct MangaDetailScreen: View {
 
                     DynamicStack(spacing: 8) {
                         coverSection
-                        
+
                         if !manga.prominentColors.isEmpty, manga.avrageCoverColor != nil {
                             contentSection
                         } else {
-                            VStack {
+                            HStack {
                                 Spacer()
-                                ProgressView()
+                                VStack {
+                                    Spacer()
+                                    ProgressView()
+                                    Spacer()
+                                }
                                 Spacer()
                             }
                         }
-                        
                         Spacer()
                     }
                 }
                 .frame(minHeight: geometry.size.height)
                 .padding(.horizontal, 16)
             }
+            .foregroundStyle(manga.isLightCoverColor ? .black : .white)
             .background {
                 FloatingCloudsView(colors: manga.prominentColors)
             }
@@ -104,6 +121,9 @@ struct MangaDetailScreen: View {
                     .ignoresSafeArea()
             }
             .frame(width: geometry.size.width)
+            .task {
+                await viewModel.getMangaDetail(slug: manga.slug)
+            }
         }
     }
 

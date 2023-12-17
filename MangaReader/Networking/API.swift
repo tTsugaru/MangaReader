@@ -17,7 +17,7 @@ enum API: String {
             editedURL = url.appendingPathComponent(path)
         }
         
-        if let param, var components = URLComponents(url: url, resolvingAgainstBaseURL: true) {
+        if let param, var components = URLComponents(url: editedURL, resolvingAgainstBaseURL: true) {
             components.queryItems = param.map { URLQueryItem(name: $0.key, value: $0.value.joined(separator: ",")) }
             if let urlWithParams = components.url {
                 editedURL = urlWithParams
