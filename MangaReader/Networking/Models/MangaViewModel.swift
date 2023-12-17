@@ -112,6 +112,10 @@ class MangaViewModel: ObservableObject {
     
     @Published var avrageCoverColor: Color?
     @Published var prominentColors: [Color] = []
+    
+    var isLightCoverColor: Bool {
+        avrageCoverColor?.brightness == .light
+    }
 }
 
 extension MangaViewModel: Hashable {

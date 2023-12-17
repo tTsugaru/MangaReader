@@ -1,42 +1,63 @@
 import SwiftUI
 
-// TODO: Find better/Cleaner? solution
-struct DynamicHStack<Content>: View where Content: View {
-    let content: () -> Content
-
-    init(@ViewBuilder content: @escaping () -> Content) {
-        self.content = content
+enum DynamicStackAlignment {
+    case leading
+    case top
+    case center
+    case bottom
+    case trailing
+    
+    var horizntalAlignment: HorizontalAlignment {
+        switch self {
+        case .leading:
+            return .leading
+        case .center:
+            return .center
+        case .trailing:
+            return .trailing
+        default:
+            fatalError("Not supported alignment for VStack!")
+        }
     }
-
-    var body: some View {
-        #if os(iOS)
-            VStack {
-                content()
-            }
-        #else
-            HStack {
-                content()
-            }
-        #endif
+    
+    var verticalAlignment: VerticalAlignment {
+        switch self {
+        case .leading:
+            return .firstTextBaseline
+        case .top:
+            return .top
+        case .center:
+            return .center
+        case .bottom:
+            return .bottom
+        case .trailing:
+            return .lastTextBaseline
+        }
     }
 }
 
-struct DynamicVStack: View {
-    let content: () -> AnyView
+struct DynamicStack<Content>: View where Content: View {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
-    init(content: @escaping () -> AnyView) {
+    let content: () -> Content
+    let alignment: DynamicStackAlignment?
+    let spacing: CGFloat?
+
+    init(alignment: DynamicStackAlignment? = nil, spacing: CGFloat? = nil, @ViewBuilder content: @escaping () -> Content) {
         self.content = content
+        self.alignment = alignment
+        self.spacing = spacing
     }
 
     var body: some View {
-        #if os(iOS)
-            HStack {
+        if horizontalSizeClass == .compact {
+            VStack(alignment: alignment?.horizntalAlignment ?? .center, spacing: spacing) {
                 content()
             }
-        #else
-            VStack {
+        } else {
+            HStack(alignment: alignment?.verticalAlignment ?? .center, spacing: spacing) {
                 content()
             }
-        #endif
+        }
     }
 }

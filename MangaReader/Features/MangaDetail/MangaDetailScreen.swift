@@ -9,6 +9,8 @@ class MangaDetailScreenViewModel: ObservableObject {
 
 @MainActor
 struct MangaDetailScreen: View {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    
     @State private var animate = false
     @ObservedObject var manga: MangaViewModel
 
@@ -35,16 +37,17 @@ struct MangaDetailScreen: View {
     private var headerSection: some View {
         Group {
             Text(manga.title)
-                .font(.largeTitle)
+                .font(horizontalSizeClass == .compact ? .body : .largeTitle)
                 .bold()
+            
 
             if let titles = manga.mdTitles {
-                Text(titles.joined(separator: " | "))
+                Text(titles.joined(separator: horizontalSizeClass == .compact ? "\n" : " | "))
                     .multilineTextAlignment(.leading)
-                    .font(.title2)
+                    .font(horizontalSizeClass == .compact ? .body : .title2)
             }
         }
-        .shadow(color: Color.black, radius: 5)
+        .foregroundStyle(manga.isLightCoverColor ? .black : .white)
     }
 
     private var coverSection: some View {
@@ -67,10 +70,10 @@ struct MangaDetailScreen: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                VStack {
+                VStack(spacing: 16) {
                     headerSection
 
-                    DynamicHStack {
+                    DynamicStack(spacing: 8) {
                         coverSection
                         
                         if !manga.prominentColors.isEmpty, manga.avrageCoverColor != nil {
@@ -101,7 +104,6 @@ struct MangaDetailScreen: View {
                     .ignoresSafeArea()
             }
             .frame(width: geometry.size.width)
-            .navigationTitle(manga.title)
         }
     }
 
