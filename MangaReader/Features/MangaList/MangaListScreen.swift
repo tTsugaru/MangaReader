@@ -3,6 +3,8 @@ import SwiftUI
 struct MangaListScreen: View {
     @ObservedObject var viewModel: MangaListViewModel
     @Binding var path: NavigationPath
+    
+    var showMangaDetailScreen: ((MangaViewModel) -> Void)?
 
     #if os(iOS)
         @State private var columns = [GridItem(), GridItem()]
@@ -14,49 +16,48 @@ struct MangaListScreen: View {
 
     @ViewBuilder
     var body: some View {
-        NavigationStack(path: $path.animation(.none)) {
-            ScrollView {
-                ZStack {
-                    LazyVGrid(columns: columns, alignment: .center) {
-                        ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
-                            MangaListView(manga: manga)
-                                .onTapGesture {
-                                    path.append(manga)
+        ScrollView {
+            ZStack {
+                LazyVGrid(columns: columns, alignment: .center) {
+                    ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
+                        MangaListView(manga: manga)
+                            .onTapGesture {
+                                showMangaDetailScreen?(manga)
+                                path.append(manga)
+                            }
+                            .onAppear {
+                                let bufferSize = Int(columnCount)
+                                guard (viewModel.mangas.count - bufferSize) == index else { return }
+                                Task.detached(priority: .background) {
+                                    await viewModel.loadNextPage(with: bufferSize * 10)
                                 }
-                                .onAppear {
-                                    let bufferSize = Int(columnCount)
-                                    guard (viewModel.mangas.count - bufferSize) == index else { return }
-                                    Task.detached(priority: .background) {
-                                        await viewModel.loadNextPage(with: bufferSize * 10)
-                                    }
-                                }
-                                .scrollTransition(.animated(.bouncy).threshold(.visible(0.3))) { content, phase in
-                                    content
-                                        .opacity(phase.isIdentity ? 1 : 0.2)
-                                        .scaleEffect(phase.isIdentity ? 1 : 0.85)
-                                        .blur(radius: phase.isIdentity ? 0 : 10)
-                                }
-                        }
+                            }
+                            .scrollTransition(.animated(.bouncy).threshold(.visible(0.3))) { content, phase in
+                                content
+                                    .opacity(phase.isIdentity ? 1 : 0.2)
+                                    .scaleEffect(phase.isIdentity ? 1 : 0.85)
+                                    .blur(radius: phase.isIdentity ? 0 : 10)
+                            }
                     }
                 }
-                .padding(.horizontal, 16)
+            }
+            .padding(.horizontal, 16)
 
-                if viewModel.isLoading {
-                    ProgressView()
-                }
+            if viewModel.isLoading {
+                ProgressView()
             }
-            .scrollIndicators(.hidden)
-            .navigationDestination(for: MangaViewModel.self) { manga in
-                MangaDetailScreen(manga: manga)
-            }
-            .background(Color("background", bundle: Bundle.main))
-            .task {
-                await viewModel.getAllMangas()
-            }
-            .onChange(of: columnCount) { _, newColumnCount in
-                handleChangeOfColumnCount(newColumnCount: newColumnCount)
-            }
-            .toolbar { Spacer() }
+        }
+        .scrollIndicators(.hidden)
+        .background(Color("background", bundle: Bundle.main))
+        .task {
+            await viewModel.getAllMangas()
+        }
+        .onChange(of: columnCount) { _, newColumnCount in
+            handleChangeOfColumnCount(newColumnCount: newColumnCount)
+        }
+        .toolbar { Spacer() }
+        .navigationDestination(for: MangaViewModel.self) { manga in
+            MangaDetailScreen(manga: manga)
         }
     }
 
@@ -76,5 +77,7 @@ struct MangaListScreen: View {
 }
 
 #Preview {
-    MangaListScreen(viewModel: MangaListViewModel(), path: .constant(NavigationPath()))
+    MangaListScreen(viewModel: MangaListViewModel(), path: .constant(NavigationPath())) { _ in
+        
+    }
 }

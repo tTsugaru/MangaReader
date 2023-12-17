@@ -3,31 +3,21 @@ import Kingfisher
 import SwiftUI
 
 @MainActor
-class MangaDetailScreenViewModel: ObservableObject {
-    @Published var isLoading: Bool = false
-    @Published var mangaDetail: MangaDetail?
-    
-    func getMangaDetail(slug: String) async {
-        do {
-            isLoading = true
-            let mangaDetail = try await Networking.shared.getMangaDetails(slug: slug)
-            self.mangaDetail = mangaDetail
-            isLoading = false
-        } catch {
-            print(error)
-        }
-        
-    }
-}
-
-@MainActor
 struct MangaDetailScreen: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @StateObject var viewModel = MangaDetailScreenViewModel()
-    
+
     @State private var animate = false
     @ObservedObject var manga: MangaViewModel
+
+    var dismiss: (() -> Void)? = nil
+    @State var isDismissing = false
+
+    init(manga: MangaViewModel, dismiss: (() -> Void)? = nil) {
+        self.manga = manga
+        self.dismiss = dismiss
+    }
 
     private var coverImage: some View {
         KFImage(manga.imageDownloadURL)
@@ -38,8 +28,7 @@ struct MangaDetailScreen: View {
                 print(error)
             }
             .placeholder {
-                Color.black
-                    .frame(width: 500)
+                ProgressView()
             }
             .resizable()
             .scaledToFit()
@@ -70,10 +59,21 @@ struct MangaDetailScreen: View {
         }
     }
 
+    #warning("Move logic into MangaDetailViewModel")
     private var contentSection: some View {
-        VStack(alignment: .leading) {
-            if let description = manga.desc {
-                Text(description)
+        VStack(alignment: .leading, spacing: 8) {
+            if let description = viewModel.mangaDetail?.comic.description {
+                ForEach(description.trimmingCharacters(in: .whitespacesAndNewlines).split(whereSeparator: { $0.isNewline }), id: \.count) { line in
+                    if line.contains("http") {
+                        Text(.init(String(line)))
+                            .font(.body)
+                            .underline()
+                            .tint(manga.isLightCoverColor ? .black : .white)
+                    } else {
+                        Text(.init(String(line)))
+                            .font(.body)
+                    }
+                }
             }
 
             Spacer()
@@ -108,20 +108,42 @@ struct MangaDetailScreen: View {
                 .frame(minHeight: geometry.size.height)
                 .padding(.horizontal, 16)
             }
+            .overlay {
+                if let dismiss {
+                    VStack {
+                        HStack {
+                            Image(systemName: "chevron.left")
+                                .imageScale(.large)
+                                .onTapGesture {
+                                    isDismissing = true
+                                    dismiss()
+                                }
+                                .padding(16)
+                                .contentShape(Rectangle())
+
+                            Spacer()
+                        }
+                        Spacer()
+                    }
+                    .ignoresSafeArea()
+                }
+            }
             .foregroundStyle(manga.isLightCoverColor ? .black : .white)
             .background {
                 FloatingCloudsView(colors: manga.prominentColors)
+                    .animation(.easeIn, value: isDismissing == false)
             }
             .background {
                 manga.avrageCoverColor
                     .ignoresSafeArea()
+                    .animation(.easeIn, value: isDismissing == false)
             }
             .background {
                 Color("background", bundle: Bundle.main)
                     .ignoresSafeArea()
             }
             .frame(width: geometry.size.width)
-            .task {
+            .task(priority: .background) {
                 await viewModel.getMangaDetail(slug: manga.slug)
             }
         }

@@ -30,6 +30,7 @@
 		3B8AA75A2A7DA25D0051E61C /* Cover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA7592A7DA25D0051E61C /* Cover.swift */; };
 		3B8AA75C2A7DA26A0051E61C /* MUComics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA75B2A7DA26A0051E61C /* MUComics.swift */; };
 		3B8AA75E2A7DB3930051E61C /* MangaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA75D2A7DB3930051E61C /* MangaViewModel.swift */; };
+		3B9070D72B2F7D3200B88E41 /* MangaDetailScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9070D62B2F7D3200B88E41 /* MangaDetailScreenViewModel.swift */; };
 		3B91340C2A7EBACA00A2CBA7 /* MangaListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B91340B2A7EBACA00A2CBA7 /* MangaListView.swift */; };
 		3BB2386F2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB2386E2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift */; };
 		3BB238712B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB238702B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift */; };
@@ -71,6 +72,7 @@
 		3B8AA7592A7DA25D0051E61C /* Cover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cover.swift; sourceTree = "<group>"; };
 		3B8AA75B2A7DA26A0051E61C /* MUComics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUComics.swift; sourceTree = "<group>"; };
 		3B8AA75D2A7DB3930051E61C /* MangaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaViewModel.swift; sourceTree = "<group>"; };
+		3B9070D62B2F7D3200B88E41 /* MangaDetailScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaDetailScreenViewModel.swift; sourceTree = "<group>"; };
 		3B91340B2A7EBACA00A2CBA7 /* MangaListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaListView.swift; sourceTree = "<group>"; };
 		3BB2386E2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KFCrossPlatformImage+AverageColor.swift"; sourceTree = "<group>"; };
 		3BB238702B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KFCrossPlatformImage+ProminentColors.swift"; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				3B333B452A80BF4100368534 /* MangaDetailScreen.swift */,
+				3B9070D62B2F7D3200B88E41 /* MangaDetailScreenViewModel.swift */,
 			);
 			path = MangaDetail;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 				3B8AA75C2A7DA26A0051E61C /* MUComics.swift in Sources */,
 				3B333B392A80BD6F00368534 /* Demographic.swift in Sources */,
 				3BD8F02A2A7D6E0000A84F8E /* MangaReaderApp.swift in Sources */,
+				3B9070D72B2F7D3200B88E41 /* MangaDetailScreenViewModel.swift in Sources */,
 				3BB238712B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift in Sources */,
 				3BB238792B2E5B4100A00F2E /* Comic.swift in Sources */,
 				3B333B412A80BE2800368534 /* SearchSortType.swift in Sources */,
@@ -399,8 +403,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -455,8 +460,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
