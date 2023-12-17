@@ -9,7 +9,7 @@ struct ContentView: View {
     var body: some View {
         #if os(iOS)
             TabView {
-                MangaListScreen(viewModel: listViewModel)
+                MangaListScreen(viewModel: listViewModel, path: $path)
                     .tabItem {
                         Label("Mangas", systemImage: "books.vertical")
                     }
@@ -28,7 +28,6 @@ struct ContentView: View {
                         Label("Mangas", systemImage: "books.vertical")
                     }
                 }
-
             } detail: {
                 MangaListScreen(viewModel: listViewModel, path: $path)
             }

@@ -2,7 +2,7 @@ import Kingfisher
 import SwiftUI
 
 @MainActor
-struct CoverImageView: View {
+struct MangaListView: View {
     @State private var isHovering = false
 
     private var animationSpeed: CGFloat = 0.2
@@ -44,6 +44,11 @@ struct CoverImageView: View {
                         }
                     }
             }
+            
+            .animation(.bouncy(duration: animationSpeed, extraBounce: 0.3)) { content in
+                content
+                    .scaleEffect(isHovering ? 1.1 : 1)
+            }
             .overlay {
                 VStack {
                     Spacer()
@@ -53,14 +58,11 @@ struct CoverImageView: View {
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
-            .animation(.bouncy(duration: animationSpeed, extraBounce: 0.3)) { content in
-                content
-                    .scaleEffect(isHovering ? 1.1 : 1)
-            }
             .onHover { isHovering in
                 withAnimation(.easeInOut(duration: animationSpeed)) {
                     self.isHovering = isHovering
                 }
             }
+            
     }
 }

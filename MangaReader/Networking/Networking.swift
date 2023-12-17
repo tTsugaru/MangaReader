@@ -5,10 +5,6 @@ class Networking {
     public static let shared = Networking()
     private init() {}
 
-    func getAllMangas() async throws -> [Manga] {
-        try await API.search.request()
-    }
-
     // TODO: Try to simplify
     func search(with genres: [String] = [],
                 excludes: [String] = [],
@@ -85,5 +81,13 @@ class Networking {
         }
 
         return try await API.search.request(param: params)
+    }
+    
+    func getMangaDetails(slug: String) async throws -> MangaDetail {
+        var params = [String: [String]]()
+        
+        params["tachiyomi"] = ["true"]
+        
+        return try await API.manga.request(path: slug, param: params)
     }
 }

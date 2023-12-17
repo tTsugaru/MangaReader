@@ -25,5 +25,209 @@
             stopOnStyle = "0">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FDEF0FF8-59AE-4A9A-AD1A-91C2611DCADB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MangaReader/Networking/API.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "17"
+            endingLineNumber = "17"
+            landmarkName = "request(path:param:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "FDEF0FF8-59AE-4A9A-AD1A-91C2611DCADB - 812c406a9d155d4f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for MangaReader.API.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.Optional&lt;Swift.String&gt;, param: Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Swift.Array&lt;Swift.String&gt;&gt;&gt;) async throws -&gt; Swift.Array&lt;&#x3c4;_0_0&gt;"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/API.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "17"
+                  endingLineNumber = "17"
+                  offsetFromSymbolStart = "276">
+               </Location>
+               <Location
+                  uuid = "FDEF0FF8-59AE-4A9A-AD1A-91C2611DCADB - c18ab880035833cc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for MangaReader.API.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.Optional&lt;Swift.String&gt;, param: Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Swift.Array&lt;Swift.String&gt;&gt;&gt;) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/API.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "17"
+                  endingLineNumber = "17"
+                  offsetFromSymbolStart = "284">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EC5B1F7C-D79C-45FF-896B-A91599357005"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MangaReader/Networking/Networking.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "search(with:excludes:type:tags:demographic:page:limit:time:country:minChapterCount:fromYear:toYear:status:tachiyomi:completed:sort:excludeMyList:searchString:showAltTitle:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "EC5B1F7C-D79C-45FF-896B-A91599357005 - b950b245b2909650"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for MangaReader.Networking.search(with: Swift.Array&lt;Swift.String&gt;, excludes: Swift.Array&lt;Swift.String&gt;, type: MangaReader.SearchType, tags: Swift.Array&lt;Swift.String&gt;, demographic: Swift.Array&lt;Swift.Int&gt;, page: Swift.Int, limit: Swift.Int, time: Swift.Optional&lt;Swift.Int&gt;, country: Swift.Optional&lt;Swift.Array&lt;Swift.String&gt;&gt;, minChapterCount: Swift.Optional&lt;Swift.Int&gt;, fromYear: Swift.Optional&lt;Swift.Int&gt;, toYear: Swift.Optional&lt;Swift.Int&gt;, status: Swift.Optional&lt;MangaReader.MangaStatus&gt;, tachiyomi: Swift.Bool, completed: Swift.Optional&lt;Swift.Bool&gt;, sort: Swift.Optional&lt;MangaReader.SearchSortType&gt;, excludeMyList: Swift.Optional&lt;Swift.Bool&gt;, searchString: Swift.String, showAltTitle: Swift.Optional&lt;Swift.Bool&gt;) async throws -&gt; Swift.Array&lt;MangaReader.Manga&gt;"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Networking.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "80"
+                  endingLineNumber = "80"
+                  offsetFromSymbolStart = "5808">
+               </Location>
+               <Location
+                  uuid = "EC5B1F7C-D79C-45FF-896B-A91599357005 - b950b245b2909650"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for MangaReader.Networking.search(with: Swift.Array&lt;Swift.String&gt;, excludes: Swift.Array&lt;Swift.String&gt;, type: MangaReader.SearchType, tags: Swift.Array&lt;Swift.String&gt;, demographic: Swift.Array&lt;Swift.Int&gt;, page: Swift.Int, limit: Swift.Int, time: Swift.Optional&lt;Swift.Int&gt;, country: Swift.Optional&lt;Swift.Array&lt;Swift.String&gt;&gt;, minChapterCount: Swift.Optional&lt;Swift.Int&gt;, fromYear: Swift.Optional&lt;Swift.Int&gt;, toYear: Swift.Optional&lt;Swift.Int&gt;, status: Swift.Optional&lt;MangaReader.MangaStatus&gt;, tachiyomi: Swift.Bool, completed: Swift.Optional&lt;Swift.Bool&gt;, sort: Swift.Optional&lt;MangaReader.SearchSortType&gt;, excludeMyList: Swift.Optional&lt;Swift.Bool&gt;, searchString: Swift.String, showAltTitle: Swift.Optional&lt;Swift.Bool&gt;) async throws -&gt; Swift.Array&lt;MangaReader.Manga&gt;"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Networking.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "80"
+                  endingLineNumber = "80"
+                  offsetFromSymbolStart = "6348">
+               </Location>
+               <Location
+                  uuid = "EC5B1F7C-D79C-45FF-896B-A91599357005 - 4738a8ef48eadf60"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for MangaReader.Networking.search(with: Swift.Array&lt;Swift.String&gt;, excludes: Swift.Array&lt;Swift.String&gt;, type: MangaReader.SearchType, tags: Swift.Array&lt;Swift.String&gt;, demographic: Swift.Array&lt;Swift.Int&gt;, page: Swift.Int, limit: Swift.Int, time: Swift.Optional&lt;Swift.Int&gt;, country: Swift.Optional&lt;Swift.Array&lt;Swift.String&gt;&gt;, minChapterCount: Swift.Optional&lt;Swift.Int&gt;, fromYear: Swift.Optional&lt;Swift.Int&gt;, toYear: Swift.Optional&lt;Swift.Int&gt;, status: Swift.Optional&lt;MangaReader.MangaStatus&gt;, tachiyomi: Swift.Bool, completed: Swift.Optional&lt;Swift.Bool&gt;, sort: Swift.Optional&lt;MangaReader.SearchSortType&gt;, excludeMyList: Swift.Optional&lt;Swift.Bool&gt;, searchString: Swift.String, showAltTitle: Swift.Optional&lt;Swift.Bool&gt;) async throws -&gt; Swift.Array&lt;MangaReader.Manga&gt;"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Networking.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "80"
+                  endingLineNumber = "80"
+                  offsetFromSymbolStart = "40">
+               </Location>
+               <Location
+                  uuid = "EC5B1F7C-D79C-45FF-896B-A91599357005 - d4bfd9a13769da52"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for MangaReader.Networking.search(with: Swift.Array&lt;Swift.String&gt;, excludes: Swift.Array&lt;Swift.String&gt;, type: MangaReader.SearchType, tags: Swift.Array&lt;Swift.String&gt;, demographic: Swift.Array&lt;Swift.Int&gt;, page: Swift.Int, limit: Swift.Int, time: Swift.Optional&lt;Swift.Int&gt;, country: Swift.Optional&lt;Swift.Array&lt;Swift.String&gt;&gt;, minChapterCount: Swift.Optional&lt;Swift.Int&gt;, fromYear: Swift.Optional&lt;Swift.Int&gt;, toYear: Swift.Optional&lt;Swift.Int&gt;, status: Swift.Optional&lt;MangaReader.MangaStatus&gt;, tachiyomi: Swift.Bool, completed: Swift.Optional&lt;Swift.Bool&gt;, sort: Swift.Optional&lt;MangaReader.SearchSortType&gt;, excludeMyList: Swift.Optional&lt;Swift.Bool&gt;, searchString: Swift.String, showAltTitle: Swift.Optional&lt;Swift.Bool&gt;) async throws -&gt; Swift.Array&lt;MangaReader.Manga&gt;"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Networking.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "80"
+                  endingLineNumber = "80"
+                  offsetFromSymbolStart = "180">
+               </Location>
+               <Location
+                  uuid = "EC5B1F7C-D79C-45FF-896B-A91599357005 - a79d3d8ee033bc55"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(6) suspend resume partial function for MangaReader.Networking.search(with: Swift.Array&lt;Swift.String&gt;, excludes: Swift.Array&lt;Swift.String&gt;, type: MangaReader.SearchType, tags: Swift.Array&lt;Swift.String&gt;, demographic: Swift.Array&lt;Swift.Int&gt;, page: Swift.Int, limit: Swift.Int, time: Swift.Optional&lt;Swift.Int&gt;, country: Swift.Optional&lt;Swift.Array&lt;Swift.String&gt;&gt;, minChapterCount: Swift.Optional&lt;Swift.Int&gt;, fromYear: Swift.Optional&lt;Swift.Int&gt;, toYear: Swift.Optional&lt;Swift.Int&gt;, status: Swift.Optional&lt;MangaReader.MangaStatus&gt;, tachiyomi: Swift.Bool, completed: Swift.Optional&lt;Swift.Bool&gt;, sort: Swift.Optional&lt;MangaReader.SearchSortType&gt;, excludeMyList: Swift.Optional&lt;Swift.Bool&gt;, searchString: Swift.String, showAltTitle: Swift.Optional&lt;Swift.Bool&gt;) async throws -&gt; Swift.Array&lt;MangaReader.Manga&gt;"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Networking.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "80"
+                  endingLineNumber = "80"
+                  offsetFromSymbolStart = "180">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "51709A44-BAAA-45EF-8E97-A7E7D97DA084"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MangaReader/Features/MangaDetail/MangaDetailScreen.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "coverImage"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "51709A44-BAAA-45EF-8E97-A7E7D97DA084 - 8b1ae1e8210bb2e8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.frame(width: Swift.Optional&lt;CoreGraphics.CGFloat&gt;, height: Swift.Optional&lt;CoreGraphics.CGFloat&gt;, alignment: SwiftUI.Alignment) -&gt; some&gt;&gt;.0 in MangaReader.MangaDetailScreen.coverImage.getter : some"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Features/MangaDetail/MangaDetailScreen.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "51709A44-BAAA-45EF-8E97-A7E7D97DA084 - 56bbdc2a630e7211"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Kingfisher.KingfisherError) -&gt; () in MangaReader.MangaDetailScreen.coverImage.getter : some"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Features/MangaDetail/MangaDetailScreen.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25"
+                  offsetFromSymbolStart = "64">
+               </Location>
+               <Location
+                  uuid = "51709A44-BAAA-45EF-8E97-A7E7D97DA084 - 49bb8bc22ca7d6a8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MangaReader.MangaDetailScreen.coverImage.getter : some"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Features/MangaDetail/MangaDetailScreen.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25"
+                  offsetFromSymbolStart = "1008">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

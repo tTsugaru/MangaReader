@@ -16,25 +16,27 @@ struct MangaListScreen: View {
     var body: some View {
         NavigationStack(path: $path.animation(.none)) {
             ScrollView {
-                LazyVGrid(columns: columns, alignment: .center) {
-                    ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
-                        CoverImageView(manga: manga)
-                            .onTapGesture {
-                                path.append(manga)
-                            }
-                            .onAppear {
-                                let bufferSize = Int(columnCount)
-                                guard (viewModel.mangas.count - bufferSize) == index else { return }
-                                Task.detached(priority: .background) {
-                                    await viewModel.loadNextPage(with: bufferSize * 10)
+                ZStack {
+                    LazyVGrid(columns: columns, alignment: .center) {
+                        ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
+                            MangaListView(manga: manga)
+                                .onTapGesture {
+                                    path.append(manga)
                                 }
-                            }
-                            .scrollTransition(.animated(.bouncy).threshold(.visible(0.3))) { content, phase in
-                                content
-                                    .opacity(phase.isIdentity ? 1 : 0.2)
-                                    .scaleEffect(phase.isIdentity ? 1 : 0.85)
-                                    .blur(radius: phase.isIdentity ? 0 : 10)
-                            }
+                                .onAppear {
+                                    let bufferSize = Int(columnCount)
+                                    guard (viewModel.mangas.count - bufferSize) == index else { return }
+                                    Task.detached(priority: .background) {
+                                        await viewModel.loadNextPage(with: bufferSize * 10)
+                                    }
+                                }
+                                .scrollTransition(.animated(.bouncy).threshold(.visible(0.3))) { content, phase in
+                                    content
+                                        .opacity(phase.isIdentity ? 1 : 0.2)
+                                        .scaleEffect(phase.isIdentity ? 1 : 0.85)
+                                        .blur(radius: phase.isIdentity ? 0 : 10)
+                                }
+                        }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -43,6 +45,7 @@ struct MangaListScreen: View {
                     ProgressView()
                 }
             }
+            .scrollIndicators(.hidden)
             .navigationDestination(for: MangaViewModel.self) { manga in
                 MangaDetailScreen(manga: manga)
             }
