@@ -79,6 +79,25 @@ struct MangaDetailScreen: View {
             Spacer()
         }
     }
+    
+    private var closeButton: some View {
+        VStack {
+            HStack {
+                Image(systemName: "chevron.left")
+                    .imageScale(.large)
+                    .onTapGesture {
+                        isDismissing = true
+                        dismiss?()
+                    }
+                    .padding(16)
+                    .contentShape(Rectangle())
+                
+                Spacer()
+            }
+            Spacer()
+        }
+        .ignoresSafeArea()
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -108,26 +127,6 @@ struct MangaDetailScreen: View {
                 .frame(minHeight: geometry.size.height)
                 .padding(.horizontal, 16)
             }
-            .overlay {
-                if let dismiss {
-                    VStack {
-                        HStack {
-                            Image(systemName: "chevron.left")
-                                .imageScale(.large)
-                                .onTapGesture {
-                                    isDismissing = true
-                                    dismiss()
-                                }
-                                .padding(16)
-                                .contentShape(Rectangle())
-
-                            Spacer()
-                        }
-                        Spacer()
-                    }
-                    .ignoresSafeArea()
-                }
-            }
             .foregroundStyle(manga.isLightCoverColor ? .black : .white)
             .background {
                 FloatingCloudsView(colors: manga.prominentColors)
@@ -145,6 +144,12 @@ struct MangaDetailScreen: View {
             .frame(width: geometry.size.width)
             .task(priority: .background) {
                 await viewModel.getMangaDetail(slug: manga.slug)
+            }
+            // Navigation for macOS
+            .overlay {
+                if dismiss != nil {
+                    closeButton
+                }
             }
         }
     }

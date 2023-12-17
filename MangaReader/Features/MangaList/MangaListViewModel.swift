@@ -7,6 +7,8 @@ class MangaListViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var currentPageLoaded = 1
     
+    @Published var oldSelectedManga: MangaViewModel?
+    
     func getAllMangas() async {
         guard mangas.isEmpty else { return }
         
