@@ -143,7 +143,9 @@ struct MangaDetailScreen: View {
             }
             .frame(width: geometry.size.width)
             .task(priority: .background) {
-                await viewModel.getMangaDetail(slug: manga.slug)
+                if viewModel.mangaDetail == nil {
+                    await viewModel.getMangaDetail(slug: manga.slug)
+                }
             }
             // Navigation for macOS
             .overlay {

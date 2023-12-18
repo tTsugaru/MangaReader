@@ -15,8 +15,8 @@ struct Comic: Codable {
     let followRank: Int?
     let commentCount: Int
     let followCount: Int
-    let description: String
-    let parsedDescription: String
+    let description: String?
+    let parsedDescription: String?
     let slug: String
     let mismatch: String?
     let year: Int

@@ -37,7 +37,7 @@ struct MangaListScreen: View {
                                     let bufferSize = Int(columnCount)
                                     guard (viewModel.mangas.count - bufferSize) == index else { return }
                                     Task.detached(priority: .background) {
-                                        await viewModel.loadNextPage(with: bufferSize * 10)
+                                        await viewModel.loadNextPage(with: 50)
                                     }
                                 }
                                 .scrollTransition(.animated(.bouncy).threshold(.visible(0.3))) { content, phase in

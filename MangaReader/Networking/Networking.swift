@@ -12,7 +12,7 @@ class Networking {
                 tags: [String] = [],
                 demographic: [Int] = [],
                 page: Int = 1,
-                limit: Int = 30,
+                limit: Int = 50,
                 time: Int? = nil,
                 country: [String]? = nil,
                 minChapterCount: Int? = nil,

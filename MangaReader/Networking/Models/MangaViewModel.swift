@@ -81,7 +81,7 @@ class MangaViewModel: ObservableObject {
         model.userFollowCount
     }
 
-    var year: Int {
+    var year: Int? {
         model.year
     }
 

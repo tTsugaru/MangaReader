@@ -19,7 +19,7 @@ struct Manga: Codable {
     let genres: [Int]
     let createdAt: String?
     let userFollowCount: Int?
-    let year: Int
+    let year: Int?
     let mdTitles: [MDTitle]?
     let mdCovers: [Cover]?
     let muComics: MUComics?
