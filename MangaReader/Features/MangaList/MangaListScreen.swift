@@ -1,18 +1,19 @@
 import SwiftUI
 
 struct MangaListScreen: View {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @ObservedObject var viewModel: MangaListViewModel
     @Binding var path: NavigationPath
-    
+
     var showMangaDetailScreen: ((MangaViewModel) -> Void)?
-
-    #if os(iOS)
-        @State private var columns = [GridItem(), GridItem()]
-    #elseif os(macOS)
-        @State private var columns = [GridItem(), GridItem(), GridItem(), GridItem()]
-    #endif
-
+    
     @State private var columnCount: CGFloat = 4
+    
+    private var columns: [GridItem] {
+        let compactGrid = [GridItem(), GridItem()]
+        let largeGrid = [GridItem(), GridItem(), GridItem(), GridItem()]
+        return horizontalSizeClass == .compact ? compactGrid : largeGrid
+    }
 
     @ViewBuilder
     var body: some View {
@@ -23,13 +24,15 @@ struct MangaListScreen: View {
                         ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
                             MangaListView(manga: manga)
                                 .id(manga.slug)
+                                .onHover { isHovering in
+                                    guard isHovering else { return }
+                                    // TODO:  Find better solution for state management when view was changed in SplitView
+                                    viewModel.oldSelectedManga = manga
+                                }
                                 .onTapGesture {
                                     // Navigation for macOS
-                                    if let showMangaDetailScreen {
-                                        viewModel.oldSelectedManga = manga
-                                        showMangaDetailScreen(manga)
-                                    }
-                                    
+                                    showMangaDetailScreen?(manga)
+
                                     // Navigation for iOS
                                     path.append(manga)
                                 }
@@ -50,7 +53,7 @@ struct MangaListScreen: View {
                     }
                 }
                 .padding(.horizontal, 16)
-                
+
                 if viewModel.isLoading {
                     ProgressView()
                 }
@@ -73,16 +76,17 @@ struct MangaListScreen: View {
         }
     }
 
+    // TODO: Fix column change by user
     private func handleChangeOfColumnCount(newColumnCount: CGFloat) {
         let newColumnCount = Int(newColumnCount)
 
         if newColumnCount < columns.count {
             while newColumnCount < columns.count {
-                columns.remove(at: 0)
+//                columns.remove(at: 0)
             }
         } else {
             while newColumnCount > columns.count {
-                columns.append(GridItem())
+//                columns.append(GridItem())
             }
         }
     }
@@ -90,6 +94,5 @@ struct MangaListScreen: View {
 
 #Preview {
     MangaListScreen(viewModel: MangaListViewModel(), path: .constant(NavigationPath())) { _ in
-        
     }
 }

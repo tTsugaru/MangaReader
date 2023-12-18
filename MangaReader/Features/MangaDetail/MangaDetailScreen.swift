@@ -49,12 +49,29 @@ struct MangaDetailScreen: View {
                     .multilineTextAlignment(.leading)
                     .font(horizontalSizeClass == .compact ? .body : .title2)
             }
+
+            HStack {
+                if let year = manga.year {
+                    Text("Year: ") + Text(String(year))
+                }
+                
+                if let authors = viewModel.mangaDetail?.authors, !authors.isEmpty {
+                    Text("Authors: ") + Text(authors.map { $0.name }.joined(separator: ", "))
+                }
+            }
+            .font(horizontalSizeClass == .compact ? .body : .title2)
         }
     }
 
     private var coverSection: some View {
         VStack {
             coverImage
+            if let artists = viewModel.mangaDetail?.artists.compactMap({ $0.name }), !artists.isEmpty {
+                HStack {
+                    Text("Artists: ") + Text(artists.joined(separator: ", "))
+                }
+                .font(horizontalSizeClass == .compact ? .body : .title2)
+            }
             Spacer()
         }
     }
@@ -63,7 +80,7 @@ struct MangaDetailScreen: View {
     private var contentSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             if let description = viewModel.mangaDetail?.comic.description {
-                ForEach(description.trimmingCharacters(in: .whitespacesAndNewlines).split(whereSeparator: { $0.isNewline }), id: \.count) { line in
+                ForEach(Array(description.trimmingCharacters(in: .whitespacesAndNewlines).split(whereSeparator: { $0.isNewline }).enumerated()), id: \.offset) { _, line in
                     if line.contains("http") {
                         Text(.init(String(line)))
                             .font(.body)
@@ -75,11 +92,15 @@ struct MangaDetailScreen: View {
                     }
                 }
             }
-
+            
+            ForEach(viewModel.chapterItems) { chapterItem in
+                ChapterItemView(chapterItem: chapterItem)
+            }
+            
             Spacer()
         }
     }
-    
+
     private var closeButton: some View {
         VStack {
             HStack {
@@ -91,7 +112,7 @@ struct MangaDetailScreen: View {
                     }
                     .padding(16)
                     .contentShape(Rectangle())
-                
+
                 Spacer()
             }
             Spacer()

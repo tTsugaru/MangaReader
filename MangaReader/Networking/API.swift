@@ -10,7 +10,7 @@ enum API: String {
         return URL(string: baseURL + rawValue)!
     }
 
-    func request<T: Decodable>(path: String? = nil, param: [String: [String]]? = nil, cachePolicy: URLRequest.CachePolicy = .returnCacheDataElseLoad) async throws -> T {
+    func request<T: Decodable>(path: String? = nil, param: [String: [String]]? = nil, cachePolicy: URLRequest.CachePolicy = .reloadRevalidatingCacheData) async throws -> T {
         var editedURL = url
 
         if let path {

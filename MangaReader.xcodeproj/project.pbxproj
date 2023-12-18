@@ -31,6 +31,8 @@
 		3B8AA75C2A7DA26A0051E61C /* MUComics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA75B2A7DA26A0051E61C /* MUComics.swift */; };
 		3B8AA75E2A7DB3930051E61C /* MangaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA75D2A7DB3930051E61C /* MangaViewModel.swift */; };
 		3B9070D72B2F7D3200B88E41 /* MangaDetailScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9070D62B2F7D3200B88E41 /* MangaDetailScreenViewModel.swift */; };
+		3B9070D92B303E4900B88E41 /* ChapterItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9070D82B303E4900B88E41 /* ChapterItemView.swift */; };
+		3B9070DE2B30562900B88E41 /* ChapterListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9070DD2B30562900B88E41 /* ChapterListItem.swift */; };
 		3B91340C2A7EBACA00A2CBA7 /* MangaListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B91340B2A7EBACA00A2CBA7 /* MangaListView.swift */; };
 		3BB2386F2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB2386E2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift */; };
 		3BB238712B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB238702B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift */; };
@@ -73,6 +75,8 @@
 		3B8AA75B2A7DA26A0051E61C /* MUComics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUComics.swift; sourceTree = "<group>"; };
 		3B8AA75D2A7DB3930051E61C /* MangaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaViewModel.swift; sourceTree = "<group>"; };
 		3B9070D62B2F7D3200B88E41 /* MangaDetailScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaDetailScreenViewModel.swift; sourceTree = "<group>"; };
+		3B9070D82B303E4900B88E41 /* ChapterItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterItemView.swift; sourceTree = "<group>"; };
+		3B9070DD2B30562900B88E41 /* ChapterListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterListItem.swift; sourceTree = "<group>"; };
 		3B91340B2A7EBACA00A2CBA7 /* MangaListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaListView.swift; sourceTree = "<group>"; };
 		3BB2386E2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KFCrossPlatformImage+AverageColor.swift"; sourceTree = "<group>"; };
 		3BB238702B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KFCrossPlatformImage+ProminentColors.swift"; sourceTree = "<group>"; };
@@ -126,6 +130,7 @@
 		3B8AA74B2A7D92DC0051E61C /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				3B9070DA2B303E4E00B88E41 /* ChapterList */,
 				3B333B442A80BF2F00368534 /* MangaDetail */,
 				3B8AA74C2A7D92E30051E61C /* MangaList */,
 			);
@@ -180,6 +185,15 @@
 				3B4790A92B2F57BE0044D09D /* RelateTo.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		3B9070DA2B303E4E00B88E41 /* ChapterList */ = {
+			isa = PBXGroup;
+			children = (
+				3B9070D82B303E4900B88E41 /* ChapterItemView.swift */,
+				3B9070DD2B30562900B88E41 /* ChapterListItem.swift */,
+			);
+			path = ChapterList;
 			sourceTree = "<group>";
 		};
 		3BB2386D2B2E3CB400A00F2E /* Extensions */ = {
@@ -313,6 +327,7 @@
 				3B333B372A80BD5F00368534 /* ContentRating.swift in Sources */,
 				3B8AA7562A7D984B0051E61C /* Manga.swift in Sources */,
 				3BB238772B2E5B2D00A00F2E /* FirstChapter.swift in Sources */,
+				3B9070DE2B30562900B88E41 /* ChapterListItem.swift in Sources */,
 				3B333B3B2A80BD7B00368534 /* MangaCover.swift in Sources */,
 				3BB2387B2B2E5B5600A00F2E /* Artist.swift in Sources */,
 				3BB2387D2B2E5B7C00A00F2E /* Author.swift in Sources */,
@@ -340,6 +355,7 @@
 				3B8AA75A2A7DA25D0051E61C /* Cover.swift in Sources */,
 				3BB2386F2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift in Sources */,
 				3BB2387F2B2E5B8C00A00F2E /* Links.swift in Sources */,
+				3B9070D92B303E4900B88E41 /* ChapterItemView.swift in Sources */,
 				3B8AA75E2A7DB3930051E61C /* MangaViewModel.swift in Sources */,
 				3B333B3F2A80BE1200368534 /* SearchType.swift in Sources */,
 				3B4790A22B2F3C260044D09D /* Color+Brightness.swift in Sources */,
