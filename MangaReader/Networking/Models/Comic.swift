@@ -7,7 +7,7 @@ struct Comic: Codable {
     let country: String
     let status: Int
     let links: Links?
-    let lastChapter: Int
+    let lastChapter: Double
     let chapterCount: Int
     let demographic: Int?
     let hentai: Bool

@@ -41,7 +41,7 @@ struct MangaListScreen: View {
                                 .onAppear {
                                     let bufferSize = Int(columnCount)
                                     guard (viewModel.mangas.count - bufferSize) == index else { return }
-                                    Task.detached(priority: .background) {
+                                    Task.detached(priority: .userInitiated) {
                                         await viewModel.loadNextPage(with: 50)
                                     }
                                 }

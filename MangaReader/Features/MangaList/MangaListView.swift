@@ -4,10 +4,11 @@ import SwiftUI
 @MainActor
 struct MangaListView: View {
     @State private var isHovering = false
-
+    @State private var fetchColorsTask: Task<(), Never>?
+    
     private var animationSpeed: CGFloat = 0.2
 
-    var manga: MangaViewModel
+    @ObservedObject var manga: MangaViewModel
 
     init(manga: MangaViewModel) {
         self.manga = manga
@@ -23,6 +24,10 @@ struct MangaListView: View {
     var body: some View {
         KFImage(manga.imageDownloadURL)
             .cacheOriginalImage()
+            .backgroundDecode()
+            .onSuccess { imageResult in
+                populateMangaColors(imageResult)
+            }
             .startLoadingBeforeViewAppear()
         #if os(iOS)
             .setProcessor(DownsamplingImageProcessor(size: CGSize(width: 180 * 2, height: 230 * 2)))
@@ -63,6 +68,31 @@ struct MangaListView: View {
                     self.isHovering = isHovering
                 }
             }
+            .onDisappear {
+                fetchColorsTask?.cancel()
+            }
+    }
+    
+    func populateMangaColors(_ result: RetrieveImageResult) {
+        guard manga.prominentColors.isEmpty, manga.avrageCoverColor == nil else { return }
+        
+        fetchColorsTask = Task.detached(priority: .userInitiated) {
+            let image = result.image
+            let resizedImage = image.resize(width: 50, height: 50)
             
+            guard let image = resizedImage else { return }
+            let prominentColors = image.prominentColors
+            let avrageCoverColor = image.avrageColor
+            
+            let innerTask = Task { @MainActor in
+                withAnimation(.easeInOut) {
+                    manga.prominentColors = prominentColors
+                    manga.avrageCoverColor = avrageCoverColor
+                }
+            }
+            
+            guard Task.isCancelled else { return }
+            innerTask.cancel()
+        }
     }
 }

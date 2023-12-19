@@ -1,6 +1,18 @@
 import SwiftData
 import SwiftUI
 
+struct CustomBackButton: View {
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    
+    var body: some View {
+        Button(action: {
+            self.presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+        }
+    }
+}
+
 enum SidebarItem: Int, Identifiable, CaseIterable {
     var id: Int { rawValue }
 

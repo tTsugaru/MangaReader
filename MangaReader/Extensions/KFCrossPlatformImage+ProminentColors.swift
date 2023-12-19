@@ -64,3 +64,36 @@ extension KFCrossPlatformImage {
         return colors
     }
 }
+extension KFCrossPlatformImage {
+    func resize(width: Int, height: Int) -> KFCrossPlatformImage? {
+        return self.resize(targetSize: CGSize(width: width, height: height))
+    }
+}
+
+#if os(macOS)
+extension NSImage {
+    func resize(targetSize: CGSize) -> NSImage? {
+        let resizedImage = NSImage(size: targetSize)
+        resizedImage.lockFocus()
+        
+        defer {
+            resizedImage.unlockFocus()
+        }
+        
+        guard let context = NSGraphicsContext.current else { return nil }
+        context.imageInterpolation = .high
+        self.draw(in: NSRect(origin: .zero, size: targetSize))
+        return resizedImage
+    }
+}
+
+#else
+extension UIImage {
+    func resize(targetSize: CGSize) -> UIImage? {
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        return renderer.image { (context) in
+            self.draw(in: CGRect(origin: .zero, size: targetSize))
+        }
+    }
+}
+#endif

@@ -8,12 +8,12 @@ struct MangaDetailScreen: View {
 
     @ObservedObject var manga: MangaViewModel
     var dismiss: (() -> Void)? = nil
-    
+
     @StateObject private var viewModel = MangaDetailScreenViewModel()
     @State private var animate = false
     @State private var isDismissing = false
     @State private var selectedChapter: ChapterListItem?
-    
+
     init(manga: MangaViewModel, dismiss: (() -> Void)? = nil) {
         self.manga = manga
         self.dismiss = dismiss
@@ -23,7 +23,6 @@ struct MangaDetailScreen: View {
         KFImage(manga.imageDownloadURL)
             .fade(duration: 0.2)
             .startLoadingBeforeViewAppear()
-            .onSuccess { populateMangaColors($0) }
             .onFailure { error in
                 print(error)
             }
@@ -40,17 +39,13 @@ struct MangaDetailScreen: View {
 
     private var headerSection: some View {
         VStack {
-            Text(manga.title)
-                .font(horizontalSizeClass == .compact ? .body : .largeTitle)
-                .bold()
-
             if let titles = manga.mdTitles {
                 Text(titles.joined(separator: horizontalSizeClass == .compact ? "\n" : " | "))
                     .multilineTextAlignment(.leading)
                     .font(horizontalSizeClass == .compact ? .body : .title2)
             }
 
-            HStack {
+            DynamicStack {
                 if let year = manga.year {
                     Text("Year: ") + Text(String(year))
                 }
@@ -81,8 +76,8 @@ struct MangaDetailScreen: View {
             ForEach(Array(viewModel.chapterItems.enumerated()), id: \.element.id) { index, chapterItem in
                 ChapterItemView(chapterItem: chapterItem,
                                 isFirst: index == 0,
-                                isLast: index == viewModel.chapterItems.endIndex - 1) { chapterListItem in
-                    
+                                isLast: index == viewModel.chapterItems.endIndex - 1)
+                { _ in
                 }
             }
         }
@@ -112,8 +107,7 @@ struct MangaDetailScreen: View {
                     chapterItemView
                 }
             }
-            
-            
+
             Spacer()
         }
     }
@@ -130,6 +124,17 @@ struct MangaDetailScreen: View {
                         dismiss?()
                     }
                 Spacer()
+
+                Text(manga.title)
+                    .font(horizontalSizeClass == .compact ? .title : .largeTitle)
+                    .bold()
+
+                Spacer()
+            }
+            .background {
+                #if os(macOS)
+                    BlurView(material: .toolTip, blendingMode: .withinWindow)
+                #endif
             }
             Spacer()
         }
@@ -141,35 +146,37 @@ struct MangaDetailScreen: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 16) {
-                    headerSection
+                    if viewModel.isLoading {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
+                        }
+                        Spacer()
 
-                    DynamicStack(spacing: 8) {
-                        coverSection
+                    } else {
+                        headerSection
 
-                        if !manga.prominentColors.isEmpty, manga.avrageCoverColor != nil {
+                        DynamicStack(spacing: 8) {
+                            coverSection
+
                             contentSection
                                 .padding(.horizontal, 8)
-                        } else {
-                            HStack {
-                                Spacer()
-                                VStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                                Spacer()
-                            }
+
+                            Spacer()
                         }
                         Spacer()
                     }
-                    Spacer()
                 }
                 .frame(minHeight: geometry.size.height)
                 .padding(.horizontal, 16)
+                .padding(.top, 16)
             }
-            .foregroundStyle(manga.isLightCoverColor ? .black : .white)
+            .frame(width: geometry.size.width)
             .background {
                 FloatingCloudsView(colors: manga.prominentColors)
+                    .ignoresSafeArea()
             }
             .background {
                 manga.avrageCoverColor?.opacity(0.5)
@@ -179,33 +186,8 @@ struct MangaDetailScreen: View {
                 Color("background", bundle: Bundle.main)
                     .ignoresSafeArea()
             }
-            .frame(width: geometry.size.width)
-            .task(priority: .background) {
+            .task(priority: .userInitiated) {
                 await viewModel.fetchData(mangaSlug: manga.slug)
-            }
-            .toolbar {
-                if horizontalSizeClass == .compact, !viewModel.isLoading {
-                    ToolbarItem(placement: .automatic) {
-                        NavigationLink {
-                            ScrollView {
-                                chapterItemView
-                                    .padding(16)
-                            }
-                            .background {
-                                FloatingCloudsView(colors: manga.prominentColors)
-                                    .ignoresSafeArea()
-                            }
-                            .background {
-                                manga.avrageCoverColor
-                                    .ignoresSafeArea()
-                                    .animation(.easeIn, value: isDismissing == false)
-                            }
-
-                        } label: {
-                            Text("Start Reading")
-                        }
-                    }
-                }
             }
             // Navigation for macOS
             .overlay {
@@ -213,21 +195,38 @@ struct MangaDetailScreen: View {
                     closeButton
                 }
             }
-        }
-    }
+            // Negating check so its just not available for macOS
+            #if !os(macOS)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden()
+            .toolbar {
+                if horizontalSizeClass == .compact {
+                    ToolbarItem(placement: .automatic) {
+                        NavigationLink {
+                            CompactChapterListScreen(
+                                isLoading: $viewModel.isLoading,
+                                mangaViewModel: manga,
+                                chapterListItems: $viewModel.chapterItems
+                            )
+                        } label: {
+                            Text("Start Reading")
+                        }
+                    }
+                }
+                
+                ToolbarItem(placement: .principal) {
+                    Text(manga.title)
+                        .multilineTextAlignment(.center)
+                        .bold()
+                }
 
-    func populateMangaColors(_ result: RetrieveImageResult) {
-        Task.detached(priority: .background) {
-            let image = result.image
-            let prominentColors = image.prominentColors
-            let avrageCoverColor = image.avrageColor
-
-            Task { @MainActor in
-                withAnimation(.easeInOut) {
-                    manga.prominentColors = prominentColors
-                    manga.avrageCoverColor = avrageCoverColor
+                ToolbarItem(placement: .topBarLeading) {
+                    CustomBackButton()
                 }
             }
+            #endif
+            .foregroundStyle(manga.isLightCoverColor ? .black : .white)
+            .tint(manga.isLightCoverColor ? .black : .white)
         }
     }
 }
