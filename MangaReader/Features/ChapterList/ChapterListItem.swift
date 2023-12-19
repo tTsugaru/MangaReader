@@ -20,3 +20,8 @@ extension ChapterListItem: Equatable {
         lhs.id == rhs.id
     }
 }
+extension ChapterListItem: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
+    }
+}

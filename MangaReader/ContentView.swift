@@ -3,10 +3,10 @@ import SwiftUI
 
 struct CustomBackButton: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    
+
     var body: some View {
         Button(action: {
-            self.presentationMode.wrappedValue.dismiss()
+            presentationMode.wrappedValue.dismiss()
         }) {
             Image(systemName: "chevron.left")
         }
@@ -53,14 +53,14 @@ struct ContentView: View {
             .zIndex(0)
 
             if let selectedMangaViewModel {
-                MangaDetailScreen(manga: selectedMangaViewModel) {
+                MangaDetailScreen(path: $path, mangaSlug: selectedMangaViewModel.slug) {
                     self.selectedMangaViewModel = nil
                 }
                 .zIndex(1)
                 .transition(.move(edge: .trailing))
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: self.selectedMangaViewModel)
+        .animation(.easeInOut(duration: 0.25), value: selectedMangaViewModel)
     }
 
     var body: some View {
@@ -68,6 +68,9 @@ struct ContentView: View {
             TabView {
                 NavigationStack(path: $path) {
                     MangaListScreen(viewModel: listViewModel, path: $path)
+                        .navigationDestination(for: MangaViewModel.self) { manga in
+                            MangaDetailScreen(path: $path, mangaSlug: manga.slug)
+                        }
                 }
                 .tabItem {
                     Label("Mangas", systemImage: "books.vertical")

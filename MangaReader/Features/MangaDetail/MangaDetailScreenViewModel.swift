@@ -4,7 +4,7 @@ import Foundation
 @MainActor
 class MangaDetailScreenViewModel: ObservableObject {
     @Published var isLoading: Bool = false
-    @Published var mangaDetail: MangaDetail?
+    @Published var mangaDetail: MangaDetailViewModel?
 
     @Published var chapters = [Chapter]()
     @Published var chapterItems: [ChapterListItem] = []
@@ -13,7 +13,7 @@ class MangaDetailScreenViewModel: ObservableObject {
         isLoading = true
         await getMangaDetail(slug: mangaSlug)
 
-        if let mangaHid = mangaDetail?.comic.hid, chapters.isEmpty {
+        if let mangaHid = mangaDetail?.hid, chapters.isEmpty {
             await getChapters(hid: mangaHid)
         } else {
             isLoading = false
@@ -21,10 +21,9 @@ class MangaDetailScreenViewModel: ObservableObject {
     }
 
     private func getMangaDetail(slug: String) async {
-        URLCache.shared.removeAllCachedResponses()
         do {
             let mangaDetail = try await Networking.shared.getMangaDetails(slug: slug)
-            self.mangaDetail = mangaDetail
+            self.mangaDetail = MangaDetailViewModel(mangaDetail)
         } catch {
             print(error)
         }

@@ -38,7 +38,7 @@ extension KFCrossPlatformImage {
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
 
         let bitsPerComponent = 8
-
+        
         guard let outputImageContext = CGContext(data: &rawData,
                                                  width: width,
                                                  height: height,
@@ -50,6 +50,7 @@ extension KFCrossPlatformImage {
         outputImageContext.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
 
         var colors = [Color]()
+        
         for y in 0 ..< height {
             for x in 0 ..< width {
                 let index = (y * bytesPerRow) + (x * bytesPerPixel)

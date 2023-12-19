@@ -2,8 +2,7 @@ import SwiftUI
 
 struct CompactChapterListScreen: View {
     @Binding var isLoading: Bool
-    @ObservedObject var mangaViewModel: MangaViewModel
-    @Binding var chapterListItems: [ChapterListItem]
+    var chapterListItems: [ChapterListItem]
     @State private var isCollapsingChildren: Bool = false
 
     var body: some View {
@@ -35,14 +34,14 @@ struct CompactChapterListScreen: View {
                 .animation(.easeInOut(duration: 0.25))
             }
             .frame(width: geometry.size.width)
-            .background {
-                FloatingCloudsView(colors: mangaViewModel.prominentColors)
-                    .ignoresSafeArea()
-            }
-            .background {
-                mangaViewModel.avrageCoverColor?.opacity(0.5)
-                    .ignoresSafeArea()
-            }
+//            .background {
+//                FloatingCloudsView(colors: mangaViewModel.prominentColors)
+//                    .ignoresSafeArea()
+//            }
+//            .background {
+//                mangaViewModel.avrageCoverColor?.opacity(0.5)
+//                    .ignoresSafeArea()
+//            }
             .navigationBarBackButtonHidden()
             #if !os(macOS)
                 .toolbar {
@@ -51,7 +50,7 @@ struct CompactChapterListScreen: View {
                     }
                 }
             #endif
-                .foregroundStyle(mangaViewModel.isLightCoverColor ? .black : .white)
+//                .foregroundStyle(mangaViewModel.isLightCoverColor ? .black : .white)
         }
     }
 }

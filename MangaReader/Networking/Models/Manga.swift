@@ -21,9 +21,9 @@ struct Manga: Codable {
     let userFollowCount: Int?
     let year: Int?
     let mdTitles: [MDTitle]?
-    let mdCovers: [Cover]?
+    let covers: [Cover]?
     let muComics: MUComics?
-    let coverUrl: String?
+    let coverURL: String?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -46,8 +46,8 @@ struct Manga: Codable {
         case userFollowCount = "user_follow_count"
         case year
         case mdTitles = "md_titles"
-        case mdCovers = "md_covers"
+        case covers = "md_covers"
         case muComics = "md_comics"
-        case coverUrl = "cover_url"
+        case coverURL = "cover_url"
     }
 }

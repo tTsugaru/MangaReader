@@ -71,10 +71,6 @@ struct MangaListScreen: View {
             .onChange(of: columnCount) { _, newColumnCount in
                 handleChangeOfColumnCount(newColumnCount: newColumnCount)
             }
-            // Navigation for iOS
-            .navigationDestination(for: MangaViewModel.self) { manga in
-                MangaDetailScreen(manga: manga)
-            }
         }
     }
 
