@@ -54,9 +54,9 @@ struct MangaDetailScreen: View {
                 if let year = manga.year {
                     Text("Year: ") + Text(String(year))
                 }
-                
+
                 if let authors = viewModel.mangaDetail?.authors, !authors.isEmpty {
-                    Text("Authors: ") + Text(authors.map { $0.name }.joined(separator: ", "))
+                    Text("Authors: ") + Text(authors.map(\.name).joined(separator: ", "))
                 }
             }
             .font(horizontalSizeClass == .compact ? .body : .title2)
@@ -66,7 +66,7 @@ struct MangaDetailScreen: View {
     private var coverSection: some View {
         VStack {
             coverImage
-            if let artists = viewModel.mangaDetail?.artists.compactMap({ $0.name }), !artists.isEmpty {
+            if let artists = viewModel.mangaDetail?.artists.map(\.name), !artists.isEmpty {
                 HStack {
                     Text("Artists: ") + Text(artists.joined(separator: ", "))
                 }
@@ -74,6 +74,17 @@ struct MangaDetailScreen: View {
             }
             Spacer()
         }
+    }
+
+    private var chapterItemView: some View {
+        VStack(spacing: 0) {
+            ForEach(Array(viewModel.chapterItems.enumerated()), id: \.element.id) { index, chapterItem in
+                ChapterItemView(chapterItem: chapterItem,
+                                isFirst: index == 0,
+                                isLast: index == viewModel.chapterItems.endIndex - 1)
+            }
+        }
+        .transition(.move(edge: .top))
     }
 
     #warning("Move logic into MangaDetailViewModel")
@@ -92,12 +103,10 @@ struct MangaDetailScreen: View {
                     }
                 }
             }
-            
-            ForEach(viewModel.chapterItems) { chapterItem in
-                ChapterItemView(chapterItem: chapterItem)
+
+            if !viewModel.chapterItems.isEmpty, horizontalSizeClass != .compact {
+                chapterItemView
             }
-            
-            Spacer()
         }
     }
 
@@ -106,17 +115,17 @@ struct MangaDetailScreen: View {
             HStack {
                 Image(systemName: "chevron.left")
                     .imageScale(.large)
+                    .padding(16)
+                    .contentShape(Rectangle())
                     .onTapGesture {
                         isDismissing = true
                         dismiss?()
                     }
-                    .padding(16)
-                    .contentShape(Rectangle())
-
                 Spacer()
             }
             Spacer()
         }
+        .foregroundStyle(manga.isLightCoverColor ? .black : .white)
         .ignoresSafeArea()
     }
 
@@ -131,6 +140,7 @@ struct MangaDetailScreen: View {
 
                         if !manga.prominentColors.isEmpty, manga.avrageCoverColor != nil {
                             contentSection
+                                .padding(.horizontal, 8)
                         } else {
                             HStack {
                                 Spacer()
@@ -164,8 +174,30 @@ struct MangaDetailScreen: View {
             }
             .frame(width: geometry.size.width)
             .task(priority: .background) {
-                if viewModel.mangaDetail == nil {
-                    await viewModel.getMangaDetail(slug: manga.slug)
+                await viewModel.fetchData(mangaSlug: "00-one-piece")
+            }
+            .toolbar {
+                if horizontalSizeClass == .compact, !viewModel.isLoading {
+                    ToolbarItem(placement: .automatic) {
+                        NavigationLink {
+                            ScrollView {
+                                chapterItemView
+                                    .padding(16)
+                            }
+                            .background {
+                                FloatingCloudsView(colors: manga.prominentColors)
+                                    .ignoresSafeArea()
+                            }
+                            .background {
+                                manga.avrageCoverColor
+                                    .ignoresSafeArea()
+                                    .animation(.easeIn, value: isDismissing == false)
+                            }
+
+                        } label: {
+                            Text("Start Reading")
+                        }
+                    }
                 }
             }
             // Navigation for macOS

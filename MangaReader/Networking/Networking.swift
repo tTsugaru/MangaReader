@@ -90,4 +90,11 @@ class Networking {
         
         return try await API.manga.request(path: slug, param: params)
     }
+    
+    func getChapters(hid: String, limit: Int = 300) async throws -> ChapterResponse {
+        var params = [String: [String]]()
+        params["limit"] = [String(limit)]
+        
+        return try await API.mangaChapters(hid: hid).request(param: params)
+    }
 }

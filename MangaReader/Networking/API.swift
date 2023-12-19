@@ -1,13 +1,22 @@
 import Foundation
 
-enum API: String {
-    case trending = "/top"
-    case search = "/v1.0/search/"
-    case manga = "/comic/"
+enum API {
+    case trending
+    case search
+    case manga
+    case mangaChapters(hid: String)
 
     private var url: URL {
         let baseURL = "https://api.comick.fun"
-        return URL(string: baseURL + rawValue)!
+        
+        let path = switch self {
+        case .trending: "/top"
+        case let .mangaChapters(hid): "/comic/\(hid)/chapters"
+        case .manga: "/comic"
+        case .search: "/v1.0/search"
+        }
+
+        return URL(string: baseURL + path)!
     }
 
     func request<T: Decodable>(path: String? = nil, param: [String: [String]]? = nil, cachePolicy: URLRequest.CachePolicy = .reloadRevalidatingCacheData) async throws -> T {
@@ -26,7 +35,7 @@ enum API: String {
 
         let urlRequest = URLRequest(url: editedURL, cachePolicy: cachePolicy)
         let cachedURLResponse = URLCache.shared.cachedResponse(for: urlRequest)
-        
+
         if let cachedURLResponse {
             let httpRespnse = cachedURLResponse.response as? HTTPURLResponse
             print(Date(), "💾 - Requesting data for \(editedURL.absoluteString) |", httpRespnse?.allHeaderFields["Cache-Control"] ?? "No Info")

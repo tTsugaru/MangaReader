@@ -35,6 +35,8 @@ struct MangaListScreen: View {
 
                                     // Navigation for iOS
                                     path.append(manga)
+                                    
+                                    print(manga.slug)
                                 }
                                 .onAppear {
                                     let bufferSize = Int(columnCount)

@@ -1,16 +1,14 @@
 import Foundation
 
 class ChapterListItem: ObservableObject, Identifiable {
-    var id: String {
-        UUID().uuidString
-    }
-    
+    let id: String
     var title: String
     var children: [ChapterListItem]?
     
     @Published var showChildren = false
     
-    init(title: String, children: [ChapterListItem]? = nil) {
+    init(id: String, title: String, children: [ChapterListItem]? = nil) {
+        self.id = id
         self.title = title
         self.children = children
     }
