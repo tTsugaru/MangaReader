@@ -40,7 +40,7 @@ class MangaDetailScreenViewModel: ObservableObject {
             let groupNames = Array(Set(chapters.compactMap { $0.groupName?.first }))
             let chapterListItems = groupNames.map { ChapterListItem(id: UUID().uuidString, title: $0) }
 
-            Task.detached(priority: .background) {
+            Task.detached(priority: .userInitiated) {
                 Task { @MainActor in
                     self.chapterItems = chapterListItems.map { chapterListItem in
                         let chapters = self.chapters

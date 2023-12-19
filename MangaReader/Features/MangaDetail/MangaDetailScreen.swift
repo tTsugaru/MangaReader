@@ -4,6 +4,8 @@ import SwiftUI
 
 @MainActor
 struct MangaDetailScreen: View {
+    @AppStorage("prominentMangaCoverColors") var prominentColors: [String: [Color]] = [:]
+    
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     var path: Binding<NavigationPath>
@@ -181,10 +183,12 @@ struct MangaDetailScreen: View {
                 .padding(.top, 16)
             }
             .frame(width: geometry.size.width)
-//            .background {
-//                FloatingCloudsView(colors: manga.prominentColors)
-//                    .ignoresSafeArea()
-//            }
+            .background {
+                if let colors = prominentColors[mangaSlug] {
+                    FloatingCloudsView(colors: colors)
+                        .ignoresSafeArea()
+                }
+            }
 //            .background {
 //                manga.avrageCoverColor?.opacity(0.5)
 //                    .ignoresSafeArea()
@@ -194,7 +198,7 @@ struct MangaDetailScreen: View {
                     .ignoresSafeArea()
             }
             .task(priority: .userInitiated) {
-                await viewModel.fetchData(mangaSlug: "00-one-piece")
+                await viewModel.fetchData(mangaSlug: mangaSlug)
             }
             // Navigation for macOS
             .overlay {

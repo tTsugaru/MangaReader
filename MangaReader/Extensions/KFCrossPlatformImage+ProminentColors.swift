@@ -2,8 +2,46 @@ import Foundation
 import Kingfisher
 import SwiftUI
 
+actor ColorCollector {
+    let rows: [ArraySlice<UInt8>]
+    let width: Int
+
+    init(rows: [ArraySlice<UInt8>], width: Int) {
+        self.rows = rows
+        self.width = width
+    }
+
+    var colors: [Color] = []
+
+    func createColors() async {
+        await withTaskGroup(of: Void.self) { group in
+            for row in rows {
+                group.addTask {
+                    for x in 0 ..< self.width {
+                        let index = x * 4
+                        let red = CGFloat(row[index]) / 255.0
+                        let green = CGFloat(row[index + 1]) / 255.0
+                        let blue = CGFloat(row[index + 2]) / 255.0
+                        let alpha = CGFloat(row[index + 3]) / 255.0
+
+                        await self.addColors([Color(red: red, green: green, blue: blue, opacity: alpha)])
+                    }
+                }
+            }
+        }
+    }
+
+    func addColors(_ newColors: [Color]) {
+        colors.append(contentsOf: newColors)
+    }
+
+    func getAllColors() -> [Color] {
+        colors
+    }
+}
+
 extension KFCrossPlatformImage {
-    var prominentColors: [Color] {
+    func prominentColors() async -> [Color] {
         #if os(macOS)
             guard let cgImage = cgImage(forProposedRect: nil, context: nil, hints: nil) else { return [] }
         #elseif os(iOS)
@@ -29,7 +67,6 @@ extension KFCrossPlatformImage {
 
         let width = contextCGImage.width
         let height = contextCGImage.height
-        let bytesPerPixel = 4
         let bytesPerRow = 4 * width
         let totalBytes = bytesPerRow * height
 
@@ -38,7 +75,7 @@ extension KFCrossPlatformImage {
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
 
         let bitsPerComponent = 8
-        
+
         guard let outputImageContext = CGContext(data: &rawData,
                                                  width: width,
                                                  height: height,
@@ -49,52 +86,50 @@ extension KFCrossPlatformImage {
 
         outputImageContext.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
 
-        var colors = [Color]()
-        
+        var rows = [ArraySlice<UInt8>]()
+        rows.reserveCapacity(height)
+
         for y in 0 ..< height {
-            for x in 0 ..< width {
-                let index = (y * bytesPerRow) + (x * bytesPerPixel)
-                let red = CGFloat(rawData[index]) / 255.0
-                let green = CGFloat(rawData[index + 1]) / 255.0
-                let blue = CGFloat(rawData[index + 2]) / 255.0
-                let alpha = CGFloat(rawData[index + 3]) / 255.0
-                colors.append(Color(red: red, green: green, blue: blue, opacity: alpha))
-            }
+            rows.append(rawData[(bytesPerRow * y) ..< (bytesPerRow * (y + 1))])
         }
 
-        return colors
+        let actor = ColorCollector(rows: rows, width: width)
+        
+        await actor.createColors()
+        return await actor.getAllColors()
     }
 }
+
 extension KFCrossPlatformImage {
     func resize(width: Int, height: Int) -> KFCrossPlatformImage? {
-        return self.resize(targetSize: CGSize(width: width, height: height))
+        resize(targetSize: CGSize(width: width, height: height))
     }
 }
 
 #if os(macOS)
-extension NSImage {
-    func resize(targetSize: CGSize) -> NSImage? {
-        let resizedImage = NSImage(size: targetSize)
-        resizedImage.lockFocus()
-        
-        defer {
-            resizedImage.unlockFocus()
+    extension NSImage {
+        func resize(targetSize: CGSize) -> NSImage? {
+            let resizedImage = NSImage(size: targetSize)
+            resizedImage.lockFocus()
+
+            defer {
+                resizedImage.unlockFocus()
+            }
+
+            guard let context = NSGraphicsContext.current else { return nil }
+            context.imageInterpolation = .high
+            draw(in: NSRect(origin: .zero, size: targetSize))
+            return resizedImage
         }
-        
-        guard let context = NSGraphicsContext.current else { return nil }
-        context.imageInterpolation = .high
-        self.draw(in: NSRect(origin: .zero, size: targetSize))
-        return resizedImage
     }
-}
 
 #else
-extension UIImage {
-    func resize(targetSize: CGSize) -> UIImage? {
-        let renderer = UIGraphicsImageRenderer(size: targetSize)
-        return renderer.image { (context) in
-            self.draw(in: CGRect(origin: .zero, size: targetSize))
+    extension UIImage {
+        func resize(targetSize: CGSize) -> UIImage? {
+            let renderer = UIGraphicsImageRenderer(size: targetSize)
+            return renderer.image { _ in
+                self.draw(in: CGRect(origin: .zero, size: targetSize))
+            }
         }
     }
-}
 #endif

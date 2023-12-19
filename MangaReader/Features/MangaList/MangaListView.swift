@@ -1,11 +1,34 @@
 import Kingfisher
 import SwiftUI
 
+extension [String: [Color]]: RawRepresentable {
+    public init?(rawValue: String) {
+        guard let data = rawValue.data(using: .utf8), // convert from String to Data
+              let result = try? JSONDecoder().decode([String: [Color]].self, from: data)
+        else {
+            return nil
+        }
+        self = result
+    }
+
+    public var rawValue: String {
+        guard let data = try? JSONEncoder().encode(self), // data is  Data type
+              let result = String(data: data, encoding: .utf8) // coerce NSData to String
+        else {
+            return "{}" // empty Dictionary resprenseted as String
+        }
+        return result
+    }
+}
+
 @MainActor
 struct MangaListView: View {
+    @AppStorage("username") var username: String = "Anonymous"
+    @AppStorage("prominentMangaCoverColors") var prominentColors: [String: [Color]] = [:]
+
     @State private var isHovering = false
-    @State private var fetchColorsTask: Task<(), Never>?
-    
+    @State private var fetchColorsTask: Task<Void, Never>?
+    @State private var imageResult: RetrieveImageResult?
     private var animationSpeed: CGFloat = 0.2
 
     @ObservedObject var manga: MangaViewModel
@@ -14,7 +37,7 @@ struct MangaListView: View {
         self.manga = manga
     }
 
-    var mangaTitle: some View {
+    private var mangaTitle: some View {
         Text(manga.title)
             .padding([.bottom, .horizontal], 16)
             .transition(.move(edge: .bottom))
@@ -25,9 +48,7 @@ struct MangaListView: View {
         KFImage(manga.imageDownloadURL)
             .cacheOriginalImage()
             .backgroundDecode()
-            .onSuccess { imageResult in
-                populateMangaColors(imageResult)
-            }
+            .onSuccess { imageResult = $0 }
             .startLoadingBeforeViewAppear()
         #if os(iOS)
             .setProcessor(DownsamplingImageProcessor(size: CGSize(width: 180 * 2, height: 230 * 2)))
@@ -49,7 +70,7 @@ struct MangaListView: View {
                         }
                     }
             }
-            
+
             .animation(.bouncy(duration: animationSpeed, extraBounce: 0.3)) { content in
                 content
                     .scaleEffect(isHovering ? 1.1 : 1)
@@ -68,29 +89,35 @@ struct MangaListView: View {
                     self.isHovering = isHovering
                 }
             }
+            .onAppear {
+                populateMangaColors()
+            }
             .onDisappear {
                 fetchColorsTask?.cancel()
             }
     }
-    
-    func populateMangaColors(_ result: RetrieveImageResult) {
-        guard manga.prominentColors.isEmpty, manga.avrageCoverColor == nil else { return }
-        
-        fetchColorsTask = Task.detached(priority: .userInitiated) {
-            let image = result.image
+
+    func populateMangaColors() {
+        guard let image = imageResult?.image, prominentColors[manga.slug]?.isEmpty ?? true else { return }
+
+        fetchColorsTask = Task.detached(priority: .background) {
+            let image = image
             let resizedImage = image.resize(width: 50, height: 50)
-            
+
             guard let image = resizedImage else { return }
-            let prominentColors = image.prominentColors
             let avrageCoverColor = image.avrageColor
-            
+
             let innerTask = Task { @MainActor in
+                let prominentColors = await image.prominentColors()
+
+                self.prominentColors[manga.slug] = prominentColors
+
                 withAnimation(.easeInOut) {
                     manga.prominentColors = prominentColors
                     manga.avrageCoverColor = avrageCoverColor
                 }
             }
-            
+
             guard Task.isCancelled else { return }
             innerTask.cancel()
         }

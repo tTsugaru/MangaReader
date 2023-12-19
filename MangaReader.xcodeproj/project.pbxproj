@@ -53,6 +53,7 @@
 		3BD8F0302A7D6E0300A84F8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BD8F02F2A7D6E0300A84F8E /* Assets.xcassets */; };
 		3BD8F0342A7D6E0300A84F8E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BD8F0332A7D6E0300A84F8E /* Preview Assets.xcassets */; };
 		3BDE01E02B31E177002B4075 /* MangaDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDE01DF2B31E177002B4075 /* MangaDetailViewModel.swift */; };
+		3BDE01E22B323073002B4075 /* Color+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDE01E12B323073002B4075 /* Color+Codable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -103,6 +104,7 @@
 		3BD8F0312A7D6E0300A84F8E /* MangaReader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MangaReader.entitlements; sourceTree = "<group>"; };
 		3BD8F0332A7D6E0300A84F8E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3BDE01DF2B31E177002B4075 /* MangaDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaDetailViewModel.swift; sourceTree = "<group>"; };
+		3BDE01E12B323073002B4075 /* Color+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Codable.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -214,6 +216,7 @@
 				3BB2386E2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift */,
 				3BB238702B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift */,
 				3B4790A12B2F3C260044D09D /* Color+Brightness.swift */,
+				3BDE01E12B323073002B4075 /* Color+Codable.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -376,6 +379,7 @@
 				3B4790A22B2F3C260044D09D /* Color+Brightness.swift in Sources */,
 				3B8AA7502A7D93280051E61C /* MangaListViewModel.swift in Sources */,
 				3B9070E02B305C6700B88E41 /* ChapterResponse.swift in Sources */,
+				3BDE01E22B323073002B4075 /* Color+Codable.swift in Sources */,
 				3B8AA7582A7DA2530051E61C /* MDTitle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
