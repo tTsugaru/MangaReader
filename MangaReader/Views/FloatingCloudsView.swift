@@ -16,7 +16,10 @@ struct Cloud: View {
             .frame(height: proxy.size.height / provider.frameHeightRatio)
             .offset(provider.offset)
             .rotationEffect(.init(degrees: move ? rotationStart : rotationStart + 360))
-            .animation(Animation.linear(duration: duration).repeatForever(autoreverses: false), value: move)
+            .animation(
+                Animation.linear(duration: duration).repeatForever(autoreverses: false),
+                value: move
+            )
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)
             .opacity(0.8)
             .onAppear {
@@ -62,12 +65,13 @@ struct FloatingCloudsView: View {
                               color: color,
                               rotationStart: Double.random(in: 50 ... 200),
                               duration: TimeInterval(Int.random(in: 5 ... 10)),
-                              alignment: frameAlignments[Int.random(in: 0...frameAlignments.count - 1)])
+                              alignment: frameAlignments[
+                                Int.random(in: 0...frameAlignments.count - 1)
+                              ])
                     }
                 }
                 .blur(radius: 60)
             }
-
             .ignoresSafeArea()
         }
     }

@@ -46,8 +46,13 @@ class MangaDetailScreenViewModel: ObservableObject {
                     self.chapterItems = chapterListItems.map { chapterListItem in
                         let chapters = self.chapters
                             .filter { $0.groupName?.first ?? "" == chapterListItem.title }
-                            .map { ChapterListItem(id: $0.hid, title: $0.title ?? $0.chap ?? $0.vol ?? "Unkown Chapter") }
-
+                            .map { chapter in
+                                let childChapterListItem = ChapterListItem(id: chapter.hid, title: chapter.title ?? chapter.chap ?? chapter.vol ?? "Unkown Chapter")
+                                
+                                childChapterListItem.parent = chapterListItem
+                                
+                                return childChapterListItem
+                            }
                         chapterListItem.children = chapters
                         return chapterListItem
                     }

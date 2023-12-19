@@ -28,9 +28,10 @@ struct ContentView: View {
     @StateObject var listViewModel = MangaListViewModel()
     @State var defaultSelection = 0
     @State var path = NavigationPath()
-    @State private var selectedMangaViewModel: MangaViewModel?
 
     @State private var selectedSidebarItem: Int = 0
+    @State private var selectedMangaViewModel: MangaViewModel?
+    @State private var selectedChapterListItem: ChapterListItem?
 
     var mangaListScreen: some View {
         ZStack {
@@ -45,9 +46,9 @@ struct ContentView: View {
                 }
                 .zIndex(1)
                 .transition(.move(edge: .trailing))
-                .animation(.easeInOut(duration: 0.25))
             }
         }
+        .animation(.easeInOut(duration: 0.25), value: self.selectedMangaViewModel)
     }
 
     var body: some View {

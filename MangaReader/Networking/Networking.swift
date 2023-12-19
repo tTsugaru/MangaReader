@@ -88,7 +88,7 @@ class Networking {
         
         params["tachiyomi"] = ["true"]
         
-        return try await API.manga.request(path: slug, param: params)
+        return try await API.manga.request(path: slug, param: params, cachePolicy: .returnCacheDataElseLoad)
     }
     
     func getChapters(hid: String, limit: Int = 300) async throws -> ChapterResponse {

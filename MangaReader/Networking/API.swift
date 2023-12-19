@@ -39,11 +39,14 @@ enum API {
         if let cachedURLResponse {
             let httpRespnse = cachedURLResponse.response as? HTTPURLResponse
             print(Date(), "💾 - Requesting data for \(editedURL.absoluteString) |", httpRespnse?.allHeaderFields["Cache-Control"] ?? "No Info")
+            
             let data = cachedURLResponse.data
             let cachedData = try JSONDecoder().decode(T.self, from: data)
+            
             return cachedData
         } else {
             print(Date(), "🌎 - Requesting data from \(editedURL.absoluteString)")
+            
             let (data, _) = try await URLSession.shared.data(for: urlRequest)
             let fetchedData = try JSONDecoder().decode(T.self, from: data)
             return fetchedData

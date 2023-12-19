@@ -35,6 +35,10 @@ struct ChapterItemView: View {
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
+                    if (chapterItem.children?.isEmpty ?? true) && chapterItem.parent != nil {
+                        onChapterSelect?(chapterItem)
+                    }
+                    
                     guard !(chapterItem.children?.isEmpty ?? true) else { return }
                     chapterItem.showChildren.toggle()
                 }
@@ -42,9 +46,11 @@ struct ChapterItemView: View {
             if let children = chapterItem.children {
                 HStack {
                     if chapterItem.showChildren {
-                        VStack(alignment: .leading) {
-                            ForEach(children) { child in
-                                Text(child.title)
+                        VStack(alignment: .leading, spacing: 0) {
+                            ForEach(Array(children.enumerated()), id: \.element.id) { index, child in
+                                ChapterItemView(chapterItem: child,
+                                                isLast: index == children.endIndex - 1)
+                                    .padding(.horizontal, 32)
                             }
                         }
                         .transition(.move(edge: .top))
@@ -55,6 +61,7 @@ struct ChapterItemView: View {
                 .padding(.bottom, chapterItem.showChildren ? 8 : 0)
             }
         }
+        .animation(.easeInOut(duration: 0.25), value: chapterItem.showChildren)
     }
 }
 

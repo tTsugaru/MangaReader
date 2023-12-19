@@ -6,14 +6,14 @@ import SwiftUI
 struct MangaDetailScreen: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
-    @StateObject var viewModel = MangaDetailScreenViewModel()
-
-    @State private var animate = false
     @ObservedObject var manga: MangaViewModel
-
     var dismiss: (() -> Void)? = nil
-    @State var isDismissing = false
-
+    
+    @StateObject private var viewModel = MangaDetailScreenViewModel()
+    @State private var animate = false
+    @State private var isDismissing = false
+    @State private var selectedChapter: ChapterListItem?
+    
     init(manga: MangaViewModel, dismiss: (() -> Void)? = nil) {
         self.manga = manga
         self.dismiss = dismiss
@@ -39,7 +39,7 @@ struct MangaDetailScreen: View {
     }
 
     private var headerSection: some View {
-        Group {
+        VStack {
             Text(manga.title)
                 .font(horizontalSizeClass == .compact ? .body : .largeTitle)
                 .bold()
@@ -81,9 +81,12 @@ struct MangaDetailScreen: View {
             ForEach(Array(viewModel.chapterItems.enumerated()), id: \.element.id) { index, chapterItem in
                 ChapterItemView(chapterItem: chapterItem,
                                 isFirst: index == 0,
-                                isLast: index == viewModel.chapterItems.endIndex - 1)
+                                isLast: index == viewModel.chapterItems.endIndex - 1) { chapterListItem in
+                    
+                }
             }
         }
+        .animation(.easeInOut(duration: 0.25)) // Fix animation warning finde a suited value to activate animation
         .transition(.move(edge: .top))
     }
 
@@ -104,9 +107,14 @@ struct MangaDetailScreen: View {
                 }
             }
 
-            if !viewModel.chapterItems.isEmpty, horizontalSizeClass != .compact {
-                chapterItemView
+            VStack {
+                if !viewModel.chapterItems.isEmpty, horizontalSizeClass != .compact {
+                    chapterItemView
+                }
             }
+            
+            
+            Spacer()
         }
     }
 
@@ -154,6 +162,7 @@ struct MangaDetailScreen: View {
                         }
                         Spacer()
                     }
+                    Spacer()
                 }
                 .frame(minHeight: geometry.size.height)
                 .padding(.horizontal, 16)
@@ -161,12 +170,10 @@ struct MangaDetailScreen: View {
             .foregroundStyle(manga.isLightCoverColor ? .black : .white)
             .background {
                 FloatingCloudsView(colors: manga.prominentColors)
-                    .animation(.easeIn, value: isDismissing == false)
             }
             .background {
-                manga.avrageCoverColor
+                manga.avrageCoverColor?.opacity(0.5)
                     .ignoresSafeArea()
-                    .animation(.easeIn, value: isDismissing == false)
             }
             .background {
                 Color("background", bundle: Bundle.main)
@@ -174,7 +181,7 @@ struct MangaDetailScreen: View {
             }
             .frame(width: geometry.size.width)
             .task(priority: .background) {
-                await viewModel.fetchData(mangaSlug: "00-one-piece")
+                await viewModel.fetchData(mangaSlug: manga.slug)
             }
             .toolbar {
                 if horizontalSizeClass == .compact, !viewModel.isLoading {
