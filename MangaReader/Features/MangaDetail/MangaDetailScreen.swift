@@ -4,25 +4,27 @@ import SwiftUI
 
 @MainActor
 struct MangaDetailScreen: View {
-    @AppStorage("prominentMangaCoverColors") var prominentColors: [String: [Color]] = [:]
-    
+    @EnvironmentObject var windowObserver: WindowObserver
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
-    var path: Binding<NavigationPath>
-    var mangaSlug: String
-    var dismiss: (() -> Void)? = nil
-
+    @ObservedObject private var mangaStore = MangaStore.shared
     @StateObject private var viewModel = MangaDetailScreenViewModel()
+
     @State private var animate = false
     @State private var isDismissing = false
     @State private var selectedChapter: ChapterListItem?
+    @State private var isLightCoverColor = true
+
+    private var path: Binding<NavigationPath>
+    private var mangaSlug: String
+    private var dismiss: (() -> Void)? = nil
 
     init(path: Binding<NavigationPath>, mangaSlug: String, dismiss: (() -> Void)? = nil) {
         self.path = path
         self.mangaSlug = mangaSlug
         self.dismiss = dismiss
     }
-
+    
     @ViewBuilder
     private func coverImageView() -> some View {
         if let downloadURL = viewModel.mangaDetail?.imageDownloadURL {
@@ -40,6 +42,7 @@ struct MangaDetailScreen: View {
                 .frame(minWidth: 100, maxWidth: 500)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                 .shadow(radius: 5)
+                .padding(.horizontal, 16)
         }
     }
 
@@ -53,11 +56,11 @@ struct MangaDetailScreen: View {
 
             DynamicStack {
                 if let year = viewModel.mangaDetail?.year {
-                    Text("Year: ") + Text(String(year))
+                    Text("🗓️ Year: ") + Text(String(year))
                 }
 
                 if let authors = viewModel.mangaDetail?.authors, !authors.isEmpty {
-                    Text("Authors: ") + Text(authors)
+                    Text("✒️ Authors: ") + Text(authors)
                 }
             }
             .font(horizontalSizeClass == .compact ? .body : .title2)
@@ -65,14 +68,25 @@ struct MangaDetailScreen: View {
     }
 
     private var coverSection: some View {
-        VStack {
+        VStack(spacing: 0) {
             coverImageView()
 
             if let artists = viewModel.mangaDetail?.artists, !artists.isEmpty {
                 HStack {
-                    Text("Artists: ") + Text(artists)
+                    Text("✍🏻 Artists: ") + Text(artists)
                 }
+                .padding(8)
                 .font(horizontalSizeClass == .compact ? .body : .title2)
+                .background {
+                    Color.black.opacity(0.1)
+                        .clipShape(
+                            .rect(cornerRadii: RectangleCornerRadii(topLeading: 0,
+                                                                    bottomLeading: 10,
+                                                                    bottomTrailing: 10,
+                                                                    topTrailing: 0)
+                            )
+                        )
+                }
             }
             Spacer()
         }
@@ -88,24 +102,30 @@ struct MangaDetailScreen: View {
                 }
             }
         }
-        .animation(.easeInOut(duration: 0.25)) // Fix animation warning finde a suited value to activate animation
+        .animation(.easeInOut(duration: 0.25), value: animate) // Fix animation warning finde a suited value to activate animation
         .transition(.move(edge: .top))
     }
 
-    #warning("Move logic into MangaDetailViewModel")
     private var contentSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            if let description = viewModel.mangaDetail?.description {
-                ForEach(Array(description.trimmingCharacters(in: .whitespacesAndNewlines).split(whereSeparator: { $0.isNewline }).enumerated()), id: \.offset) { _, line in
-                    if line.contains("http") {
-                        Text(.init(String(line)))
-                            .font(.body)
-                            .underline()
-//                            .tint(viewModel.mangaDetail.isLightCoverColor ? .black : .white)
-                    } else {
-                        Text(.init(String(line)))
-                            .font(.body)
+        VStack(alignment: .leading, spacing: 16) {
+            if let description = viewModel.mangaDetail?.sanitizedDescription {
+                VStack(alignment: .leading) {
+                    ForEach(Array(description.enumerated()), id: \.offset) { _, line in
+                        if line.contains("http") {
+                            Text(.init(String(line)))
+                                .font(.body)
+                                .underline()
+                                .tint(isLightCoverColor ? .black : .white)
+                        } else {
+                            Text(.init(String(line)))
+                                .font(.body)
+                        }
                     }
+                }
+                .padding(16)
+                .background {
+                    Color.black.opacity(0.1)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
 
@@ -119,7 +139,7 @@ struct MangaDetailScreen: View {
         }
     }
 
-    private var closeButton: some View {
+    private var customNavigationView: some View {
         VStack {
             HStack {
                 Image(systemName: "chevron.left")
@@ -147,7 +167,7 @@ struct MangaDetailScreen: View {
             }
             Spacer()
         }
-//        .foregroundStyle(manga.isLightCoverColor ? .black : .white)
+        .foregroundStyle(.white)
         .ignoresSafeArea()
     }
 
@@ -156,14 +176,7 @@ struct MangaDetailScreen: View {
             ScrollView {
                 VStack(spacing: 16) {
                     if viewModel.isLoading {
-                        Spacer()
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
-                        }
-                        Spacer()
-
+                        ProgressView()
                     } else {
                         headerSection
 
@@ -172,39 +185,40 @@ struct MangaDetailScreen: View {
 
                             contentSection
                                 .padding(.horizontal, 8)
-
-                            Spacer()
                         }
-                        Spacer()
+                        .frame(width: horizontalSizeClass == .compact ? geometry.size.width : geometry.size.width * 0.85)
                     }
                 }
                 .frame(minHeight: geometry.size.height)
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
             }
+            .scrollIndicators(.hidden)
+            .animation(.easeInOut(duration: 0.25), value: animate)
             .frame(width: geometry.size.width)
             .background {
-                if let colors = prominentColors[mangaSlug] {
+                if let colors = mangaStore.prominentColors[mangaSlug], !colors.isEmpty {
                     FloatingCloudsView(colors: colors)
                         .ignoresSafeArea()
                 }
             }
-//            .background {
-//                manga.avrageCoverColor?.opacity(0.5)
-//                    .ignoresSafeArea()
-//            }
+            #if os(macOS)
+            .clipped() // Prevents FloatingCloudsView to be shown first
+            #endif
             .background {
-                Color("background", bundle: Bundle.main)
-                    .ignoresSafeArea()
+                if let coverColor = mangaStore.averageCoverColors[mangaSlug] {
+                    coverColor
+                        .ignoresSafeArea()
+                        .onAppear {
+                            isLightCoverColor = coverColor.isLightColor
+                        }
+                } else {
+                    Color("background", bundle: Bundle.main)
+                        .ignoresSafeArea()
+                }
             }
             .task(priority: .userInitiated) {
                 await viewModel.fetchData(mangaSlug: mangaSlug)
-            }
-            // Navigation for macOS
-            .overlay {
-                if dismiss != nil {
-                    closeButton
-                }
             }
             // Negating check so its just not available for macOS
             #if !os(macOS)
@@ -236,9 +250,16 @@ struct MangaDetailScreen: View {
             .navigationDestination(for: [ChapterListItem].self) { chapterListItems in
                 CompactChapterListScreen(isLoading: $viewModel.isLoading, chapterListItems: chapterListItems)
             }
+            #else
+            .overlay {
+                        customNavigationView
+                    }
+            .onChange(of: windowObserver.windowIsResizing) { _, isResizing in
+                animate = !isResizing
+            }
             #endif
-//            .foregroundStyle(manga.isLightCoverColor ? .black : .white)
-//            .tint(manga.isLightCoverColor ? .black : .white)
+                    .foregroundStyle(isLightCoverColor ? .black : .white)
+                    .tint(isLightCoverColor ? .black : .white)
         }
     }
 }

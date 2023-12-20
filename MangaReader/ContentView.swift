@@ -1,17 +1,23 @@
 import SwiftData
 import SwiftUI
 
-struct CustomBackButton: View {
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+class WindowObserver: NSObject, ObservableObject {
+    @Published var windowIsResizing = false
+}
 
-    var body: some View {
-        Button(action: {
-            presentationMode.wrappedValue.dismiss()
-        }) {
-            Image(systemName: "chevron.left")
-        }
+#if os(macOS)
+extension WindowObserver: NSWindowDelegate {
+    
+    func windowWillResize(_ sender: NSWindow, to frameSize: NSSize) -> NSSize {
+        windowIsResizing = true
+        return frameSize
+    }
+    
+    func windowDidResize(_ notification: Notification) {
+        windowIsResizing = false
     }
 }
+#endif
 
 enum SidebarItem: Int, Identifiable, CaseIterable {
     var id: Int { rawValue }
@@ -37,6 +43,8 @@ enum SidebarItem: Int, Identifiable, CaseIterable {
 }
 
 struct ContentView: View {
+    @StateObject var windowObserver = WindowObserver()
+    
     @StateObject var listViewModel = MangaListViewModel()
     @State var defaultSelection = 0
     @State var path = NavigationPath()
@@ -81,6 +89,7 @@ struct ContentView: View {
                         Label("Favorites", systemImage: "star")
                     }
             }
+            .environmentObject(windowObserver)
         #else
             NavigationSplitView {
                 List(SidebarItem.allCases, selection: $selectedSidebarItem) { sidebarItem in
@@ -96,7 +105,13 @@ struct ContentView: View {
                 case .favorites: Text("Test")
                 }
             }
+            .task {
+                guard let window = NSApplication.shared.windows.first else { return }
+                window.delegate = windowObserver
+            }
+            .environmentObject(windowObserver)
         #endif
+            
     }
 }
 

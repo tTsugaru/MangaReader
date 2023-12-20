@@ -62,3 +62,8 @@ extension Color: Codable {
         try container.encode(colorComponents.blue, forKey: .blue)
     }
 }
+extension Color {
+    var isLightColor: Bool {
+        self.brightness == .light
+    }
+}

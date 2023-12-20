@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Kingfisher
 
 @MainActor
 class MangaViewModel: ObservableObject {
@@ -32,13 +33,6 @@ class MangaViewModel: ObservableObject {
     var imageDownloadURL: URL? {
         guard let imageId = mdCovers?.first?.b2key else { return nil }
         return URL(string: "https://meo.comick.pictures/\(imageId)")
-    }
-
-    @Published var avrageCoverColor: Color?
-    @Published var prominentColors: [Color] = []
-
-    var isLightCoverColor: Bool {
-        avrageCoverColor?.brightness == .light
     }
 }
 

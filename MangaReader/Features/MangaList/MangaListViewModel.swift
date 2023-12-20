@@ -1,5 +1,7 @@
 import Combine
+import SwiftUI
 import Foundation
+import Kingfisher
 
 @MainActor
 class MangaListViewModel: ObservableObject {
@@ -8,6 +10,7 @@ class MangaListViewModel: ObservableObject {
     @Published var currentPageLoaded = 1
     
     @Published var oldSelectedManga: MangaViewModel?
+    @Published var fetchColorTasks = [String: Task<Void, Never>]()
     
     func getAllMangas() async {
         guard mangas.isEmpty else { return }

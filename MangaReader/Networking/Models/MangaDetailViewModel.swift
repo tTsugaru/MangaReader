@@ -6,7 +6,7 @@ class MangaDetailViewModel: ObservableObject, Identifiable {
     init(_ model: MangaDetail) {
         self.model = model
     }
-    
+
     var hid: String {
         model.comic.hid
     }
@@ -16,7 +16,7 @@ class MangaDetailViewModel: ObservableObject, Identifiable {
     }
 
     var alternativeTitles: String {
-        model.comic.mdTitles.map(\.title).joined(separator: "\n")
+        model.comic.mdTitles.filter{ $0.lang == "en" }.map(\.title).joined(separator: "\n")
     }
 
     var year: Int {
@@ -33,6 +33,12 @@ class MangaDetailViewModel: ObservableObject, Identifiable {
 
     var description: String? {
         model.comic.description
+    }
+
+    var sanitizedDescription: [String] {
+        description?.trimmingCharacters(in: .whitespacesAndNewlines)
+            .split(whereSeparator: { $0.isNewline })
+            .compactMap { String($0) } ?? []
     }
 
     var imageDownloadURL: URL? {
