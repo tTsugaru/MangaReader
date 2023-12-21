@@ -8,13 +8,32 @@ struct MangaListScreen: View {
 
     var showMangaDetailScreen: ((MangaViewModel) -> Void)?
 
-    @ObservedObject var mangaStore = MangaStore.shared
-    @State private var columnCount: CGFloat = 4
+    @ObservedObject private var mangaStore = MangaStore.shared
+    @State private var scrollPosition: String?
 
     private var columns: [GridItem] {
         let compactGrid = [GridItem(), GridItem()]
         let largeGrid = [GridItem(), GridItem(), GridItem(), GridItem()]
         return horizontalSizeClass == .compact ? compactGrid : largeGrid
+    }
+
+    private var columnCount: CGFloat {
+        CGFloat(columns.count)
+    }
+
+    @ViewBuilder
+    private func safeAreaBackground(geometry: GeometryProxy) -> some View {
+        #if !os(macOS)
+            VStack {
+                if !viewModel.isLoading, !viewModel.mangas.isEmpty {
+                    BlurView(style: .systemThinMaterial)
+                        .frame(width: geometry.size.width, height: geometry.safeAreaInsets.top)
+                }
+                Spacer()
+            }
+            .animation(.easeInOut(duration: 0.25), value: !viewModel.isLoading)
+            .ignoresSafeArea()
+        #endif
     }
 
     @ViewBuilder
@@ -27,16 +46,10 @@ struct MangaListScreen: View {
                             ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
                                 MangaListView(viewModel: viewModel, manga: manga)
                                     .id(manga.slug)
-                                    .onHover { isHovering in
-                                        guard isHovering else { return }
-                                        // TODO: Find better solution for state management when view was changed in SplitView
-                                        viewModel.oldSelectedManga = manga
-                                    }
                                     .onTapGesture {
                                         // Navigation for macOS
                                         showMangaDetailScreen?(manga)
-
-                                        // Navigation for iOS
+                                        // Navigation for iOS/iPadOS
                                         path.append(manga)
                                     }
                                     .onAppear {
@@ -57,7 +70,8 @@ struct MangaListScreen: View {
                                     }
                             }
                         }
-                        
+                        .scrollTargetLayout()
+
                         if viewModel.isLoading {
                             ProgressView()
                         }
@@ -67,26 +81,18 @@ struct MangaListScreen: View {
                 }
                 .frame(width: geometry.size.width)
                 .scrollIndicators(.hidden)
-                .overlay {
-                    #if !os(macOS)
-                    VStack {
-                        if !viewModel.isLoading && !viewModel.mangas.isEmpty {
-                            BlurView(style: .systemThinMaterial)
-                                .frame(width: geometry.size.width, height: geometry.safeAreaInsets.top)
-                        }
-                        Spacer()
-                    }
-                    .animation(.easeInOut(duration: 0.25), value: !viewModel.isLoading)
-                    .ignoresSafeArea()
-                    #endif
-                }
-                .scrollIndicators(.hidden)
+                .scrollPosition(id: $scrollPosition)
+                .overlay(safeAreaBackground(geometry: geometry))
                 .background(Color("background", bundle: Bundle.main))
                 .task {
                     await viewModel.getAllMangas()
-                    if let oldSelectedManga = viewModel.oldSelectedManga, !viewModel.isLoading {
-                        reader.scrollTo(oldSelectedManga.slug)
-                    }
+                    
+                    guard let scrollPosition = viewModel.scrollPosition else { return }
+                    reader.scrollTo(scrollPosition, anchor: .top)
+                }
+                .onDisappear {
+                    guard let scrollPosition else { return }
+                    viewModel.scrollPosition = scrollPosition
                 }
                 .onChange(of: columnCount) { _, newColumnCount in
                     handleChangeOfColumnCount(newColumnCount: newColumnCount)

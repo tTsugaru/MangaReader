@@ -184,7 +184,6 @@ struct MangaDetailScreen: View {
                             
                             DynamicStack(spacing: 8) {
                                 coverSection
-                                
                                 contentSection
                             }
                         }
@@ -250,7 +249,7 @@ struct MangaDetailScreen: View {
                 }
             }
             .navigationDestination(for: [ChapterListItem].self) { chapterListItems in
-                CompactChapterListScreen(mangaSlug: mangaSlug, isLoading: $viewModel.isLoading, chapterListItems: chapterListItems)
+                CompactChapterListScreen(isLoading: $viewModel.isLoading, mangaSlug: mangaSlug, chapterListItems: chapterListItems)
             }
             #else
             .overlay {

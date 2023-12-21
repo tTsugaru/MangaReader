@@ -5,6 +5,8 @@ import Kingfisher
 
 @MainActor
 class MangaListViewModel: ObservableObject {
+    @Published var scrollPosition: String?
+    
     @Published var mangas: [MangaViewModel] = []
     @Published var isLoading: Bool = false
     @Published var currentPageLoaded = 1
