@@ -7,6 +7,13 @@ struct ChapterItemView: View {
     var isLast = false
 
     var onChapterSelect: ((ChapterListItem) -> Void)?
+    
+    init(chapterItem: ChapterListItem, isFirst: Bool = false, isLast: Bool = false, onChapterSelect: ((ChapterListItem) -> Void)? = nil) {
+        self.chapterItem = chapterItem
+        self.isFirst = isFirst
+        self.isLast = isLast
+        self.onChapterSelect = onChapterSelect
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -49,7 +56,10 @@ struct ChapterItemView: View {
                         VStack(alignment: .leading, spacing: 0) {
                             ForEach(Array(children.enumerated()), id: \.element.id) { index, child in
                                 ChapterItemView(chapterItem: child,
-                                                isLast: index == children.endIndex - 1)
+                                                isLast: index == children.endIndex - 1) { chapterListItem in
+                                    onChapterSelect?(chapterListItem)
+                                    
+                                }
                                     .padding(.horizontal, 32)
                             }
                         }

@@ -12,16 +12,17 @@ struct MangaDetailScreen: View {
 
     @State private var animate = false
     @State private var isDismissing = false
-    @State private var selectedChapter: ChapterListItem?
     @State private var isLightCoverColor = true
 
     private var path: Binding<NavigationPath>
     private var mangaSlug: String
-    private var dismiss: (() -> Void)? = nil
+    private var dismiss: (() -> Void)?
+    private var selectedChapterListItem: ((ChapterListItem) -> Void)?
 
-    init(path: Binding<NavigationPath>, mangaSlug: String, dismiss: (() -> Void)? = nil) {
+    init(path: Binding<NavigationPath>, mangaSlug: String, selectedChapterListItem: ((ChapterListItem) -> Void)? = nil, dismiss: (() -> Void)? = nil) {
         self.path = path
         self.mangaSlug = mangaSlug
+        self.selectedChapterListItem = selectedChapterListItem
         self.dismiss = dismiss
     }
     
@@ -97,9 +98,9 @@ struct MangaDetailScreen: View {
             ForEach(Array(viewModel.chapterItems.enumerated()), id: \.element.id) { index, chapterItem in
                 ChapterItemView(chapterItem: chapterItem,
                                 isFirst: index == 0,
-                                isLast: index == viewModel.chapterItems.endIndex - 1)
-                { _ in
-                }
+                                isLast: index == viewModel.chapterItems.endIndex - 1, onChapterSelect: { listItem in
+                    selectedChapterListItem?(listItem)
+                })
             }
         }
         .animation(.easeInOut(duration: 0.25), value: animate) // Fix animation warning finde a suited value to activate animation
@@ -174,26 +175,27 @@ struct MangaDetailScreen: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                VStack(spacing: 16) {
-                    if viewModel.isLoading {
-                        ProgressView()
-                    } else {
-                        headerSection
-
-                        DynamicStack(spacing: 8) {
-                            coverSection
-
-                            contentSection
-                                .padding(.horizontal, 8)
+                VStack {
+                    VStack(spacing: 16) {
+                        if viewModel.isLoading && !(mangaStore.prominentColors[mangaSlug]?.isEmpty ?? true) {
+                            ProgressView()
+                        } else {
+                            headerSection
+                            
+                            DynamicStack(spacing: 8) {
+                                coverSection
+                                
+                                contentSection
+                            }
                         }
-                        .frame(width: horizontalSizeClass == .compact ? geometry.size.width : geometry.size.width * 0.85)
                     }
+                    .frame(width: horizontalSizeClass == .compact ? geometry.size.width : geometry.size.width * 0.85)
                 }
+                .frame(width: geometry.size.width)
                 .frame(minHeight: geometry.size.height)
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
             }
-            .scrollIndicators(.hidden)
             .animation(.easeInOut(duration: 0.25), value: animate)
             .frame(width: geometry.size.width)
             .background {
@@ -248,7 +250,7 @@ struct MangaDetailScreen: View {
                 }
             }
             .navigationDestination(for: [ChapterListItem].self) { chapterListItems in
-                CompactChapterListScreen(isLoading: $viewModel.isLoading, chapterListItems: chapterListItems)
+                CompactChapterListScreen(mangaSlug: mangaSlug, isLoading: $viewModel.isLoading, chapterListItems: chapterListItems)
             }
             #else
             .overlay {

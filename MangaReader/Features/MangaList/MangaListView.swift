@@ -25,7 +25,6 @@ struct MangaListView: View {
 
     var body: some View {
         KFImage(manga.imageDownloadURL)
-            .cacheOriginalImage()
             .backgroundDecode()
             .onSuccess { populateMangaColors(imageResult: $0) }
             .startLoadingBeforeViewAppear()

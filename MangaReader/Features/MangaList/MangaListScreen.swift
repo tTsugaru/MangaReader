@@ -65,8 +65,8 @@ struct MangaListScreen: View {
                     .padding(16)
                     .frame(minHeight: geometry.size.height)
                 }
-                .scrollIndicators(.hidden)
                 .frame(width: geometry.size.width)
+                .scrollIndicators(.hidden)
                 .overlay {
                     #if !os(macOS)
                     VStack {

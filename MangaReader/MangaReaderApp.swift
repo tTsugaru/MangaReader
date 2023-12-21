@@ -5,7 +5,7 @@ import SwiftUI
 struct MangaReaderApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationView()
                 .preferredColorScheme(.dark)
                 .task {
                     URLSession.shared.configuration.urlCache = URLCache(memoryCapacity: 100 * 1024 * 1024, diskCapacity: 800 * 1024 * 1024)

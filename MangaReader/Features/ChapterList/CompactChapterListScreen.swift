@@ -2,9 +2,14 @@ import SwiftUI
 
 struct CompactChapterListScreen: View {
     @Binding var isLoading: Bool
+    var mangaSlug: String
     var chapterListItems: [ChapterListItem]
-    @State private var isCollapsingChildren: Bool = false
+    
+    @StateObject var mangaStore = MangaStore.shared
 
+    @State private var isCollapsingChildren: Bool = false
+    @State private var selectedChapterListItem: ChapterListItem?
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -22,7 +27,8 @@ struct CompactChapterListScreen: View {
                                     chapterItem: chapterItem,
                                     isFirst: index == 0,
                                     isLast: index == chapterListItems.endIndex - 1
-                                ) { _ in
+                                ) { chapterListItem in
+                                    selectedChapterListItem = chapterListItem
                                 }
                             }
                             Spacer()
@@ -34,15 +40,23 @@ struct CompactChapterListScreen: View {
                 .animation(.easeInOut(duration: 0.25))
             }
             .frame(width: geometry.size.width)
-//            .background {
-//                FloatingCloudsView(colors: mangaViewModel.prominentColors)
-//                    .ignoresSafeArea()
-//            }
-//            .background {
-//                mangaViewModel.avrageCoverColor?.opacity(0.5)
-//                    .ignoresSafeArea()
-//            }
+            .background {
+                if let colors = mangaStore.prominentColors[mangaSlug] {
+                    FloatingCloudsView(colors: colors)
+                        .ignoresSafeArea()
+                }
+            }
+            .background {
+                if let color = mangaStore.averageCoverColors[mangaSlug] {
+                    color
+                        .opacity(0.5)
+                        .ignoresSafeArea()
+                }
+            }
             .navigationBarBackButtonHidden()
+            .navigationDestination(for: ChapterListItem.self) { listItem in
+                ReaderScreen(chapterId: listItem.id)
+            }
             #if !os(macOS)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
