@@ -86,17 +86,157 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F0698108-1B8F-4794-9793-9784023F753D"
+            uuid = "8B512571-69F2-41B9-B926-DBEF9C4E5707"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "MangaReader/Features/MangaList/MangaListScreen.swift"
+            filePath = "MangaReader/Networking/Database.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "93"
-            endingLineNumber = "93"
-            landmarkName = "body"
-            landmarkType = "24">
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "saveReadState(for:at:chapterNumber:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "8B512571-69F2-41B9-B926-DBEF9C4E5707 - 9fd5f0453dadeda1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for MangaReader.Database.saveReadState(for: Swift.String, at: Swift.String, chapterNumber: Swift.Int) async throws -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Database.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "1288">
+               </Location>
+               <Location
+                  uuid = "8B512571-69F2-41B9-B926-DBEF9C4E5707 - a0197c0c4b4d039c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(8) suspend resume partial function for MangaReader.Database.saveReadState(for: Swift.String, at: Swift.String, chapterNumber: Swift.Int) async throws -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Database.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "1304">
+               </Location>
+               <Location
+                  uuid = "8B512571-69F2-41B9-B926-DBEF9C4E5707 - 9fd5f0453dadeda1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for MangaReader.Database.saveReadState(for: Swift.String, at: Swift.String, chapterNumber: Swift.Int) async throws -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Database.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "1152">
+               </Location>
+               <Location
+                  uuid = "8B512571-69F2-41B9-B926-DBEF9C4E5707 - a0197c0c4b4d039c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(8) suspend resume partial function for MangaReader.Database.saveReadState(for: Swift.String, at: Swift.String, chapterNumber: Swift.Int) async throws -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Database.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "1168">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B90201CA-05BA-42F1-9D4B-CAB990FEC786"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MangaReader/Networking/Database.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "34"
+            endingLineNumber = "34"
+            landmarkName = "saveReadState(for:at:chapterNumber:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "B90201CA-05BA-42F1-9D4B-CAB990FEC786 - 9fd5f0453dadef59"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for MangaReader.Database.saveReadState(for: Swift.String, at: Swift.String, chapterNumber: Swift.Int) async throws -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Database.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "34"
+                  endingLineNumber = "34"
+                  offsetFromSymbolStart = "2060">
+               </Location>
+               <Location
+                  uuid = "B90201CA-05BA-42F1-9D4B-CAB990FEC786 - a0197c0c4b4d0164"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(8) suspend resume partial function for MangaReader.Database.saveReadState(for: Swift.String, at: Swift.String, chapterNumber: Swift.Int) async throws -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Database.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "34"
+                  endingLineNumber = "34"
+                  offsetFromSymbolStart = "2080">
+               </Location>
+               <Location
+                  uuid = "B90201CA-05BA-42F1-9D4B-CAB990FEC786 - 9fd5f0453dadef59"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for MangaReader.Database.saveReadState(for: Swift.String, at: Swift.String, chapterNumber: Swift.Int) async throws -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Database.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "34"
+                  endingLineNumber = "34"
+                  offsetFromSymbolStart = "1972">
+               </Location>
+               <Location
+                  uuid = "B90201CA-05BA-42F1-9D4B-CAB990FEC786 - a0197c0c4b4d0164"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(8) suspend resume partial function for MangaReader.Database.saveReadState(for: Swift.String, at: Swift.String, chapterNumber: Swift.Int) async throws -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Networking/Database.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "34"
+                  endingLineNumber = "34"
+                  offsetFromSymbolStart = "1996">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

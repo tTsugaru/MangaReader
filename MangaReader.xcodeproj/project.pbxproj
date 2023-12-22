@@ -196,10 +196,10 @@
 		3B8AA7512A7D93540051E61C /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				3B3C592D2B35C65700B475C3 /* Database.swift */,
 				3B8AA7522A7D93680051E61C /* Networking.swift */,
 				3B333B422A80BE3E00368534 /* API.swift */,
 				3B8AA7542A7D983E0051E61C /* Models */,
-				3B3C592D2B35C65700B475C3 /* Database.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";

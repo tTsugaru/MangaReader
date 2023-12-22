@@ -16,6 +16,12 @@ class ReaderScreenViewModel: ObservableObject {
             } else {
                 self.images += chapterDetailResponse.chapter.images ?? []
             }
+            
+            let mangaSlug = chapterDetailResponse.chapter.mdComics.slug
+            if let chapterNumber = Int(chapterDetailResponse.chapter.chap) {
+                try await Database.shared.saveReadState(for: mangaSlug, at: chapterDetailResponse.chapter.hid, chapterNumber: chapterNumber)
+            }
+            
             isLoading = images.isEmpty
         } catch {
             print(error)
