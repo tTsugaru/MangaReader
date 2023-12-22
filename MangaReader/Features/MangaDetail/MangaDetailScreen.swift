@@ -43,7 +43,6 @@ struct MangaDetailScreen: View {
                 .frame(minWidth: 100, maxWidth: 500)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                 .shadow(radius: 5)
-                .padding(.horizontal, 16)
         }
     }
 
@@ -99,7 +98,11 @@ struct MangaDetailScreen: View {
                 ChapterItemView(chapterItem: chapterItem,
                                 isFirst: index == 0,
                                 isLast: index == viewModel.chapterItems.endIndex - 1, onChapterSelect: { listItem in
+                    #if os(macOS)
                     selectedChapterListItem?(listItem)
+                    #else
+                    path.wrappedValue.append(listItem)
+                    #endif
                 })
             }
         }
@@ -182,10 +185,11 @@ struct MangaDetailScreen: View {
                         } else {
                             headerSection
                             
-                            DynamicStack(spacing: 8) {
+                            DynamicStack(spacing: 16) {
                                 coverSection
                                 contentSection
                             }
+                            .padding(.horizontal, 16)
                         }
                     }
                     .frame(width: horizontalSizeClass == .compact ? geometry.size.width : geometry.size.width * 0.85)
@@ -249,18 +253,18 @@ struct MangaDetailScreen: View {
                 }
             }
             .navigationDestination(for: [ChapterListItem].self) { chapterListItems in
-                CompactChapterListScreen(isLoading: $viewModel.isLoading, mangaSlug: mangaSlug, chapterListItems: chapterListItems)
+                CompactChapterListScreen(path: path, isLoading: $viewModel.isLoading, mangaSlug: mangaSlug, chapterListItems: chapterListItems)
             }
             #else
             .overlay {
-                        customNavigationView
-                    }
+                customNavigationView
+            }
             .onChange(of: windowObserver.windowIsResizing) { _, isResizing in
                 animate = !isResizing
             }
             #endif
-                    .foregroundStyle(isLightCoverColor ? .black : .white)
-                    .tint(isLightCoverColor ? .black : .white)
+            .foregroundStyle(isLightCoverColor ? .black : .white)
+            .tint(isLightCoverColor ? .black : .white)
         }
     }
 }

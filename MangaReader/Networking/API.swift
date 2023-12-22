@@ -5,15 +5,17 @@ enum API {
     case search
     case manga
     case mangaChapters(hid: String)
+    case chapter(hid: String)
 
     private var url: URL {
         let baseURL = "https://api.comick.fun"
         
         let path = switch self {
         case .trending: "/top"
-        case let .mangaChapters(hid): "/comic/\(hid)/chapters"
-        case .manga: "/comic"
         case .search: "/v1.0/search"
+        case .manga: "/comic"
+        case let .mangaChapters(hid): "/comic/\(hid)/chapters"
+        case let .chapter(hid): "/chapter/\(hid)"
         }
 
         return URL(string: baseURL + path)!

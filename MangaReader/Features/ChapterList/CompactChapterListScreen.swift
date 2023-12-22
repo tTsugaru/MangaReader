@@ -1,15 +1,15 @@
 import SwiftUI
 
 struct CompactChapterListScreen: View {
+    @Binding var path: NavigationPath
     @Binding var isLoading: Bool
     var mangaSlug: String
     var chapterListItems: [ChapterListItem]
-    
+
     @StateObject var mangaStore = MangaStore.shared
 
     @State private var isCollapsingChildren: Bool = false
-    @State private var selectedChapterListItem: ChapterListItem?
-    
+
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -28,7 +28,8 @@ struct CompactChapterListScreen: View {
                                     isFirst: index == 0,
                                     isLast: index == chapterListItems.endIndex - 1
                                 ) { chapterListItem in
-                                    selectedChapterListItem = chapterListItem
+                                    path.append(chapterListItem)
+                                    print(chapterListItem.id)
                                 }
                             }
                             Spacer()
@@ -54,9 +55,6 @@ struct CompactChapterListScreen: View {
                 }
             }
             .navigationBarBackButtonHidden()
-            .navigationDestination(for: ChapterListItem.self) { listItem in
-                ReaderScreen(chapterId: listItem.id)
-            }
             #if !os(macOS)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -64,7 +62,7 @@ struct CompactChapterListScreen: View {
                     }
                 }
             #endif
-//                .foregroundStyle(mangaViewModel.isLightCoverColor ? .black : .white)
+                .foregroundStyle(mangaStore.averageCoverColors[mangaSlug]?.isLightColor ?? false ? .black : .white)
         }
     }
 }

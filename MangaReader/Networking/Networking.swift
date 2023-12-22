@@ -97,4 +97,8 @@ class Networking {
         
         return try await API.mangaChapters(hid: hid).request(param: params)
     }
+    
+    func getChapterDetail(hid: String) async throws -> ChapterDetailResponse {
+        return try await API.chapter(hid: hid).request(param: ["tachiyomi": ["true"]])
+    }
 }

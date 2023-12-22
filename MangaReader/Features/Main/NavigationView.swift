@@ -44,6 +44,7 @@ struct NavigationView: View {
         .animation(.easeInOut(duration: 0.25), value: selectedChapterListItem)
     }
 
+    // TODO: Research to use SplitView on iPhone too                                                                  
     var body: some View {
         #if os(iOS)
             TabView {
@@ -51,6 +52,9 @@ struct NavigationView: View {
                     MangaListScreen(viewModel: listViewModel, path: $path)
                         .navigationDestination(for: MangaViewModel.self) { manga in
                             MangaDetailScreen(path: $path, mangaSlug: manga.slug)
+                        }
+                        .navigationDestination(for: ChapterListItem.self) { listItem in
+                            ReaderScreen(chapterId: listItem.id)
                         }
                 }
                 .tabItem {

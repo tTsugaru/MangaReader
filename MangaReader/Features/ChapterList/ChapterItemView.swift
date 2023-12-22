@@ -18,7 +18,7 @@ struct ChapterItemView: View {
     var body: some View {
         VStack(spacing: 0) {
             Rectangle()
-                .frame(height: 30)
+                .frame(height: 40)
                 .foregroundColor(Color.black.opacity(0.1))
                 .clipShape(
                     .rect(cornerRadii: RectangleCornerRadii(topLeading: isFirst ? 10 : 0,
@@ -58,7 +58,6 @@ struct ChapterItemView: View {
                                 ChapterItemView(chapterItem: child,
                                                 isLast: index == children.endIndex - 1) { chapterListItem in
                                     onChapterSelect?(chapterListItem)
-                                    
                                 }
                                     .padding(.horizontal, 32)
                             }

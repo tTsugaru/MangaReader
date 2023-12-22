@@ -35,7 +35,8 @@ class MangaDetailScreenViewModel: ObservableObject {
             guard chapterResponse.total > 0 else { return }
 
             let allChapterResponse = try await Networking.shared.getChapters(hid: hid, limit: chapterResponse.total)
-            chapters = allChapterResponse.chapters
+            #warning("debug - dont forget to remove")
+            chapters = allChapterResponse.chapters.filter { $0.lang == "en" }
 
             let groupNames = Array(Set(chapters.compactMap { $0.groupName?.first }))
             let chapterListItems = groupNames.map { ChapterListItem(id: UUID().uuidString, title: $0) }

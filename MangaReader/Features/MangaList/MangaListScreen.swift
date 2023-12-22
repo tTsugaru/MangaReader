@@ -87,6 +87,13 @@ struct MangaListScreen: View {
                 .task {
                     await viewModel.getAllMangas()
                     
+                    do {
+                        try await Database.shared.test()
+                    } catch {
+                        print(error)
+                    }
+
+                    
                     guard let scrollPosition = viewModel.scrollPosition else { return }
                     reader.scrollTo(scrollPosition, anchor: .top)
                 }
