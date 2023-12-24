@@ -36,7 +36,7 @@ class MangaListViewModel: ObservableObject {
             mangas += loadedNextMangas
             isLoading = false
         } catch {
-            print(error)
+            print(error) // TODO: Handle error
         }
     }
 }

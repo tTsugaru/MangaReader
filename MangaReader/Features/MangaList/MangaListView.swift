@@ -27,10 +27,9 @@ struct MangaListView: View {
         KFImage(manga.imageDownloadURL)
             .backgroundDecode()
             .onSuccess { populateMangaColors(imageResult: $0) }
+            .memoryCacheExpiration(.seconds(5))
             .startLoadingBeforeViewAppear()
-        #if os(iOS)
             .setProcessor(DownsamplingImageProcessor(size: CGSize(width: 180 * 2, height: 230 * 2)))
-        #endif
             .resizable()
             .aspectRatio(11 / 14, contentMode: .fit)
             .overlay {

@@ -4,7 +4,7 @@ struct Comic: Codable {
     let id: Int
     let hid: String
     let title: String
-    let country: String
+    let country: String?
     let status: Int
     let links: Links?
     let lastChapter: Double
@@ -33,7 +33,7 @@ struct Comic: Codable {
     let mdComicMdGenres: [MDComicMDGenre]
     let mdCovers: [Cover]
     let muComics: MUComics
-    let countryCode: String
+    let countryCode: String?
     let langName: String?
     let langNative: String?
     let coverUrl: String

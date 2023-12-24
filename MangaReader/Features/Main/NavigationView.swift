@@ -11,40 +11,40 @@ struct NavigationView: View {
     @State private var selectedSidebarItem: Int = 0
 
     // TODO: Find better solution for macOS navigation
-    @State private var selectedMangaViewModel: MangaViewModel?
-    @State private var selectedChapterListItem: ChapterListItem?
+    @State private var selectedMangaSlug: String = ""
+    @State private var chapterNavigation: ChapterNavigation = .init(chapterId: "", currentChapterImageId: nil)
 
     private var mangaListScreen: some View {
         ZStack {
             MangaListScreen(viewModel: listViewModel, path: $path, showMangaDetailScreen: { manga in
-                selectedMangaViewModel = manga
+                selectedMangaSlug = manga.slug
             })
             .zIndex(0)
 
-            if let selectedMangaViewModel {
-                MangaDetailScreen(path: $path, mangaSlug: selectedMangaViewModel.slug) { chapterListItem in
-                    selectedChapterListItem = chapterListItem
+            if !selectedMangaSlug.isEmpty {
+                MangaDetailScreen(path: $path, mangaSlug: selectedMangaSlug) { chapterNavigation in
+                    self.chapterNavigation = chapterNavigation
                 } dismiss: {
-                    self.selectedMangaViewModel = nil
-                    selectedChapterListItem = nil
+                    selectedMangaSlug = ""
+                    chapterNavigation = ChapterNavigation(chapterId: "", currentChapterImageId: nil)
                 }
                 .zIndex(1)
                 .transition(.move(edge: .trailing))
             }
 
-            if let selectedChapterListItem {
-                ReaderScreen(chapterId: selectedChapterListItem.id) {
-                    self.selectedChapterListItem = nil
+            if !chapterNavigation.chapterId.isEmpty {
+                ReaderScreen(chapterId: chapterNavigation.chapterId, currentChapterImageId: chapterNavigation.currentChapterImageId) {
+                    chapterNavigation = ChapterNavigation(chapterId: "", currentChapterImageId: nil)
                 }
-                    .zIndex(2)
-                    .transition(.move(edge: .trailing))
+                .zIndex(2)
+                .transition(.move(edge: .trailing))
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: selectedMangaViewModel)
-        .animation(.easeInOut(duration: 0.25), value: selectedChapterListItem)
+        .animation(.easeInOut(duration: 0.25), value: selectedMangaSlug)
+        .animation(.easeInOut(duration: 0.25), value: chapterNavigation)
     }
 
-    // TODO: Research to use SplitView on iPhone too                                                                  
+    // TODO: Research to use SplitView on iPhone too
     var body: some View {
         #if os(iOS)
             TabView {
@@ -53,8 +53,8 @@ struct NavigationView: View {
                         .navigationDestination(for: MangaViewModel.self) { manga in
                             MangaDetailScreen(path: $path, mangaSlug: manga.slug)
                         }
-                        .navigationDestination(for: ChapterListItem.self) { listItem in
-                            ReaderScreen(chapterId: listItem.id)
+                        .navigationDestination(for: ChapterNavigation.self) { chapterNavigation in
+                            ReaderScreen(chapterId: chapterNavigation.chapterId, currentChapterImageId: chapterNavigation.currentChapterImageId)
                         }
                 }
                 .tabItem {

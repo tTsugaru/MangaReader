@@ -12,20 +12,43 @@ struct MangaDetailScreen: View {
 
     @State private var animate = false
     @State private var isDismissing = false
-    @State private var isLightCoverColor = true
+    @State private var isLightCoverColor = false
 
     private var path: Binding<NavigationPath>
     private var mangaSlug: String
     private var dismiss: (() -> Void)?
-    private var selectedChapterListItem: ((ChapterListItem) -> Void)?
+    private var selectedChapterListItem: ((ChapterNavigation) -> Void)?
 
-    init(path: Binding<NavigationPath>, mangaSlug: String, selectedChapterListItem: ((ChapterListItem) -> Void)? = nil, dismiss: (() -> Void)? = nil) {
+    init(path: Binding<NavigationPath>, mangaSlug: String, selectedChapterListItem: ((ChapterNavigation) -> Void)? = nil, dismiss: (() -> Void)? = nil) {
         self.path = path
         self.mangaSlug = mangaSlug
         self.selectedChapterListItem = selectedChapterListItem
         self.dismiss = dismiss
     }
-    
+
+    private func handleNavigation(chapterId: String, currentChapterImageId: String? = nil) {
+        let chapterNavigation = ChapterNavigation(chapterId: chapterId, currentChapterImageId: currentChapterImageId)
+
+        selectedChapterListItem?(chapterNavigation)
+        path.wrappedValue.append(chapterNavigation)
+    }
+
+    #warning("deduplicate code")
+    @ViewBuilder
+    private func continueButton(mangaReadState: MangaReadState) -> some View {
+        if let colors = mangaStore.prominentColors[mangaSlug], let isLightColor = mangaStore.averageCoverColors[mangaSlug]?.isLightColor {
+            Button("Continue Chap. \(mangaReadState.chapterNumber)".uppercased()) {
+                handleNavigation(chapterId: mangaReadState.chapterHid, currentChapterImageId: mangaReadState.currentChapterImageId)
+            }
+            .buttonStyle(.rainbow(colors: isLightColor ? [.black, .gray, .black] : colors.map { $0.lighter() }))
+        } else {
+            Button("Continue Chap. \(mangaReadState.chapterNumber)".uppercased()) {
+                handleNavigation(chapterId: mangaReadState.chapterHid, currentChapterImageId: mangaReadState.currentChapterImageId)
+            }
+            .buttonStyle(.rainbow)
+        }
+    }
+
     @ViewBuilder
     private func coverImageView() -> some View {
         if let downloadURL = viewModel.mangaDetail?.imageDownloadURL {
@@ -42,7 +65,7 @@ struct MangaDetailScreen: View {
                 .scaledToFit()
                 .frame(minWidth: 100, maxWidth: 500)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .shadow(radius: 5)
+                .shadow(color: .black, radius: 9)
         }
     }
 
@@ -78,7 +101,7 @@ struct MangaDetailScreen: View {
                 .padding(8)
                 .font(horizontalSizeClass == .compact ? .body : .title2)
                 .background {
-                    Color.black.opacity(0.1)
+                    Color.black.opacity(0.3)
                         .clipShape(
                             .rect(cornerRadii: RectangleCornerRadii(topLeading: 0,
                                                                     bottomLeading: 10,
@@ -87,6 +110,11 @@ struct MangaDetailScreen: View {
                             )
                         )
                 }
+            }
+            
+            if let mangaReadState = viewModel.mangaReadState {
+                continueButton(mangaReadState: mangaReadState)
+                    .padding(.top, 16)
             }
             Spacer()
         }
@@ -98,12 +126,8 @@ struct MangaDetailScreen: View {
                 ChapterItemView(chapterItem: chapterItem,
                                 isFirst: index == 0,
                                 isLast: index == viewModel.chapterItems.endIndex - 1, onChapterSelect: { listItem in
-                    #if os(macOS)
-                    selectedChapterListItem?(listItem)
-                    #else
-                    path.wrappedValue.append(listItem)
-                    #endif
-                })
+                                    handleNavigation(chapterId: listItem.id)
+                                })
             }
         }
         .animation(.easeInOut(duration: 0.25), value: animate) // Fix animation warning finde a suited value to activate animation
@@ -128,7 +152,7 @@ struct MangaDetailScreen: View {
                 }
                 .padding(16)
                 .background {
-                    Color.black.opacity(0.1)
+                    Color.black.opacity(0.3)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
@@ -180,11 +204,11 @@ struct MangaDetailScreen: View {
             ScrollView {
                 VStack {
                     VStack(spacing: 16) {
-                        if viewModel.isLoading && !(mangaStore.prominentColors[mangaSlug]?.isEmpty ?? true) {
+                        if viewModel.isLoading, !(mangaStore.prominentColors[mangaSlug]?.isEmpty ?? true) {
                             ProgressView()
                         } else {
                             headerSection
-                            
+
                             DynamicStack(spacing: 16) {
                                 coverSection
                                 contentSection
@@ -198,6 +222,9 @@ struct MangaDetailScreen: View {
                 .frame(minHeight: geometry.size.height)
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
+            }
+            .onDisappear {
+                print("Disappear")
             }
             .animation(.easeInOut(duration: 0.25), value: animate)
             .frame(width: geometry.size.width)
@@ -223,6 +250,7 @@ struct MangaDetailScreen: View {
                 }
             }
             .task(priority: .userInitiated) {
+                await viewModel.getMangaReadState(slug: mangaSlug)
                 await viewModel.fetchData(mangaSlug: mangaSlug)
             }
             // Negating check so its just not available for macOS
@@ -257,14 +285,14 @@ struct MangaDetailScreen: View {
             }
             #else
             .overlay {
-                customNavigationView
-            }
-            .onChange(of: windowObserver.windowIsResizing) { _, isResizing in
-                animate = !isResizing
-            }
+                        customNavigationView
+                    }
+                    .onChange(of: windowObserver.windowIsResizing) { _, isResizing in
+                        animate = !isResizing
+                    }
             #endif
-            .foregroundStyle(isLightCoverColor ? .black : .white)
-            .tint(isLightCoverColor ? .black : .white)
+                    .foregroundStyle(isLightCoverColor ? .black : .white)
+                    .tint(isLightCoverColor ? .black : .white)
         }
     }
 }

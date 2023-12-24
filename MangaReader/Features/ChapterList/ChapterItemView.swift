@@ -19,7 +19,7 @@ struct ChapterItemView: View {
         VStack(spacing: 0) {
             Rectangle()
                 .frame(height: 40)
-                .foregroundColor(Color.black.opacity(0.1))
+                .foregroundColor(Color.black.opacity(0.3))
                 .clipShape(
                     .rect(cornerRadii: RectangleCornerRadii(topLeading: isFirst ? 10 : 0,
                                                             bottomLeading: isLast ? 10 : 0,

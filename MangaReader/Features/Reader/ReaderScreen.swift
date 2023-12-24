@@ -1,13 +1,16 @@
 import Kingfisher
 import SwiftUI
 
-struct ReaderScreen: View {
+struct
+ReaderScreen: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @StateObject var viewModel = ReaderScreenViewModel()
-    @State private var navigationVisibility: Visibility = .hidden
+    @State private var navigationVisibility = Visibility.hidden
+    @State private var didInitiateScrollTo = false
 
     let chapterId: String
+    let currentChapterImageId: String?
     var dismiss: (() -> Void)?
 
     @ViewBuilder
@@ -36,9 +39,7 @@ struct ReaderScreen: View {
                         dismiss?()
                     }
                 Spacer()
-                if let title = viewModel.chapterDetailViewModel?.chapter.title {
-                    Text(title)
-                }
+                Text(viewModel.readerTitle)
                 Spacer()
             }
             .background {
@@ -48,81 +49,101 @@ struct ReaderScreen: View {
             }
             Spacer()
         }
-        .foregroundStyle(.white)
         .ignoresSafeArea()
     }
 
     var body: some View {
         GeometryReader { geometry in
-            ScrollViewReader { _ in
+            ScrollViewReader { reader in
                 ScrollView {
-                    HStack {
-                        Spacer()
-                        LazyVStack(spacing: 0) {
-                            if viewModel.isLoading {
-                                ProgressView()
-                            } else {
-                                ForEach(Array(viewModel.images.enumerated()), id: \.offset) { index, image in
-                                    if let downloadURL = URL(string: image.url) {
+                    LazyVStack(spacing: 0) {
+                        if viewModel.isLoading {
+                            ProgressView()
+                        } else {
+                            ForEach(Array(viewModel.images.enumerated()), id: \.offset) { index, image in
+                                if let downloadURL = image.url {
+                                    VStack {
                                         KFImage(downloadURL)
                                             .startLoadingBeforeViewAppear()
                                             .onFailure { error in
                                                 print(error)
                                             }
-                                            .placeholder {
-                                                VStack {
-                                                    Text("Loading Chapter Image")
-                                                    ProgressView()
-                                                }
+                                            .placeholder { _ in
+                                                Image(systemName: "arrow.circlepath")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(maxWidth: CGFloat(image.width), maxHeight: CGFloat(image.height))
                                             }
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
-                                            .frame(maxWidth: CGFloat(image.w))
-                                            .onAppear {
-                                                guard let nextChapter = viewModel.chapterDetailViewModel?.next?.hid, (viewModel.images.endIndex - 1) == index else { return }
-                                                Task {
-                                                    await viewModel.getChapterDetail(chapterId: nextChapter)
-                                                }
+                                            .frame(maxWidth: CGFloat(image.width), maxHeight: CGFloat(image.height))
+                                            .overlay {
+                                                Text(downloadURL.absoluteString)
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(Color.red, lineWidth: 1)
                                             }
-                                            .id(image.url)
+                                    }
+                                    .id(downloadURL.absoluteString)
+                                    .onAppear {
+                                        print("task after fetching")
+                                        if !viewModel.isLoading, !viewModel.images.isEmpty, !didInitiateScrollTo {
+                                            reader.scrollTo(currentChapterImageId, anchor: .top)
+                                            didInitiateScrollTo = downloadURL.absoluteString == currentChapterImageId
+                                        }
+
+                                        Task {
+                                            guard !viewModel.isLoading else { return }
+
+                                            if didInitiateScrollTo {
+                                                await viewModel.saveCurrentChapterLocation(chapterImageId: downloadURL.absoluteString)
+                                            }
+
+                                            guard let nextChapter = viewModel.chapterDetailViewModel?.next?.hid, (viewModel.images.endIndex - 1) == index else { return }
+                                            await viewModel.getChapterDetail(chapterId: nextChapter)
+                                        }
                                     }
                                 }
                             }
                         }
-                        Spacer()
                     }
                     .frame(minHeight: geometry.size.height)
-                }
-                .onTapGesture {
-                    withAnimation {
-                        navigationVisibility == .hidden ? (navigationVisibility = .visible) : (navigationVisibility = .hidden)
-                    }
+                    .scrollTargetLayout()
                 }
                 .scrollIndicators(.hidden)
                 .toolbar(navigationVisibility)
-                .toolbar(.hidden, for: .tabBar)
                 .animation(.easeInOut(duration: 0.1), value: navigationVisibility)
                 .frame(width: geometry.size.width)
                 .background {
-                    withAnimation {
-                        if viewModel.isLoading {
-                            Color("background", bundle: Bundle.main)
-                                .ignoresSafeArea()
-                        } else {
-                            Color.black
-                                .ignoresSafeArea()
-                        }
-                    }
+                    Color.black
+                        .ignoresSafeArea()
                 }
                 .task {
                     await viewModel.getChapterDetail(chapterId: chapterId)
                 }
-                .navigationTitle(viewModel.chapterDetailViewModel?.chapTitle ?? "")
                 .overlay(safeAreaBackground(geometry: geometry))
                 #if os(macOS)
                     .overlay {
                         customNavigationView
                     }
+                #else
+                    .navigationBarTitleDisplayMode(.inline)
+                        .navigationBarBackButtonHidden()
+                        .toolbar(.hidden, for: .tabBar)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                CustomBackButton()
+                            }
+
+                            ToolbarItem(placement: .principal) {
+                                Text(viewModel.readerTitle)
+                            }
+                        }
+                        .foregroundStyle(.white)
+                        .onTapGesture {
+                            withAnimation {
+                                navigationVisibility == .hidden ? (navigationVisibility = .visible) : (navigationVisibility = .hidden)
+                            }
+                        }
                 #endif
             }
         }
@@ -130,5 +151,5 @@ struct ReaderScreen: View {
 }
 
 #Preview {
-    ReaderScreen(chapterId: "lkRE7")
+    ReaderScreen(chapterId: "lkRE7", currentChapterImageId: nil)
 }

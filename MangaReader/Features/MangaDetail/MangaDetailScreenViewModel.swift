@@ -8,6 +8,7 @@ class MangaDetailScreenViewModel: ObservableObject {
 
     @Published var chapters = [Chapter]()
     @Published var chapterItems: [ChapterListItem] = []
+    @Published var mangaReadState: MangaReadState? = nil
 
     func fetchData(mangaSlug: String) async {
         isLoading = true
@@ -17,6 +18,14 @@ class MangaDetailScreenViewModel: ObservableObject {
             await getChapters(hid: mangaHid)
         } else {
             isLoading = false
+        }
+    }
+    
+    func getMangaReadState(slug: String) async {
+        do {
+            mangaReadState = try await Database.shared.getMangaReadState(for: slug)
+        } catch {
+            print(error)
         }
     }
 

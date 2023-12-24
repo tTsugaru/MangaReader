@@ -28,8 +28,7 @@ struct CompactChapterListScreen: View {
                                     isFirst: index == 0,
                                     isLast: index == chapterListItems.endIndex - 1
                                 ) { chapterListItem in
-                                    path.append(chapterListItem)
-                                    print(chapterListItem.id)
+                                    path.append(ChapterNavigation(chapterId: chapterListItem.id, currentChapterImageId: nil))
                                 }
                             }
                             Spacer()

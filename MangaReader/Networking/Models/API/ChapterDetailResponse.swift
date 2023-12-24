@@ -101,7 +101,9 @@ struct MuPublisherss: Codable {
     let title, slug: String
 }
 
+#warning("add support for images with b2Key")
 struct ChapterImage: Codable {
-    let url: String
+    let url: String?
     let w, h: Int
+    let b2Key: String?
 }

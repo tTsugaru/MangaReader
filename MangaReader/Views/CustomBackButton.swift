@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct CustomBackButton: View {
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         Button(action: {
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         }) {
             Image(systemName: "chevron.left")
         }
