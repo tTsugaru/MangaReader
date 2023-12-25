@@ -3,4 +3,99 @@
    uuid = "98E5BB13-CA3C-4A2B-83E7-0C1D57BDA90D"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "831454E5-B92A-4B89-B17A-B921584037CE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MangaReader/Features/History/HistoryScreenViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
+            landmarkName = "getMangaReadStates()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "831454E5-B92A-4B89-B17A-B921584037CE - 845bf04930044fb1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for MangaReader.HistoryScreenViewModel.getMangaReadStates() async -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Features/History/HistoryScreenViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "820">
+               </Location>
+               <Location
+                  uuid = "831454E5-B92A-4B89-B17A-B921584037CE - 34761f5e801b03b3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for MangaReader.HistoryScreenViewModel.getMangaReadStates() async -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Features/History/HistoryScreenViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "1012">
+               </Location>
+               <Location
+                  uuid = "831454E5-B92A-4B89-B17A-B921584037CE - fc1b13d8481f99b4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(6) suspend resume partial function for MangaReader.HistoryScreenViewModel.getMangaReadStates() async -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Features/History/HistoryScreenViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "188">
+               </Location>
+               <Location
+                  uuid = "831454E5-B92A-4B89-B17A-B921584037CE - a4002652101237b5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(7) suspend resume partial function for MangaReader.HistoryScreenViewModel.getMangaReadStates() async -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Features/History/HistoryScreenViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "296">
+               </Location>
+               <Location
+                  uuid = "831454E5-B92A-4B89-B17A-B921584037CE - fc1b13d8481f9997"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(6) suspend resume partial function for MangaReader.HistoryScreenViewModel.getMangaReadStates() async -&gt; ()"
+                  moduleName = "MangaReader"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jakub/Documents/Development/MangaReader/MangaReader/Features/History/HistoryScreenViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "32"
+                  endingLineNumber = "32"
+                  offsetFromSymbolStart = "132">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

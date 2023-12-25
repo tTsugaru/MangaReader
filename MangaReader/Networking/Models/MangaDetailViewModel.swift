@@ -1,6 +1,6 @@
 import Foundation
 
-class MangaDetailViewModel: ObservableObject, Identifiable {
+class MangaDetailViewModel: ObservableObject, Identifiable, MangaListViewProtocol {
     let model: MangaDetail
 
     init(_ model: MangaDetail) {
@@ -13,6 +13,10 @@ class MangaDetailViewModel: ObservableObject, Identifiable {
 
     var title: String {
         model.comic.title
+    }
+    
+    var slug: String {
+        model.comic.slug
     }
 
     var alternativeTitles: String {
@@ -43,29 +47,22 @@ class MangaDetailViewModel: ObservableObject, Identifiable {
         return model.firstChap.hid
     }
 
-    var imageDownloadURL: CoverViewModel? {
+    var coverViewModel: CoverViewModel? {
         guard let cover = model.comic.mdCovers.first else { return nil }
         return CoverViewModel(model: cover)
     }
+    
+    var imageDownloadURL: URL? {
+        coverViewModel?.downloadURL
+    }
 }
-struct CoverViewModel {
-    private let model: Cover
-    
-    init(model: Cover) {
-        self.model = model
+extension MangaDetailViewModel: Equatable {
+    static func == (lhs: MangaDetailViewModel, rhs: MangaDetailViewModel) -> Bool {
+        lhs.slug == rhs.slug
     }
-    
-    var b2Key: String {
-        return model.b2key
-    }
-    var h: Int {
-        return model.h
-    }
-    var w: Int {
-        return model.w
-    }
-    
-    var downloadURL: URL? {
-        return URL(string: "https://meo.comick.pictures/\(self.b2Key)")
+}
+extension MangaDetailViewModel: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
     }
 }

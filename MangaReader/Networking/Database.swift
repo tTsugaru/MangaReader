@@ -69,4 +69,9 @@ class Database {
             return MangaReadState(record)
         }
     }
+    
+    func removeMangaReadState(with id: String) async throws {
+        let privateDatabase = container.privateCloudDatabase
+        try await privateDatabase.deleteRecord(withID: .init(recordName: id))
+    }
 }

@@ -10,7 +10,7 @@ struct NavigationView: View {
 
     @State private var selectedSidebarItem: Int = 0
 
-    // TODO: Find better solution for macOS navigation
+    #warning("Find better solution for macOS navigation")
     @State private var selectedMangaSlug: String = ""
     @State private var chapterNavigation: ChapterNavigation = .init(chapterId: "", currentChapterImageId: nil)
 
@@ -66,8 +66,8 @@ struct NavigationView: View {
                         Label("Favorites", systemImage: "star")
                     }
 
-                NavigationStack {
-                    Text("History")
+                NavigationStack(path: $path) {
+                    HistoryScreen(path: $path)
                 }
                 .tabItem {
                     Label("History", systemImage: "clock")
@@ -87,6 +87,7 @@ struct NavigationView: View {
                 switch SidebarItem(rawValue: selectedSidebarItem)! {
                 case .list: mangaListScreen
                 case .favorites: Text("Test")
+                case .history: HistoryScreen()
                 }
             }
             .task {

@@ -54,7 +54,7 @@ struct MangaDetailScreen: View {
 
     @ViewBuilder
     private func coverImageView(geometry: GeometryProxy) -> some View {
-        if let coverViewModel = viewModel.mangaDetail?.imageDownloadURL, let downloadURL = coverViewModel.downloadURL {
+        if let coverViewModel = viewModel.mangaDetail?.coverViewModel, let downloadURL = coverViewModel.downloadURL {
             KFImage(downloadURL)
                 .fade(duration: 0.2)
                 .startLoadingBeforeViewAppear()
@@ -130,7 +130,6 @@ struct MangaDetailScreen: View {
             if let description = viewModel.mangaDetail?.sanitizedDescription {
                 Text(.init(description))
                     .font(.body)
-                    //.underline()
                     .tint(isLightCoverColor ? .black : .white)
                     .padding(16)
                     .background {

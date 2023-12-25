@@ -7,36 +7,40 @@ import Kingfisher
 class MangaListViewModel: ObservableObject {
     @Published var scrollPosition: String?
     
-    @Published var mangas: [MangaViewModel] = []
-    @Published var isLoading: Bool = false
+    @Published var mangas = [MangaViewModel]()
+    @Published var isLoading = false
+    @Published var isLoadingNextPage = false
     @Published var currentPageLoaded = 1
+    @Published var error: Error?
     
     @Published var oldSelectedManga: MangaViewModel?
-    @Published var fetchColorTasks = [String: Task<Void, Never>]()
     
     func getAllMangas() async {
         guard mangas.isEmpty else { return }
         
         isLoading = true
+        error = nil
         do {
-            mangas = try await Networking.shared.search(page: 1).map { MangaViewModel(model: $0) }
+            mangas = try await Networking.shared.search(page: 1, limit: 200).map { MangaViewModel(model: $0) }
             isLoading = false
         } catch {
-            print(error) // TODO: Handle error
+            self.error = error
+            isLoading = false
         }
     }
     
     func loadNextPage(with limit: Int) async {
-        guard !isLoading else { return }
         currentPageLoaded += 1
         
-        isLoading = true
+        isLoadingNextPage = true
+        error = nil
         do {
             let loadedNextMangas = try await Networking.shared.search(page: currentPageLoaded, limit: limit).map { MangaViewModel(model: $0) }
             mangas += loadedNextMangas
-            isLoading = false
+            isLoadingNextPage = false
         } catch {
-            print(error) // TODO: Handle error
+            self.error = error
+            isLoadingNextPage = false
         }
     }
 }

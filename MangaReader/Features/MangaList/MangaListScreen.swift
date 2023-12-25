@@ -42,51 +42,64 @@ struct MangaListScreen: View {
             ScrollViewReader { reader in
                 ScrollView {
                     VStack {
-                        LazyVGrid(columns: columns, alignment: .center) {
-                            ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
-                                MangaListView(viewModel: viewModel, manga: manga)
-                                    .id(manga.slug)
-                                    .onTapGesture {
-                                        // Navigation for macOS
-                                        showMangaDetailScreen?(manga)
-                                        // Navigation for iOS/iPadOS
-                                        path.append(manga)
+                        if let error = viewModel.error {
+                            VStack {
+                                Text(error.localizedDescription)
+                                Button("Try Again?") {
+                                    Task {
+                                        await viewModel.getAllMangas()
                                     }
-                                    .onAppear {
-                                        let bufferSize = Int(columnCount)
-                                        guard (viewModel.mangas.count - bufferSize) == index else { return }
-
-                                        mangaStore.storeColors()
-
-                                        Task.detached(priority: .userInitiated) {
-                                            await viewModel.loadNextPage(with: 50)
-                                        }
-                                    }
-                                    .scrollTransition(.animated(.bouncy).threshold(.visible(0.3))) { content, phase in
-                                        content
-                                            .opacity(phase.isIdentity ? 1 : 0.2)
-                                            .scaleEffect(phase.isIdentity ? 1 : 0.85)
-                                            .blur(radius: phase.isIdentity ? 0 : 10)
-                                    }
+                                }
                             }
-                        }
-                        .scrollTargetLayout()
+                        } else if viewModel.isLoading {
+                            VStack {
+                                Text("Loading Mangas")
+                                ProgressView()
+                            }
+                        } else {
+                            LazyVGrid(columns: columns, alignment: .center) {
+                                ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
+                                    MangaListView(manga: manga)
+                                        .id(manga.slug)
+                                        .onTapGesture {
+                                            // Navigation for macOS
+                                            showMangaDetailScreen?(manga)
+                                            // Navigation for iOS/iPadOS
+                                            path.append(manga)
+                                        }
+                                        .onAppear {
+                                            let bufferSize = Int(columnCount)
+                                            guard (viewModel.mangas.count - bufferSize) == index else { return }
 
-                        if viewModel.isLoading {
-                            ProgressView()
+                                            mangaStore.storeColors()
+
+                                            Task.detached(priority: .utility) {
+                                                await viewModel.loadNextPage(with: 200)
+                                            }
+                                        }
+                                }
+                                
+                                if viewModel.isLoadingNextPage {
+                                    ProgressView()
+                                }
+                            }
                         }
                     }
                     .padding(16)
                     .frame(minHeight: geometry.size.height)
+                    .scrollTargetLayout()
                 }
                 .frame(width: geometry.size.width)
                 .scrollIndicators(.hidden)
                 .scrollPosition(id: $scrollPosition)
                 .overlay(safeAreaBackground(geometry: geometry))
                 .background(Color("background", bundle: Bundle.main))
+                .refreshable {
+                    await viewModel.getAllMangas()
+                }
                 .task {
                     await viewModel.getAllMangas()
-                    
+
                     guard let scrollPosition = viewModel.scrollPosition else { return }
                     reader.scrollTo(scrollPosition, anchor: .top)
                 }

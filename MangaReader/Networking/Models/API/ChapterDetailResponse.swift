@@ -58,7 +58,7 @@ struct ChapterDetail: Codable {
 
 struct MdComics: Codable {
     let id: Int
-    let title, country, slug, desc: String
+    let title, country, slug, desc: String?
     let links: MdComicLinks
     let genres: [Int]
     let hid, contentRating: String

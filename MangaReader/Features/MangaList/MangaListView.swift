@@ -2,13 +2,18 @@ import Kingfisher
 import SwiftUI
 
 @MainActor
-struct MangaListView: View {
-    @ObservedObject var viewModel: MangaListViewModel
-    @ObservedObject var manga: MangaViewModel
+protocol MangaListViewProtocol {
+    var slug: String { get }
+    var title: String { get }
+    var imageDownloadURL: URL? { get }
+}
 
-    init(viewModel: MangaListViewModel, manga: MangaViewModel) {
+@MainActor
+struct MangaListView: View {
+    var manga: MangaListViewProtocol
+
+    init(manga: MangaListViewProtocol) {
         self.manga = manga
-        self.viewModel = viewModel
     }
 
     @ObservedObject private var mangaStore = MangaStore.shared
@@ -65,6 +70,12 @@ struct MangaListView: View {
                 withAnimation(.easeInOut(duration: animationSpeed)) {
                     self.isHovering = isHovering
                 }
+            }
+            .scrollTransition(.animated(.bouncy).threshold(.visible(0.3))) { content, phase in
+                content
+                    .opacity(phase.isIdentity ? 1 : 0.2)
+                    .scaleEffect(phase.isIdentity ? 1 : 0.85)
+                    .blur(radius: phase.isIdentity ? 0 : 10)
             }
     }
 

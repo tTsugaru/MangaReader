@@ -5,11 +5,13 @@ enum SidebarItem: Int, Identifiable, CaseIterable {
 
     case list
     case favorites
+    case history
 
     var title: String {
         switch self {
         case .list: "List"
         case .favorites: "Favorites"
+        case .history: "History"
         }
     }
 
@@ -19,6 +21,8 @@ enum SidebarItem: Int, Identifiable, CaseIterable {
             Image(systemName: "books.vertical")
         case .favorites:
             Image(systemName: "star")
+        case .history:
+            Image(systemName: "clock")
         }
     }
 }
