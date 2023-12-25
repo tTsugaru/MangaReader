@@ -65,6 +65,13 @@ struct NavigationView: View {
                     .tabItem {
                         Label("Favorites", systemImage: "star")
                     }
+
+                NavigationStack {
+                    Text("History")
+                }
+                .tabItem {
+                    Label("History", systemImage: "clock")
+                }
             }
             .environmentObject(windowObserver)
         #elseif os(macOS)

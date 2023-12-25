@@ -77,11 +77,6 @@ ReaderScreen: View {
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                             .frame(maxWidth: CGFloat(image.width), maxHeight: CGFloat(image.height))
-                                            .overlay {
-                                                Text(downloadURL.absoluteString)
-                                                RoundedRectangle(cornerRadius: 10)
-                                                    .stroke(Color.red, lineWidth: 1)
-                                            }
                                     }
                                     .id(downloadURL.absoluteString)
                                     .onAppear {

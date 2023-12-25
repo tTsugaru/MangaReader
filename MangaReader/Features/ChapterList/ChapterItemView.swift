@@ -22,8 +22,8 @@ struct ChapterItemView: View {
                 .foregroundColor(Color.black.opacity(0.3))
                 .clipShape(
                     .rect(cornerRadii: RectangleCornerRadii(topLeading: isFirst ? 10 : 0,
-                                                            bottomLeading: isLast ? 10 : 0,
-                                                            bottomTrailing: isLast ? 10 : 0,
+                                                            bottomLeading: isLast || chapterItem.showChildren ? 10 : 0,
+                                                            bottomTrailing: isLast || chapterItem.showChildren ? 10 : 0,
                                                             topTrailing: isFirst ? 10 : 0)
                     )
                 )

@@ -35,14 +35,37 @@ class MangaDetailViewModel: ObservableObject, Identifiable {
         model.comic.description
     }
 
-    var sanitizedDescription: [String] {
+    var sanitizedDescription: String? {
         description?.trimmingCharacters(in: .whitespacesAndNewlines)
-            .split(whereSeparator: { $0.isNewline })
-            .compactMap { String($0) } ?? []
+    }
+    
+    var firstChapterId: String {
+        return model.firstChap.hid
     }
 
-    var imageDownloadURL: URL? {
-        guard let imageId = model.comic.mdCovers.first?.b2key else { return nil }
-        return URL(string: "https://meo.comick.pictures/\(imageId)")
+    var imageDownloadURL: CoverViewModel? {
+        guard let cover = model.comic.mdCovers.first else { return nil }
+        return CoverViewModel(model: cover)
+    }
+}
+struct CoverViewModel {
+    private let model: Cover
+    
+    init(model: Cover) {
+        self.model = model
+    }
+    
+    var b2Key: String {
+        return model.b2key
+    }
+    var h: Int {
+        return model.h
+    }
+    var w: Int {
+        return model.w
+    }
+    
+    var downloadURL: URL? {
+        return URL(string: "https://meo.comick.pictures/\(self.b2Key)")
     }
 }

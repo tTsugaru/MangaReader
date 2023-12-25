@@ -16,7 +16,7 @@ enum DynamicStackAlignment {
         case .trailing:
             return .trailing
         default:
-            fatalError("Not supported alignment for VStack!")
+            return .leading
         }
     }
     

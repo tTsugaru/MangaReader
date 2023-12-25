@@ -56,13 +56,17 @@ class Database {
         let privateDatabase = container.privateCloudDatabase
         let fetchedRecord = try? await privateDatabase.record(for: .init(recordName: mangaSlug))
 
-        // TODO: Investigage for a simpler solution like "CKRecord as? <OBJECT>" and otherway to "<OBJECT> as? CKRecord"
-        guard let fetchedRecord,
-           let chapterHid = fetchedRecord["chapterHid"] as? String,
-           let chapterNumber = fetchedRecord["chapterNumber"] as? Int
-        else { return nil }
-        
-        let currentChapterImageId = fetchedRecord["currentChapterImageId"] as? String
-        return MangaReadState(chapterHid: chapterHid, chapterNumber: chapterNumber, currentChapterImageId: currentChapterImageId)
+        guard let fetchedRecord else { return nil }
+        return MangaReadState(fetchedRecord)
+    }
+
+    func getMangaReadStates() async throws -> [MangaReadState] {
+        let privateDatabase = container.privateCloudDatabase
+        let fetchedRecords = try await privateDatabase.records(matching: CKQuery(recordType: "MangaReadState", predicate: NSPredicate(value: true)))
+
+        return try fetchedRecords.matchResults.compactMap {
+            let record = try $0.1.get()
+            return MangaReadState(record)
+        }
     }
 }
