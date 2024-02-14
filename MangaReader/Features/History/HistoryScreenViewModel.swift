@@ -13,7 +13,7 @@ class HistoryScreenViewModel: ObservableObject {
 
         do {
             // TODO: Re-add CloudKit
-            let mangaReadStates = [MangaReadState]() /*try await Database.shared.getMangaReadStates()*/
+            let mangaReadStates = Config.mangaReadStates /*try await Database.shared.getMangaReadStates()*/
 
             for mangaReadState in mangaReadStates {
                 let mangaDetail = try? await Networking.shared.getMangaDetails(slug: mangaReadState.mangaSlug)
@@ -35,7 +35,8 @@ class HistoryScreenViewModel: ObservableObject {
     func removeFromHistory(slug: String) async {
         do {
             isRemoving = true
-            try await Database.shared.removeMangaReadState(with: slug)
+//            try await Database.shared.removeMangaReadState(with: slug)
+            Config.mangaReadStates.removeAll(where: { $0.mangaSlug == slug })
             mangaViewModels.removeAll(where: { $0.slug == slug })
             isRemoving = false
         } catch {

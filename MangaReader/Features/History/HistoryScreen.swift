@@ -15,7 +15,7 @@ struct HistoryScreen: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                VStack(alignment: .center) {
+                VStack {
                     if let error = viewModel.error {
                         Text(error.localizedDescription)
                         Button("Try Again") {
@@ -46,6 +46,7 @@ struct HistoryScreen: View {
                                     }
                             }
                         }
+                        .frame(maxHeight: .infinity, alignment: .top)
                     }
                 }
                 .animation(.easeInOut(duration: 0.25), value: viewModel.isRemoving)

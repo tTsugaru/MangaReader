@@ -82,6 +82,8 @@
 		3BF56E592B337F7E005D6CA7 /* ReaderScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF56E582B337F7E005D6CA7 /* ReaderScreenViewModel.swift */; };
 		3BFC50CB2B7D7DAF0069E0CA /* View+Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFC50CA2B7D7DAF0069E0CA /* View+Logger.swift */; };
 		3BFC50CD2B7D801B0069E0CA /* UINavigationController+InteractivePopGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFC50CC2B7D801B0069E0CA /* UINavigationController+InteractivePopGestureRecognizer.swift */; };
+		3BFC50CF2B7D821E0069E0CA /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFC50CE2B7D821E0069E0CA /* UserDefaults.swift */; };
+		3BFC50D12B7D822F0069E0CA /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFC50D02B7D822F0069E0CA /* Config.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -161,6 +163,8 @@
 		3BF56E582B337F7E005D6CA7 /* ReaderScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderScreenViewModel.swift; sourceTree = "<group>"; };
 		3BFC50CA2B7D7DAF0069E0CA /* View+Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Logger.swift"; sourceTree = "<group>"; };
 		3BFC50CC2B7D801B0069E0CA /* UINavigationController+InteractivePopGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+InteractivePopGestureRecognizer.swift"; sourceTree = "<group>"; };
+		3BFC50CE2B7D821E0069E0CA /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		3BFC50D02B7D822F0069E0CA /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -381,6 +385,8 @@
 			isa = PBXGroup;
 			children = (
 				3BDE01E42B32EFCE002B4075 /* MangaStore.swift */,
+				3BFC50CE2B7D821E0069E0CA /* UserDefaults.swift */,
+				3BFC50D02B7D822F0069E0CA /* Config.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -535,6 +541,7 @@
 				3B4790A62B2F57910044D09D /* RelateFrom.swift in Sources */,
 				3B3C593E2B37166000B475C3 /* MangaReadState.swift in Sources */,
 				3BB238752B2E570400A00F2E /* MangaDetail.swift in Sources */,
+				3BFC50CF2B7D821E0069E0CA /* UserDefaults.swift in Sources */,
 				3BF56E592B337F7E005D6CA7 /* ReaderScreenViewModel.swift in Sources */,
 				3BB238812B2E5B9C00A00F2E /* MDGenres.swift in Sources */,
 				3B1AD2CC2B31AF0E00CE38C9 /* BlurView.swift in Sources */,
@@ -561,6 +568,7 @@
 				3B3C59312B36815A00B475C3 /* RainbowAnimation.swift in Sources */,
 				3B5AB4102B343FA90040AD00 /* MUPublishers.swift in Sources */,
 				3B9070E02B305C6700B88E41 /* ChapterResponse.swift in Sources */,
+				3BFC50D12B7D822F0069E0CA /* Config.swift in Sources */,
 				3BDE01E22B323073002B4075 /* Color+Codable.swift in Sources */,
 				3BF56E4B2B332556005D6CA7 /* FloatingCloudsColorViewModel.swift in Sources */,
 				3BF56E4D2B33257E005D6CA7 /* FloatingCloudsViewModel.swift in Sources */,

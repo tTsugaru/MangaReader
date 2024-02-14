@@ -60,7 +60,14 @@ class ReaderScreenViewModel: ObservableObject {
     func saveCurrentChapterLocation(chapterImageId: String) async {
         do {
             if let chapterNumber = Int(chapterDetailViewModel?.chapter.chap ?? ""), let mangaSlug = chapterDetailViewModel?.chapter.mdComics.slug, let chapterId = chapterDetailViewModel?.chapter.hid {
-                try await Database.shared.saveReadState(for: mangaSlug, at: chapterId, chapterNumber: chapterNumber, currentChapterImageId: chapterImageId)
+                
+                if let mangaReadStateIndex = Config.mangaReadStates.firstIndex(where: { $0.mangaSlug == mangaSlug }) {
+                    Config.mangaReadStates[mangaReadStateIndex] = MangaReadState(mangaSlug: mangaSlug, chapterHid: chapterId, chapterNumber: chapterNumber, currentChapterImageId: chapterImageId)
+                } else {
+                    Config.mangaReadStates.append(MangaReadState(mangaSlug: mangaSlug, chapterHid: chapterId, chapterNumber: chapterNumber, currentChapterImageId: chapterImageId))
+                }
+                
+//                try await Database.shared.saveReadState(for: mangaSlug, at: chapterId, chapterNumber: chapterNumber, currentChapterImageId: chapterImageId)
             }
         } catch {
             print(error)

@@ -23,7 +23,7 @@ class MangaDetailScreenViewModel: ObservableObject {
     
     func getMangaReadState(slug: String) async {
         do {
-            mangaReadState = nil /*try await Database.shared.getMangaReadState(for: slug)*/
+            mangaReadState = Config.mangaReadStates.first(where: { $0.mangaSlug == slug })
         } catch {
             print(error)
         }
