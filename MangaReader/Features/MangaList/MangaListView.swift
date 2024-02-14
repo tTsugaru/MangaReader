@@ -2,15 +2,8 @@ import Kingfisher
 import SwiftUI
 
 @MainActor
-protocol MangaListViewProtocol {
-    var slug: String { get }
-    var title: String { get }
-    var imageDownloadURL: URL? { get }
-}
-
-@MainActor
 struct MangaListView: View {
-    var manga: MangaListViewProtocol
+    private var manga: MangaListViewProtocol
 
     init(manga: MangaListViewProtocol) {
         self.manga = manga
@@ -32,7 +25,7 @@ struct MangaListView: View {
         KFImage(manga.imageDownloadURL)
             .backgroundDecode()
             .onSuccess { populateMangaColors(imageResult: $0) }
-            .memoryCacheExpiration(.seconds(5))
+            .cacheOriginalImage()
             .startLoadingBeforeViewAppear()
             .setProcessor(DownsamplingImageProcessor(size: CGSize(width: 180 * 2, height: 230 * 2)))
             .resizable()
@@ -79,10 +72,11 @@ struct MangaListView: View {
             }
     }
 
-    func populateMangaColors(imageResult: RetrieveImageResult) {
+    private func populateMangaColors(imageResult: RetrieveImageResult) {
         guard mangaStore.prominentColors[manga.slug]?.isEmpty ?? true else { return }
 
-        Task(priority: .background) {
+        Task.detached(priority: .medium) {
+            logger.debug("Started getting colors on \(Thread.current.debugDescription)")
             let image = imageResult.image
             let resizedImage = image.resize(width: 50, height: 50)
 
@@ -90,7 +84,8 @@ struct MangaListView: View {
             let averageCoverColor = image.avrageColor
             let prominentColors = await image.prominentColors()
 
-            Task(priority: .background) {
+            Task { @MainActor in
+                logger.debug("Publishing colors to View on \(Thread.current.debugDescription)")
                 mangaStore.prominentColors[manga.slug] = prominentColors
                 mangaStore.averageCoverColors[manga.slug] = averageCoverColor
             }

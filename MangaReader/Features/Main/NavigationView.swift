@@ -7,41 +7,26 @@ struct NavigationView: View {
 
     @State private var defaultSelection = 0
     @State private var path = NavigationPath()
+    @State private var historyStackPath = NavigationPath()
 
-    @State private var selectedSidebarItem: Int = 0
+    @State private var selectedSidebarItem = 0
 
     #warning("Find better solution for macOS navigation")
-    @State private var selectedMangaSlug: String = ""
-    @State private var chapterNavigation: ChapterNavigation = .init(chapterId: "", currentChapterImageId: nil)
-
-    private var mangaListScreen: some View {
-        ZStack {
-            MangaListScreen(viewModel: listViewModel, path: $path, showMangaDetailScreen: { manga in
-                selectedMangaSlug = manga.slug
-            })
-            .zIndex(0)
-
-            if !selectedMangaSlug.isEmpty {
-                MangaDetailScreen(path: $path, mangaSlug: selectedMangaSlug) { chapterNavigation in
-                    self.chapterNavigation = chapterNavigation
-                } dismiss: {
-                    selectedMangaSlug = ""
-                    chapterNavigation = ChapterNavigation(chapterId: "", currentChapterImageId: nil)
-                }
-                .zIndex(1)
-                .transition(.move(edge: .trailing))
+    @State private var forceFullyDismiss = false
+    @State private var selectedMangaSlug = ""
+    @State private var chapterNavigation = ChapterNavigation(chapterId: "", currentChapterImageId: nil)
+    
+    var historyStack: some View {
+        HistoryScreen(path: $historyStackPath)
+            .navigationDestination(for: MangaDetailViewModel.self) { manga in
+                MangaDetailScreen(path: $historyStackPath, mangaSlug: manga.slug)
             }
-
-            if !chapterNavigation.chapterId.isEmpty {
-                ReaderScreen(chapterId: chapterNavigation.chapterId, currentChapterImageId: chapterNavigation.currentChapterImageId) {
-                    chapterNavigation = ChapterNavigation(chapterId: "", currentChapterImageId: nil)
-                }
-                .zIndex(2)
-                .transition(.move(edge: .trailing))
+            .navigationDestination(for: ChapterNavigation.self) { chapterNavigation in
+                ReaderScreen(chapterId: chapterNavigation.chapterId, currentChapterImageId: chapterNavigation.currentChapterImageId)
             }
-        }
-        .animation(.easeInOut(duration: 0.25), value: selectedMangaSlug)
-        .animation(.easeInOut(duration: 0.25), value: chapterNavigation)
+            .navigationDestination(for: [ChapterListItem].self) { chapterListItems in
+                CompactChapterListScreen(path: $historyStackPath, mangaSlug: chapterListItems.first?.mangaSlug ?? "", chapterListItems: chapterListItems)
+            }
     }
 
     // TODO: Research to use SplitView on iPhone too
@@ -56,6 +41,9 @@ struct NavigationView: View {
                         .navigationDestination(for: ChapterNavigation.self) { chapterNavigation in
                             ReaderScreen(chapterId: chapterNavigation.chapterId, currentChapterImageId: chapterNavigation.currentChapterImageId)
                         }
+                        .navigationDestination(for: [ChapterListItem].self) { chapterListItems in
+                            CompactChapterListScreen(path: $path, mangaSlug: chapterListItems.first?.mangaSlug ?? "", chapterListItems: chapterListItems)
+                        }
                 }
                 .tabItem {
                     Label("Mangas", systemImage: "books.vertical")
@@ -66,8 +54,8 @@ struct NavigationView: View {
                         Label("Favorites", systemImage: "star")
                     }
 
-                NavigationStack(path: $path) {
-                    HistoryScreen(path: $path)
+                NavigationStack(path: $historyStackPath) {
+                    historyStack
                 }
                 .tabItem {
                     Label("History", systemImage: "clock")
@@ -84,17 +72,64 @@ struct NavigationView: View {
                     .id(sidebarItem.id)
                 }
             } detail: {
-                switch SidebarItem(rawValue: selectedSidebarItem)! {
-                case .list: mangaListScreen
-                case .favorites: Text("Test")
-                case .history: HistoryScreen()
+                ZStack {
+                    Group {
+                        switch SidebarItem(rawValue: selectedSidebarItem)! {
+                        case .list: 
+                            MangaListScreen(viewModel: listViewModel, path: $path, showMangaDetailScreen: { manga in
+                                selectedMangaSlug = manga.slug
+                            })
+                            .onDisappear {
+                                selectedMangaSlug = ""
+                                chapterNavigation = ChapterNavigation(chapterId: "", currentChapterImageId: nil)
+                                forceFullyDismiss = true
+                            }
+                            
+                        case .favorites: Text("Test")
+                        case .history:
+                            HistoryScreen { mangaSlug in
+                                selectedMangaSlug = mangaSlug
+                            }
+                            .onDisappear {
+                                selectedMangaSlug = ""
+                                chapterNavigation = ChapterNavigation(chapterId: "", currentChapterImageId: nil)
+                                forceFullyDismiss = true
+                            }
+                        }
+                    }
+                    .zIndex(-1)
+                    
+                    if !selectedMangaSlug.isEmpty {
+                        MangaDetailScreen(path: $path, mangaSlug: selectedMangaSlug) { chapterNavigation in
+                            self.chapterNavigation = chapterNavigation
+                        } dismiss: {
+                            selectedMangaSlug = ""
+                            chapterNavigation = ChapterNavigation(chapterId: "", currentChapterImageId: nil)
+                            forceFullyDismiss = false
+                        }
+                        .zIndex(1)
+                        .transition(.move(edge: .trailing))
+                    }
+                    
+                    if !chapterNavigation.chapterId.isEmpty {
+                        ReaderScreen(chapterId: chapterNavigation.chapterId, currentChapterImageId: chapterNavigation.currentChapterImageId) {
+                            chapterNavigation = ChapterNavigation(chapterId: "", currentChapterImageId: nil)
+                            forceFullyDismiss = false
+                        }
+                        .zIndex(2)
+                        .transition(.move(edge: .trailing))
+                    }
                 }
+                .animation(.easeInOut(duration: 0.25), value: selectedMangaSlug)
+                .animation(.easeInOut(duration: 0.25), value: chapterNavigation)
+                .animation(.none, value: forceFullyDismiss)
             }
             .task {
                 guard let window = NSApplication.shared.windows.first else { return }
                 window.delegate = windowObserver
             }
             .environmentObject(windowObserver)
+
         #endif
     }
 }

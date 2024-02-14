@@ -53,7 +53,7 @@ struct MangaDetailScreen: View {
     }
 
     @ViewBuilder
-    private func coverImageView(geometry: GeometryProxy) -> some View {
+    private func coverImageView(geometry _: GeometryProxy) -> some View {
         if let coverViewModel = viewModel.mangaDetail?.coverViewModel, let downloadURL = coverViewModel.downloadURL {
             KFImage(downloadURL)
                 .fade(duration: 0.2)
@@ -126,7 +126,7 @@ struct MangaDetailScreen: View {
     private var contentSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             continueButton(mangaReadState: viewModel.mangaReadState)
-            
+
             if let description = viewModel.mangaDetail?.sanitizedDescription {
                 Text(.init(description))
                     .font(.body)
@@ -213,13 +213,8 @@ struct MangaDetailScreen: View {
                 }
             }
             #if os(macOS)
-            .clipped() // Prevents FloatingCloudsView to be shown first
+            .clipped() // Prevents FloatingCloudsView to be shown first when screen is Appearing
             #endif
-            .onAppear {
-                Task {
-                    await viewModel.getMangaReadState(slug: mangaSlug)
-                }
-            }
             .background {
                 if let coverColor = mangaStore.averageCoverColors[mangaSlug] {
                     coverColor
@@ -233,15 +228,18 @@ struct MangaDetailScreen: View {
                 }
             }
             .task(priority: .userInitiated) {
+                if viewModel.mangaDetail == nil {
+                    await viewModel.fetchData(mangaSlug: mangaSlug)
+                }
+
                 await viewModel.getMangaReadState(slug: mangaSlug)
-                await viewModel.fetchData(mangaSlug: mangaSlug)
             }
             // Negating check so its just not available for macOS
             #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
             .toolbar {
-                if horizontalSizeClass == .compact {
+                if horizontalSizeClass == .compact, !viewModel.chapterItems.isEmpty, !viewModel.isLoading {
                     ToolbarItem(placement: .automatic) {
                         Button(action: {
                             path.wrappedValue.append(viewModel.chapterItems)
@@ -262,9 +260,6 @@ struct MangaDetailScreen: View {
                 ToolbarItem(placement: .topBarLeading) {
                     CustomBackButton()
                 }
-            }
-            .navigationDestination(for: [ChapterListItem].self) { chapterListItems in
-                CompactChapterListScreen(path: path, isLoading: $viewModel.isLoading, mangaSlug: mangaSlug, chapterListItems: chapterListItems)
             }
             #else
             .overlay {

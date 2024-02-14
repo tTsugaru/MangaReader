@@ -36,6 +36,7 @@
 		3B5AB4122B343FD40040AD00 /* MUComicCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5AB4112B343FD40040AD00 /* MUComicCategory.swift */; };
 		3B5AB4142B3440050040AD00 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5AB4132B3440050040AD00 /* Category.swift */; };
 		3B5B91DF2A8D634B004C74FB /* FloatingCloudsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5B91DE2A8D634B004C74FB /* FloatingCloudsView.swift */; };
+		3B8046D52B3B09BF00FBEF8C /* MangaListViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8046D42B3B09BF00FBEF8C /* MangaListViewProtocol.swift */; };
 		3B8AA74E2A7D92FE0051E61C /* MangaListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA74D2A7D92FE0051E61C /* MangaListScreen.swift */; };
 		3B8AA7502A7D93280051E61C /* MangaListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA74F2A7D93280051E61C /* MangaListViewModel.swift */; };
 		3B8AA7532A7D93680051E61C /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA7522A7D93680051E61C /* Networking.swift */; };
@@ -79,6 +80,8 @@
 		3BF56E542B3378F4005D6CA7 /* WindowObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF56E532B3378F4005D6CA7 /* WindowObserver.swift */; };
 		3BF56E572B337F52005D6CA7 /* ReaderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF56E562B337F52005D6CA7 /* ReaderScreen.swift */; };
 		3BF56E592B337F7E005D6CA7 /* ReaderScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF56E582B337F7E005D6CA7 /* ReaderScreenViewModel.swift */; };
+		3BFC50CB2B7D7DAF0069E0CA /* View+Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFC50CA2B7D7DAF0069E0CA /* View+Logger.swift */; };
+		3BFC50CD2B7D801B0069E0CA /* UINavigationController+InteractivePopGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFC50CC2B7D801B0069E0CA /* UINavigationController+InteractivePopGestureRecognizer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -110,6 +113,7 @@
 		3B5AB4112B343FD40040AD00 /* MUComicCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUComicCategory.swift; sourceTree = "<group>"; };
 		3B5AB4132B3440050040AD00 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		3B5B91DE2A8D634B004C74FB /* FloatingCloudsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingCloudsView.swift; sourceTree = "<group>"; };
+		3B8046D42B3B09BF00FBEF8C /* MangaListViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaListViewProtocol.swift; sourceTree = "<group>"; };
 		3B8AA74D2A7D92FE0051E61C /* MangaListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaListScreen.swift; sourceTree = "<group>"; };
 		3B8AA74F2A7D93280051E61C /* MangaListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaListViewModel.swift; sourceTree = "<group>"; };
 		3B8AA7522A7D93680051E61C /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
@@ -155,6 +159,8 @@
 		3BF56E532B3378F4005D6CA7 /* WindowObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowObserver.swift; sourceTree = "<group>"; };
 		3BF56E562B337F52005D6CA7 /* ReaderScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderScreen.swift; sourceTree = "<group>"; };
 		3BF56E582B337F7E005D6CA7 /* ReaderScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderScreenViewModel.swift; sourceTree = "<group>"; };
+		3BFC50CA2B7D7DAF0069E0CA /* View+Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Logger.swift"; sourceTree = "<group>"; };
+		3BFC50CC2B7D801B0069E0CA /* UINavigationController+InteractivePopGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+InteractivePopGestureRecognizer.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -269,6 +275,7 @@
 				3B8AA74D2A7D92FE0051E61C /* MangaListScreen.swift */,
 				3B8AA74F2A7D93280051E61C /* MangaListViewModel.swift */,
 				3B91340B2A7EBACA00A2CBA7 /* MangaListView.swift */,
+				3B8046D42B3B09BF00FBEF8C /* MangaListViewProtocol.swift */,
 			);
 			path = MangaList;
 			sourceTree = "<group>";
@@ -324,6 +331,8 @@
 				3BDE01E12B323073002B4075 /* Color+Codable.swift */,
 				3B3C59322B36817D00B475C3 /* View+RainbowAnimation.swift */,
 				3B3C59372B3681DB00B475C3 /* PrimitiveButtonStyle+RainbowButtonStyle.swift */,
+				3BFC50CA2B7D7DAF0069E0CA /* View+Logger.swift */,
+				3BFC50CC2B7D801B0069E0CA /* UINavigationController+InteractivePopGestureRecognizer.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -484,6 +493,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BFC50CD2B7D801B0069E0CA /* UINavigationController+InteractivePopGestureRecognizer.swift in Sources */,
 				3B333B352A80BD4300368534 /* MangaStatus.swift in Sources */,
 				3B333B432A80BE3E00368534 /* API.swift in Sources */,
 				3B333B372A80BD5F00368534 /* ContentRating.swift in Sources */,
@@ -511,10 +521,12 @@
 				3BB238832B2E5BAF00A00F2E /* MDComicMDGenre.swift in Sources */,
 				3B333B3D2A80BDD100368534 /* Genre.swift in Sources */,
 				3B8AA75C2A7DA26A0051E61C /* MUComics.swift in Sources */,
+				3B8046D52B3B09BF00FBEF8C /* MangaListViewProtocol.swift in Sources */,
 				3B3C59382B3681DB00B475C3 /* PrimitiveButtonStyle+RainbowButtonStyle.swift in Sources */,
 				3B333B392A80BD6F00368534 /* Demographic.swift in Sources */,
 				3B5AB40C2B343E520040AD00 /* ChapterDetailResponse.swift in Sources */,
 				3BD8F02A2A7D6E0000A84F8E /* MangaReaderApp.swift in Sources */,
+				3BFC50CB2B7D7DAF0069E0CA /* View+Logger.swift in Sources */,
 				3B9070D72B2F7D3200B88E41 /* MangaDetailScreenViewModel.swift in Sources */,
 				3BB238712B2E3D4200A00F2E /* KFCrossPlatformImage+ProminentColors.swift in Sources */,
 				3BB238792B2E5B4100A00F2E /* Comic.swift in Sources */,

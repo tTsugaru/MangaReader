@@ -73,32 +73,3 @@ struct ChapterItemView: View {
         .animation(.easeInOut(duration: 0.25), value: chapterItem.showChildren)
     }
 }
-
-#Preview {
-    ScrollView {
-        VStack(spacing: 0) {
-            ChapterItemView(chapterItem: ChapterListItem(id: "1", title: "Parent 1", children: [
-                ChapterListItem(id: "1", title: "1"),
-                ChapterListItem(id: "2", title: "2"),
-                ChapterListItem(id: "3", title: "3"),
-                ChapterListItem(id: "4", title: "4"),
-                ChapterListItem(id: "5", title: "5")
-            ]), isFirst: true)
-            ChapterItemView(chapterItem: ChapterListItem(id: "2", title: "Parent 2", children: [
-                ChapterListItem(id: "1", title: "1"),
-                ChapterListItem(id: "2", title: "2"),
-                ChapterListItem(id: "3", title: "3"),
-                ChapterListItem(id: "4", title: "4"),
-                ChapterListItem(id: "5", title: "5")
-            ]))
-            ChapterItemView(chapterItem: ChapterListItem(id: "3", title: "Parent 3", children: [
-                ChapterListItem(id: "1", title: "1"),
-                ChapterListItem(id: "2", title: "2"),
-                ChapterListItem(id: "3", title: "3"),
-                ChapterListItem(id: "4", title: "4"),
-                ChapterListItem(id: "5", title: "5")
-            ]), isLast: true)
-        }
-        .padding()
-    }
-}

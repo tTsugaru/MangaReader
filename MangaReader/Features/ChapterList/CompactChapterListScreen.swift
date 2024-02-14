@@ -2,7 +2,6 @@ import SwiftUI
 
 struct CompactChapterListScreen: View {
     @Binding var path: NavigationPath
-    @Binding var isLoading: Bool
     var mangaSlug: String
     var chapterListItems: [ChapterListItem]
 
@@ -14,25 +13,17 @@ struct CompactChapterListScreen: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack {
-                    if isLoading {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
-                        }
-                    } else {
-                        VStack(spacing: 0) {
-                            ForEach(Array(chapterListItems.enumerated()), id: \.element.id) { index, chapterItem in
-                                ChapterItemView(
-                                    chapterItem: chapterItem,
-                                    isFirst: index == 0,
-                                    isLast: index == chapterListItems.endIndex - 1
-                                ) { chapterListItem in
-                                    path.append(ChapterNavigation(chapterId: chapterListItem.id, currentChapterImageId: nil))
-                                }
+                    VStack(spacing: 0) {
+                        ForEach(Array(chapterListItems.enumerated()), id: \.element.id) { index, chapterItem in
+                            ChapterItemView(
+                                chapterItem: chapterItem,
+                                isFirst: index == 0,
+                                isLast: index == chapterListItems.endIndex - 1
+                            ) { chapterListItem in
+                                path.append(ChapterNavigation(chapterId: chapterListItem.id, currentChapterImageId: nil))
                             }
-                            Spacer()
                         }
+                        Spacer()
                     }
                 }
                 .padding(16)
