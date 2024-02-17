@@ -14,7 +14,7 @@ struct MangaDetailScreen: View {
     @State private var isDismissing = false
     @State private var isLightCoverColor = false
     @State private var onHoverOverBackButton = false
-    @State private var chapterItemViewChanged: Bool = false
+    @State private var chapterItemViewChanged: Bool = false // AnimationState
 
     private var path: Binding<NavigationPath>
     private var mangaSlug: String
@@ -35,6 +35,8 @@ struct MangaDetailScreen: View {
         path.wrappedValue.append(chapterNavigation)
     }
 
+    // MARK: Button Views
+    
     @ViewBuilder
     private func continueButton(mangaReadState: MangaReadState?) -> some View {
         let colors = mangaStore.prominentColors[mangaSlug]?.map { $0.lighter() } ?? []
@@ -53,7 +55,16 @@ struct MangaDetailScreen: View {
             .buttonStyle(.rainbow(colors: isLightColor ? defaultColors : colors))
         }
     }
+    
+    private var chaptersButton: some View {
+        Button("Chapters") {
+            path.wrappedValue.append(viewModel.chapterItems)
+        }
+        .buttonStyle(.mangaButtonStyle)
+    }
 
+    // MARK: Views
+    
     @ViewBuilder
     private func coverImageView(geometry _: GeometryProxy) -> some View {
         if let coverViewModel = viewModel.mangaDetail?.coverViewModel, let downloadURL = coverViewModel.downloadURL {
@@ -123,15 +134,8 @@ struct MangaDetailScreen: View {
                                 })
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: chapterItemViewChanged) // Fix animation warning find a suited value to activate animation
+        .animation(.easeInOut(duration: 0.25), value: chapterItemViewChanged)
         .transition(.move(edge: .top))
-    }
-
-    private var chaptersButton: some View {
-        Button("Chapters") {
-            path.wrappedValue.append(viewModel.chapterItems)
-        }
-        .buttonStyle(.mangaButtonStyle)
     }
     
     private var contentSection: some View {
