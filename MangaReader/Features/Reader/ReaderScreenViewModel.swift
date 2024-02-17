@@ -1,5 +1,6 @@
 import Foundation
 import OSLog
+import SwiftData
 
 struct ChapterImageViewModel {
     let model: ChapterImage
@@ -7,7 +8,7 @@ struct ChapterImageViewModel {
     var url: URL? {
         if let b2Key = model.b2Key {
             return URL(string: "https://meo.comick.pictures/\(b2Key)")
-        } else if let url = model.url{
+        } else if let url = model.url {
             return URL(string: url)
         } else {
             return nil
@@ -21,7 +22,10 @@ struct ChapterImageViewModel {
     var height: Int {
         return model.h
     }
+    
+    var mangaSlug: String?
 }
+
 @MainActor
 class ReaderScreenViewModel: ObservableObject {
     @Published var readerTitle: String = ""
@@ -37,46 +41,35 @@ class ReaderScreenViewModel: ObservableObject {
             readerTitle = chapterDetailResponse.chapTitle ?? chapterDetailResponse.chapter.chap
             chapterDetailViewModel = chapterDetailResponse
             
-            let chapterImageViewModels = chapterDetailResponse.chapter.images?.compactMap { ChapterImageViewModel(model: $0) }
+            let chapterImageViewModels = chapterDetailResponse.chapter.images?.compactMap { chapterImage in
+                var chapterImageViewModel = ChapterImageViewModel(model: chapterImage)
+                chapterImageViewModel.mangaSlug = chapterDetailResponse.chapter.mdComics.slug
+                return chapterImageViewModel
+            }
             
             if let chapterImageViewModels {
-                if  images.isEmpty {
+                if images.isEmpty {
                     images = chapterImageViewModels
                 } else {
                     images += chapterImageViewModels
                 }
             }
             
-            if let firstChapterImageId = images.first?.url {
-                await saveCurrentChapterLocation(chapterImageId: firstChapterImageId.absoluteString)
-            }
-
             isLoading = images.isEmpty
         } catch {
             print(error)
         }
     }
-
-    #warning("refactor")
-    func saveCurrentChapterLocation(chapterImageId: String) async {
-//        do {
-            if let chapterNumber = Int(chapterDetailViewModel?.chapter.chap ?? ""), let mangaSlug = chapterDetailViewModel?.chapter.mdComics.slug, let chapterId = chapterDetailViewModel?.chapter.hid {
-                
-                if let mangaReadStateIndex = Config.mangaReadStates.firstIndex(where: { $0.mangaSlug == mangaSlug }) {
-                    Config.mangaReadStates[mangaReadStateIndex] = MangaReadState(mangaSlug: mangaSlug, chapterHid: chapterId, chapterNumber: chapterNumber, currentChapterImageId: chapterImageId)
-                } else {
-                    Config.mangaReadStates.append(MangaReadState(mangaSlug: mangaSlug, chapterHid: chapterId, chapterNumber: chapterNumber, currentChapterImageId: chapterImageId))
-                }
-                
-                logger.debug("Saving MangaReadState to Defaults - \(Config.mangaReadStates.first(where: { $0.mangaSlug == mangaSlug }).debugDescription)")
-                
-//                try await Database.shared.saveReadState(for: mangaSlug, at: chapterId, chapterNumber: chapterNumber, currentChapterImageId: chapterImageId)
-            }
-//        } catch {
-//            print(error)
-//        }
+    
+    func editMangaReadState(currentMangaReadState: MangaReadState, chapterImageId: String) -> MangaReadState {
+        if let chapterNumber = Int(chapterDetailViewModel?.chapter.chap ?? ""), chapterNumber >= (currentMangaReadState.chapterNumber ?? 0) {
+            currentMangaReadState.chapterNumber = chapterNumber
+            currentMangaReadState.chapterHid = chapterDetailViewModel?.chapter.hid
+        }
+        return currentMangaReadState
     }
 }
+
 extension ReaderScreenViewModel {
     var logger: Logger {
         return Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ReaderScreenViewModel")

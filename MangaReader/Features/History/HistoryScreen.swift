@@ -1,8 +1,13 @@
+import SwiftData
 import SwiftUI
 
 struct HistoryScreen: View {
-    @Environment(\.horizontalSizeClass) var horizantalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizantalSizeClass
+    @Environment(\.modelContext) private var modelContext
+
     @StateObject var viewModel = HistoryScreenViewModel()
+
+    @Query private var mangaReadStates: [MangaReadState]
 
     var path: Binding<NavigationPath>?
     var selectedMangaSlug: ((String) -> Void)?
@@ -20,7 +25,7 @@ struct HistoryScreen: View {
                         Text(error.localizedDescription)
                         Button("Try Again") {
                             Task {
-                                await viewModel.getMangaReadStates()
+                                await viewModel.fetchMangaViewModels(for: mangaReadStates)
                             }
                         }
                     } else if viewModel.isLoading {
@@ -38,9 +43,7 @@ struct HistoryScreen: View {
                                     }
                                     .contextMenu {
                                         Button("Remove from History") {
-                                            Task {
-                                                await viewModel.removeFromHistory(slug: manga.slug)
-                                            }
+                                            viewModel.deleteMangaReadStates(for: manga.slug, modelContext: modelContext)
                                         }
                                         .padding(16)
                                     }
@@ -55,12 +58,10 @@ struct HistoryScreen: View {
             }
             .frame(width: geometry.size.width)
             .refreshable {
-                await viewModel.getMangaReadStates()
+                await viewModel.fetchMangaViewModels(for: mangaReadStates)
             }
             .task(priority: .userInitiated) {
-                if viewModel.mangaViewModels.isEmpty {
-                    await viewModel.getMangaReadStates()
-                }
+                await viewModel.fetchMangaViewModels(for: mangaReadStates)
             }
         }
     }

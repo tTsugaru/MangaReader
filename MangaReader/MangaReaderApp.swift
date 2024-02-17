@@ -26,6 +26,7 @@ struct MangaReaderApp: App {
                     URLSession.shared.configuration.requestCachePolicy = .returnCacheDataElseLoad
                 }
         }
+        .modelContainer(for: MangaReadState.self)
         #if os(macOS)
         .windowStyle(.hiddenTitleBar)
         #endif

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 
 @MainActor
 class HistoryScreenViewModel: ObservableObject {
@@ -7,14 +8,11 @@ class HistoryScreenViewModel: ObservableObject {
     @Published var isRemoving = false
     @Published var error: Error?
 
-    func getMangaReadStates(isRefresh: Bool = false) async {
+    func fetchMangaViewModels(for mangaReadStates: [MangaReadState]) async {
         isLoading = true
         error = nil
 
         do {
-            // TODO: Re-add CloudKit
-            let mangaReadStates = Config.mangaReadStates /*try await Database.shared.getMangaReadStates()*/
-
             for mangaReadState in mangaReadStates {
                 let mangaDetail = try? await Networking.shared.getMangaDetails(slug: mangaReadState.mangaSlug)
                 guard let mangaDetail else { continue }
@@ -31,17 +29,13 @@ class HistoryScreenViewModel: ObservableObject {
             self.error = error
         }
     }
-
-    func removeFromHistory(slug: String) async {
+    
+    func deleteMangaReadStates(for mangaSlug: String, modelContext: ModelContext) {
         do {
-            isRemoving = true
-//            try await Database.shared.removeMangaReadState(with: slug)
-            Config.mangaReadStates.removeAll(where: { $0.mangaSlug == slug })
-            mangaViewModels.removeAll(where: { $0.slug == slug })
-            isRemoving = false
+            try modelContext.delete(model: MangaReadState.self, where: #Predicate { $0.mangaSlug == mangaSlug })
+            mangaViewModels.removeAll(where: { $0.slug == mangaSlug })
         } catch {
             print(error)
-            isRemoving = false
         }
     }
 }

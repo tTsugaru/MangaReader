@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import SwiftData
 
 @MainActor
 class MangaDetailScreenViewModel: ObservableObject {
@@ -18,14 +19,6 @@ class MangaDetailScreenViewModel: ObservableObject {
             await getChapters(hid: mangaHid, mangaSlug: mangaSlug)
         } else {
             isLoading = false
-        }
-    }
-    
-    func getMangaReadState(slug: String) async {
-        do {
-            mangaReadState = Config.mangaReadStates.first(where: { $0.mangaSlug == slug })
-        } catch {
-            print(error)
         }
     }
 

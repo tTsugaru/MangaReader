@@ -1,14 +1,19 @@
 import CoreImage
 import Kingfisher
+import SwiftData
 import SwiftUI
 
 @MainActor
 struct MangaDetailScreen: View {
-    @EnvironmentObject var windowObserver: WindowObserver
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @EnvironmentObject private var windowObserver: WindowObserver
+
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.modelContext) private var modelContext
 
     @ObservedObject private var mangaStore = MangaStore.shared
     @StateObject private var viewModel = MangaDetailScreenViewModel()
+
+    @Query private var mangaReadStates: [MangaReadState]
 
     @State private var animate = false
     @State private var isDismissing = false
@@ -36,16 +41,16 @@ struct MangaDetailScreen: View {
     }
 
     // MARK: Button Views
-    
+
     @ViewBuilder
     private func continueButton(mangaReadState: MangaReadState?) -> some View {
         let colors = mangaStore.prominentColors[mangaSlug]?.map { $0.lighter() } ?? []
         let isLightColor = mangaStore.averageCoverColors[mangaSlug]?.isLightColor ?? true
         let defaultColors: [Color] = [.black, .gray, .black]
 
-        if let mangaReadState {
-            Button("Continue Chap. \(mangaReadState.chapterNumber)".uppercased()) {
-                handleNavigation(chapterId: mangaReadState.chapterHid, currentChapterImageId: mangaReadState.currentChapterImageId)
+        if let mangaReadState, let chapterNumber = mangaReadState.chapterNumber, let chapterHid = mangaReadState.chapterHid {
+            Button("Continue Chap. \(chapterNumber)".uppercased()) {
+                handleNavigation(chapterId: chapterHid, currentChapterImageId: mangaReadState.currentChapterImageId)
             }
             .buttonStyle(.rainbow(colors: isLightColor ? defaultColors : colors))
         } else if let firstChapterId = viewModel.mangaDetail?.firstChapterId, !viewModel.chapterItems.isEmpty {
@@ -55,7 +60,7 @@ struct MangaDetailScreen: View {
             .buttonStyle(.rainbow(colors: isLightColor ? defaultColors : colors))
         }
     }
-    
+
     private var chaptersButton: some View {
         Button("Chapters") {
             path.wrappedValue.append(viewModel.chapterItems)
@@ -64,7 +69,7 @@ struct MangaDetailScreen: View {
     }
 
     // MARK: Views
-    
+
     @ViewBuilder
     private func coverImageView(geometry _: GeometryProxy) -> some View {
         if let coverViewModel = viewModel.mangaDetail?.coverViewModel, let downloadURL = coverViewModel.downloadURL {
@@ -121,7 +126,7 @@ struct MangaDetailScreen: View {
             }
         }
     }
-    
+
     private var chapterItemView: some View {
         VStack(spacing: 0) {
             ForEach(Array(viewModel.chapterItems.enumerated()), id: \.element.id) { index, chapterItem in
@@ -137,15 +142,15 @@ struct MangaDetailScreen: View {
         .animation(.easeInOut(duration: 0.25), value: chapterItemViewChanged)
         .transition(.move(edge: .top))
     }
-    
+
     private var contentSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(spacing: 8) {
                 if horizontalSizeClass == .compact, !viewModel.chapterItems.isEmpty, !viewModel.isLoading {
                     chaptersButton
                 }
-                
-                continueButton(mangaReadState: viewModel.mangaReadState)
+
+                continueButton(mangaReadState: mangaReadStates.first(where: { $0.mangaSlug == mangaSlug }))
             }
 
             if let description = viewModel.mangaDetail?.sanitizedDescription {
@@ -184,7 +189,6 @@ struct MangaDetailScreen: View {
                         }
                     }
                     .frame(alignment: .leading)
-                
 
                 if let title = viewModel.mangaDetail?.title {
                     Text(title)
@@ -257,11 +261,11 @@ struct MangaDetailScreen: View {
                 }
             }
             .task(priority: .userInitiated) {
-                if viewModel.mangaDetail == nil {
-                    await viewModel.fetchData(mangaSlug: mangaSlug)
-                }
+                await viewModel.fetchData(mangaSlug: mangaSlug)
 
-                await viewModel.getMangaReadState(slug: mangaSlug)
+                guard !mangaReadStates.contains(where: { $0.mangaSlug == mangaSlug }) else { return }
+                modelContext.insert(MangaReadState(mangaSlug: mangaSlug))
+                logger.debug("💾 Inserted unknown Manga - \(mangaSlug)")
             }
             // Negating check so its just not available for macOS
             #if !os(macOS)
@@ -282,15 +286,15 @@ struct MangaDetailScreen: View {
             }
             #else
             .overlay {
-                customNavigationView
-            }
-            .onChange(of: windowObserver.windowIsResizing) { _, isResizing in
-                animate = !isResizing
-            }
+                        customNavigationView
+                    }
+                    .onChange(of: windowObserver.windowIsResizing) { _, isResizing in
+                        animate = !isResizing
+                    }
             #endif
-            .foregroundStyle(isLightCoverColor ? .black : .white)
-            .tint(isLightCoverColor ? .black : .white)
-            .navigationTitle("test")
+                    .foregroundStyle(isLightCoverColor ? .black : .white)
+                    .tint(isLightCoverColor ? .black : .white)
+                    .navigationTitle("test")
         }
     }
 }

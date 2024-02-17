@@ -76,7 +76,6 @@ struct MangaListView: View {
         guard mangaStore.prominentColors[manga.slug]?.isEmpty ?? true else { return }
 
         Task.detached(priority: .medium) {
-            logger.debug("Started getting colors on \(Thread.current.debugDescription)")
             let image = imageResult.image
             let resizedImage = image.resize(width: 50, height: 50)
 
@@ -85,7 +84,6 @@ struct MangaListView: View {
             let prominentColors = await image.prominentColors()
 
             Task { @MainActor in
-                logger.debug("Publishing colors to View on \(Thread.current.debugDescription)")
                 mangaStore.prominentColors[manga.slug] = prominentColors
                 mangaStore.averageCoverColors[manga.slug] = averageCoverColor
             }

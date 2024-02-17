@@ -1,4 +1,5 @@
 import Kingfisher
+import SwiftData
 import SwiftUI
 
 struct
@@ -8,6 +9,9 @@ ReaderScreen: View {
     @StateObject var viewModel = ReaderScreenViewModel()
     @State private var navigationVisibility = Visibility.hidden
     @State private var didInitiateScrollTo = false
+
+    @Environment(\.modelContext) var modelContext
+    @Query var mangaReadStates: [MangaReadState]
 
     let chapterId: String
     let currentChapterImageId: String?
@@ -87,11 +91,13 @@ ReaderScreen: View {
                                         }
 
                                         Task {
-                                            guard !viewModel.isLoading else { return }
-
-//                                            if didInitiateScrollTo {
-                                                await viewModel.saveCurrentChapterLocation(chapterImageId: downloadURL.absoluteString)
-//                                            }
+                                            guard !viewModel.isLoading, let mangaSlug = image.mangaSlug else { return }
+                                            
+                                            let mangaReadState = mangaReadStates.first { $0.mangaSlug == mangaSlug } ?? MangaReadState(mangaSlug: mangaSlug)
+                                            let editedMangaReadState = viewModel.editMangaReadState(currentMangaReadState: mangaReadState,
+                                                                                                    chapterImageId: downloadURL.absoluteString)
+                                            modelContext.insert(editedMangaReadState)
+                                            logger.debug("Edited MangaReadState \(editedMangaReadState.mangaSlug) \(String(editedMangaReadState.chapterNumber ?? 0))")
 
                                             guard let nextChapter = viewModel.chapterDetailViewModel?.next?.hid, (viewModel.images.endIndex - 1) == index else { return }
                                             await viewModel.getChapterDetail(chapterId: nextChapter)
