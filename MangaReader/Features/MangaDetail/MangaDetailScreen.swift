@@ -14,6 +14,7 @@ struct MangaDetailScreen: View {
     @State private var isDismissing = false
     @State private var isLightCoverColor = false
     @State private var onHoverOverBackButton = false
+    @State private var chapterItemViewChanged: Bool = false
 
     private var path: Binding<NavigationPath>
     private var mangaSlug: String
@@ -109,11 +110,12 @@ struct MangaDetailScreen: View {
             }
         }
     }
-
+    
     private var chapterItemView: some View {
         VStack(spacing: 0) {
             ForEach(Array(viewModel.chapterItems.enumerated()), id: \.element.id) { index, chapterItem in
                 ChapterItemView(chapterItem: chapterItem,
+                                expandingChanged: $chapterItemViewChanged,
                                 isFirst: index == 0,
                                 isLast: index == viewModel.chapterItems.endIndex - 1,
                                 onChapterSelect: { listItem in
@@ -121,7 +123,7 @@ struct MangaDetailScreen: View {
                                 })
             }
         }
-        .animation(.easeInOut(duration: 0.25)) // Fix animation warning find a suited value to activate animation
+        .animation(.easeInOut(duration: 0.25), value: chapterItemViewChanged) // Fix animation warning find a suited value to activate animation
         .transition(.move(edge: .top))
     }
 
@@ -177,23 +179,24 @@ struct MangaDetailScreen: View {
                             onHoverOverBackButton = hover
                         }
                     }
-                Spacer()
+                    .frame(alignment: .leading)
+                
 
                 if let title = viewModel.mangaDetail?.title {
                     Text(title)
                         .font(horizontalSizeClass == .compact ? .title : .largeTitle)
                         .bold()
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
-
-                Spacer()
             }
+            .frame(maxWidth: .infinity)
             .background {
                 #if os(macOS)
                     BlurView(material: .toolTip, blendingMode: .withinWindow)
                 #endif
             }
-            Spacer()
         }
+        .frame(maxHeight: .infinity, alignment: .top)
         .foregroundStyle(.white)
         .ignoresSafeArea()
     }
@@ -275,14 +278,15 @@ struct MangaDetailScreen: View {
             }
             #else
             .overlay {
-                        customNavigationView
-                    }
-                    .onChange(of: windowObserver.windowIsResizing) { _, isResizing in
-                        animate = !isResizing
-                    }
+                customNavigationView
+            }
+            .onChange(of: windowObserver.windowIsResizing) { _, isResizing in
+                animate = !isResizing
+            }
             #endif
-                    .foregroundStyle(isLightCoverColor ? .black : .white)
-                    .tint(isLightCoverColor ? .black : .white)
+            .foregroundStyle(isLightCoverColor ? .black : .white)
+            .tint(isLightCoverColor ? .black : .white)
+            .navigationTitle("test")
         }
     }
 }

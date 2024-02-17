@@ -7,7 +7,7 @@ struct CompactChapterListScreen: View {
 
     @StateObject var mangaStore = MangaStore.shared
 
-    @State private var isCollapsingChildren: Bool = false
+    @State private var chapterItemViewChanged: Bool = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -17,6 +17,7 @@ struct CompactChapterListScreen: View {
                         ForEach(Array(chapterListItems.enumerated()), id: \.element.id) { index, chapterItem in
                             ChapterItemView(
                                 chapterItem: chapterItem,
+                                expandingChanged: $chapterItemViewChanged,
                                 isFirst: index == 0,
                                 isLast: index == chapterListItems.endIndex - 1
                             ) { chapterListItem in
@@ -28,7 +29,7 @@ struct CompactChapterListScreen: View {
                 }
                 .padding(16)
                 .frame(minHeight: geometry.size.height)
-                .animation(.easeInOut(duration: 0.25))
+                .animation(.easeInOut(duration: 0.25), value: chapterItemViewChanged)
             }
             .frame(width: geometry.size.width)
             .background {
