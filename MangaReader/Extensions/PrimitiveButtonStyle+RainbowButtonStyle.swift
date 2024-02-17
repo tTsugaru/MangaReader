@@ -9,3 +9,8 @@ public extension PrimitiveButtonStyle where Self == RainbowButtonStyle {
         RainbowButtonStyle()
     }
 }
+public extension PrimitiveButtonStyle where Self == MangaButtonStyle {
+    static var mangaButtonStyle: MangaButtonStyle {
+        MangaButtonStyle()
+    }
+}

@@ -89,9 +89,9 @@ ReaderScreen: View {
                                         Task {
                                             guard !viewModel.isLoading else { return }
 
-                                            if didInitiateScrollTo {
+//                                            if didInitiateScrollTo {
                                                 await viewModel.saveCurrentChapterLocation(chapterImageId: downloadURL.absoluteString)
-                                            }
+//                                            }
 
                                             guard let nextChapter = viewModel.chapterDetailViewModel?.next?.hid, (viewModel.images.endIndex - 1) == index else { return }
                                             await viewModel.getChapterDetail(chapterId: nextChapter)

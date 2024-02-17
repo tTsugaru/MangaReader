@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ChapterItemView: View {
+    @State private var isHovering = false
+    
     @ObservedObject var chapterItem: ChapterListItem
 
     var isFirst = false
@@ -19,7 +21,7 @@ struct ChapterItemView: View {
         VStack(spacing: 0) {
             Rectangle()
                 .frame(height: 40)
-                .foregroundColor(Color.black.opacity(0.3))
+                .foregroundColor(isHovering ? Color.black.opacity(0.5) : Color.black.opacity(0.3))
                 .clipShape(
                     .rect(cornerRadii: RectangleCornerRadii(topLeading: isFirst ? 10 : 0,
                                                             bottomLeading: isLast || chapterItem.showChildren ? 10 : 0,
@@ -40,6 +42,9 @@ struct ChapterItemView: View {
                     .padding(.horizontal, 16)
                     .zIndex(1)
                 }
+                .onHover { hover in
+                    isHovering = hover
+                }
                 .contentShape(Rectangle())
                 .onTapGesture {
                     if (chapterItem.children?.isEmpty ?? true) && chapterItem.parent != nil {
@@ -49,6 +54,15 @@ struct ChapterItemView: View {
                     guard !(chapterItem.children?.isEmpty ?? true) else { return }
                     chapterItem.showChildren.toggle()
                 }
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 0) // Visual response on iOS/iPadOS cause there is no hover
+                        .onChanged { _ in
+                            isHovering = true
+                        }
+                        .onEnded { _ in
+                            isHovering = false
+                        }
+                )
 
             if let children = chapterItem.children {
                 HStack {

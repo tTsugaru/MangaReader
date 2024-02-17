@@ -13,6 +13,7 @@ struct MangaDetailScreen: View {
     @State private var animate = false
     @State private var isDismissing = false
     @State private var isLightCoverColor = false
+    @State private var onHoverOverBackButton = false
 
     private var path: Binding<NavigationPath>
     private var mangaSlug: String
@@ -114,23 +115,38 @@ struct MangaDetailScreen: View {
             ForEach(Array(viewModel.chapterItems.enumerated()), id: \.element.id) { index, chapterItem in
                 ChapterItemView(chapterItem: chapterItem,
                                 isFirst: index == 0,
-                                isLast: index == viewModel.chapterItems.endIndex - 1, onChapterSelect: { listItem in
+                                isLast: index == viewModel.chapterItems.endIndex - 1,
+                                onChapterSelect: { listItem in
                                     handleNavigation(chapterId: listItem.id)
                                 })
             }
         }
-        .animation(.easeInOut(duration: 0.25)) // Fix animation warning finde a suited value to activate animation
+        .animation(.easeInOut(duration: 0.25)) // Fix animation warning find a suited value to activate animation
         .transition(.move(edge: .top))
     }
 
+    private var chaptersButton: some View {
+        Button("Chapters") {
+            path.wrappedValue.append(viewModel.chapterItems)
+        }
+        .buttonStyle(.mangaButtonStyle)
+    }
+    
     private var contentSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            continueButton(mangaReadState: viewModel.mangaReadState)
+            HStack(spacing: 8) {
+                if horizontalSizeClass == .compact, !viewModel.chapterItems.isEmpty, !viewModel.isLoading {
+                    chaptersButton
+                }
+                
+                continueButton(mangaReadState: viewModel.mangaReadState)
+            }
 
             if let description = viewModel.mangaDetail?.sanitizedDescription {
                 Text(.init(description))
                     .font(.body)
                     .tint(isLightCoverColor ? .black : .white)
+                    .frame(maxWidth: .infinity)
                     .padding(16)
                     .background {
                         Color.black.opacity(0.3)
@@ -150,10 +166,16 @@ struct MangaDetailScreen: View {
                 Image(systemName: "chevron.left")
                     .imageScale(.large)
                     .padding(16)
+                    .background(onHoverOverBackButton ? .black.opacity(0.2) : .clear)
                     .contentShape(Rectangle())
                     .onTapGesture {
                         isDismissing = true
                         dismiss?()
+                    }
+                    .onHover { hover in
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            onHoverOverBackButton = hover
+                        }
                     }
                 Spacer()
 
@@ -239,16 +261,6 @@ struct MangaDetailScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
             .toolbar {
-                if horizontalSizeClass == .compact, !viewModel.chapterItems.isEmpty, !viewModel.isLoading {
-                    ToolbarItem(placement: .automatic) {
-                        Button(action: {
-                            path.wrappedValue.append(viewModel.chapterItems)
-                        }, label: {
-                            Text("Chapters")
-                        })
-                    }
-                }
-
                 if let title = viewModel.mangaDetail?.title {
                     ToolbarItem(placement: .principal) {
                         Text(title)

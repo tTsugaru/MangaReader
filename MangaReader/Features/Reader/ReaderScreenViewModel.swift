@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 
 struct ChapterImageViewModel {
     let model: ChapterImage
@@ -58,7 +59,7 @@ class ReaderScreenViewModel: ObservableObject {
 
     #warning("refactor")
     func saveCurrentChapterLocation(chapterImageId: String) async {
-        do {
+//        do {
             if let chapterNumber = Int(chapterDetailViewModel?.chapter.chap ?? ""), let mangaSlug = chapterDetailViewModel?.chapter.mdComics.slug, let chapterId = chapterDetailViewModel?.chapter.hid {
                 
                 if let mangaReadStateIndex = Config.mangaReadStates.firstIndex(where: { $0.mangaSlug == mangaSlug }) {
@@ -67,10 +68,17 @@ class ReaderScreenViewModel: ObservableObject {
                     Config.mangaReadStates.append(MangaReadState(mangaSlug: mangaSlug, chapterHid: chapterId, chapterNumber: chapterNumber, currentChapterImageId: chapterImageId))
                 }
                 
+                logger.debug("Saving MangaReadState to Defaults - \(Config.mangaReadStates.first(where: { $0.mangaSlug == mangaSlug }).debugDescription)")
+                
 //                try await Database.shared.saveReadState(for: mangaSlug, at: chapterId, chapterNumber: chapterNumber, currentChapterImageId: chapterImageId)
             }
-        } catch {
-            print(error)
-        }
+//        } catch {
+//            print(error)
+//        }
+    }
+}
+extension ReaderScreenViewModel {
+    var logger: Logger {
+        return Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ReaderScreenViewModel")
     }
 }

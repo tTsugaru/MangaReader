@@ -1,3 +1,4 @@
+#if !os(macOS)
 import UIKit
 
 extension UINavigationController: UIGestureRecognizerDelegate {
@@ -10,3 +11,4 @@ extension UINavigationController: UIGestureRecognizerDelegate {
         return viewControllers.count > 1
     }
 }
+#endif
