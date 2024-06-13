@@ -10,7 +10,7 @@ struct Comic: Codable {
     let lastChapter: Double
     let chapterCount: Int
     let demographic: Int?
-    let hentai: Bool
+    let hentai: Bool?
     let userFollowCount: Int
     let followRank: Int?
     let commentCount: Int
