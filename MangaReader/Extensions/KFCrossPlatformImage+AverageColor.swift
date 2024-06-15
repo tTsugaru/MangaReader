@@ -3,7 +3,7 @@ import Kingfisher
 import SwiftUI
 
 extension KFCrossPlatformImage {
-    var avrageColor: Color? {
+    var averageColor: Color? {
         #if os(macOS)
             guard let cgImage = cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
         #elseif os(iOS)

@@ -1,59 +1,41 @@
 import Foundation
 
-class MangaDetailViewModel: ObservableObject, Identifiable, MangaListViewProtocol {
-    let model: MangaDetail
-
+final class MangaDetailViewModel: Identifiable, MangaListViewProtocol {
+    
+    let hid: String
+    let title: String
+    let slug: String
+    let alternativeTitles: String
+    let year: Int
+    let authors: String?
+    let artists: String?
+    let description: String?
+    let sanitizedDescription: String?
+    let firstChapterId: String
+    let coverViewModel: CoverViewModel?
+    let imageDownloadURL: URL?
+    
     init(_ model: MangaDetail) {
-        self.model = model
-    }
-
-    var hid: String {
-        model.comic.hid
-    }
-
-    var title: String {
-        model.comic.title
-    }
-    
-    var slug: String {
-        model.comic.slug
-    }
-
-    var alternativeTitles: String {
-        model.comic.mdTitles.filter{ $0.lang == "en" }.map(\.title).joined(separator: "\n")
-    }
-
-    var year: Int {
-        model.comic.year
-    }
-
-    var authors: String? {
-        model.authors?.map(\.name).joined(separator: ", ")
-    }
-
-    var artists: String? {
-        model.artists?.map(\.name).joined(separator: ", ")
-    }
-
-    var description: String? {
-        model.comic.description
-    }
-
-    var sanitizedDescription: String? {
-        description?.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-    
-    var firstChapterId: String {
-        return model.firstChap.hid
-    }
-
-    var coverViewModel: CoverViewModel? {
-        guard let cover = model.comic.mdCovers.first else { return nil }
-        return CoverViewModel(model: cover)
-    }
-    
-    var imageDownloadURL: URL? {
-        coverViewModel?.downloadURL
+        self.hid = model.comic.hid
+        self.title = model.comic.title
+        self.slug = model.comic.slug
+        self.alternativeTitles = model.comic.mdTitles.filter{ $0.lang == "en" }.map(\.title).joined(separator: "\n")
+        self.year = model.comic.year
+        self.authors = model.authors?.map(\.name).joined(separator: ", ")
+        self.artists = model.artists?.map(\.name).joined(separator: ", ")
+        self.description = model.comic.description
+        self.sanitizedDescription = description?.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.firstChapterId = model.firstChap.hid
+        
+        if let cover = model.comic.mdCovers.first {
+            let coverViewModel = CoverViewModel(model: cover)
+            
+            self.imageDownloadURL = coverViewModel.downloadURL
+            self.coverViewModel = coverViewModel
+        } else {
+            self.imageDownloadURL = nil
+            self.coverViewModel = nil
+        }
     }
 }
 extension MangaDetailViewModel: Equatable {

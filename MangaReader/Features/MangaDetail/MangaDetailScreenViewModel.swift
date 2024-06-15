@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import OrderedCollections
 import SwiftData
 
 @MainActor
@@ -10,16 +11,21 @@ class MangaDetailScreenViewModel: ObservableObject {
     @Published var chapters = [Chapter]()
     @Published var chapterItems: [ChapterListItem] = []
     @Published var mangaReadState: MangaReadState? = nil
+    @Published var expandedChapterList: [String: Bool] = [:]
 
     func fetchData(mangaSlug: String) async {
-        isLoading = true
-        await getMangaDetail(slug: mangaSlug)
+        self.isLoading = true
+        await self.getMangaDetail(slug: mangaSlug)
 
         if let mangaHid = mangaDetail?.hid, let mangaSlug = mangaDetail?.slug, chapters.isEmpty {
-            await getChapters(hid: mangaHid, mangaSlug: mangaSlug)
+            await self.getChapters(hid: mangaHid, mangaSlug: mangaSlug)
         } else {
-            isLoading = false
+            self.isLoading = false
         }
+    }
+    
+    func handleExpanding(for groupId: String) {
+        expandedChapterList[groupId, default: false].toggle()
     }
 
     private func getMangaDetail(slug: String) async {
@@ -32,38 +38,36 @@ class MangaDetailScreenViewModel: ObservableObject {
     }
 
     private func getChapters(hid: String, mangaSlug: String) async {
-        do {
-            let chapterResponse = try await Networking.shared.getChapters(hid: hid, limit: 1)
-            guard chapterResponse.total > 0 else { return }
-
-            let allChapterResponse = try await Networking.shared.getChapters(hid: hid, limit: chapterResponse.total)
-            #warning("debug - dont forget to remove")
-            chapters = allChapterResponse.chapters.filter { $0.lang == "en" }
-
-            let groupNames = Array(Set(chapters.compactMap { $0.groupName?.first }))
-            let chapterListItems = groupNames.map { ChapterListItem(id: UUID().uuidString, title: $0, mangaSlug: mangaSlug) }
-
-            Task.detached(priority: .userInitiated) {
+        Task.detached(priority: .background) {
+            do {
+                let chapterResponse = try await Networking.shared.getChapters(hid: hid, limit: 1)
+                guard chapterResponse.total > 0 else { return }
+                
+                let allChapterResponse = try await Networking.shared.getChapters(hid: hid, limit: chapterResponse.total)
+                #warning("debug - dont forget to remove")
+                let chapters = allChapterResponse.chapters.filter { $0.lang == "en" }
+                
+                let groupNames = Array(Set(chapters.compactMap { $0.groupName?.first }))
+                
+                let chapterListItems = groupNames.map { groupName in
+                    let groupId = UUID().uuidString
+                    let children = chapters
+                        .filter { groupName == $0.groupName?.first ?? "" }
+                        .map { chapter in
+                            ChapterListItem(id: chapter.hid, title: chapter.title ?? chapter.chap ?? chapter.vol ?? "Unknown Chapter", parentId: groupId, mangaSlug: mangaSlug)
+                        }
+                    return ChapterListItem(id: groupId, title: groupName, mangaSlug: mangaSlug, children: children)
+                }
+                
                 Task { @MainActor in
-                    self.chapterItems = chapterListItems.map { chapterListItem in
-                        let chapters = self.chapters
-                            .filter { $0.groupName?.first ?? "" == chapterListItem.title }
-                            .map { chapter in
-                                let childChapterListItem = ChapterListItem(id: chapter.hid, title: chapter.title ?? chapter.chap ?? chapter.vol ?? "Unkown Chapter", mangaSlug: mangaSlug)
-                                
-                                childChapterListItem.parent = chapterListItem
-                                
-                                return childChapterListItem
-                            }
-                        chapterListItem.children = chapters
-                        return chapterListItem
-                    }
-
+                    self.objectWillChange.send()
+                    self.chapters = chapters
+                    self.chapterItems = chapterListItems
                     self.isLoading = false
                 }
+            } catch {
+                print(error)
             }
-        } catch {
-            print(error)
         }
     }
 }

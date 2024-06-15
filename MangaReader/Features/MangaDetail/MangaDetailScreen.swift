@@ -130,12 +130,16 @@ struct MangaDetailScreen: View {
     private var chapterItemView: some View {
         VStack(spacing: 0) {
             ForEach(Array(viewModel.chapterItems.enumerated()), id: \.element.id) { index, chapterItem in
-                ChapterItemView(chapterItem: chapterItem,
+                ChapterItemView(chapterItem: chapterItem, expand: viewModel.expandedChapterList[chapterItem.id, default: false],
                                 expandingChanged: $chapterItemViewChanged,
                                 isFirst: index == 0,
                                 isLast: index == viewModel.chapterItems.endIndex - 1,
                                 onChapterSelect: { listItem in
-                                    handleNavigation(chapterId: listItem.id)
+                                    if let listItem {
+                                        handleNavigation(chapterId: listItem.id)
+                                    } else {
+                                        viewModel.handleExpanding(for: chapterItem.id)
+                                    }
                                 })
             }
         }

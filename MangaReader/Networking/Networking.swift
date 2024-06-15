@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-class Networking {
+actor Networking {
     public static let shared = Networking()
     private init() {}
 

@@ -14,8 +14,7 @@ class HistoryScreenViewModel: ObservableObject {
 
         do {
             for mangaReadState in mangaReadStates {
-                let mangaDetail = try? await Networking.shared.getMangaDetails(slug: mangaReadState.mangaSlug)
-                guard let mangaDetail else { continue }
+                let mangaDetail = try await Networking.shared.getMangaDetails(slug: mangaReadState.mangaSlug)
                 let mangaDetailViewModel = MangaDetailViewModel(mangaDetail)
 
                 guard !mangaViewModels.contains(mangaDetailViewModel) else { continue }

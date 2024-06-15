@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 class MangaStore: ObservableObject {
-    static let shared = MangaStore()
+    @MainActor static let shared = MangaStore()
     private init() {}
 
     @Published var prominentColors = [String: [Color]]()

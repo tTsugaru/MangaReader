@@ -1,18 +1,16 @@
 import Foundation
 
-class ChapterListItem: ObservableObject, Identifiable {
+struct ChapterListItem: Identifiable, Hashable {
     let id: String
     let title: String
     let mangaSlug: String
-    weak var parent: ChapterListItem?
-    var children: [ChapterListItem]?
+    let parentId: String?
+    let children: [ChapterListItem]?
     
-    @Published var showChildren = false
-    
-    init(id: String, title: String, parent: ChapterListItem? = nil, mangaSlug: String, children: [ChapterListItem]? = nil) {
+    init(id: String, title: String, parentId: String? = nil, mangaSlug: String, children: [ChapterListItem]? = nil) {
         self.id = id
         self.title = title
-        self.parent = parent
+        self.parentId = parentId
         self.mangaSlug = mangaSlug
         self.children = children
     }
@@ -20,10 +18,5 @@ class ChapterListItem: ObservableObject, Identifiable {
 extension ChapterListItem: Equatable {
     static func == (lhs: ChapterListItem, rhs: ChapterListItem) -> Bool {
         lhs.id == rhs.id
-    }
-}
-extension ChapterListItem: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(self))
     }
 }

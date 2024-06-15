@@ -2,8 +2,7 @@ import Foundation
 import SwiftUI
 import Kingfisher
 
-@MainActor
-class MangaViewModel: ObservableObject, MangaListViewProtocol {
+final class MangaViewModel: MangaListViewProtocol {
     let model: Manga
 
     init(model: Manga) {

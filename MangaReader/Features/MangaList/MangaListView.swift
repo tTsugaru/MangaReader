@@ -1,4 +1,4 @@
-import Kingfisher
+@preconcurrency import Kingfisher
 import SwiftUI
 
 @MainActor
@@ -74,13 +74,14 @@ struct MangaListView: View {
 
     private func populateMangaColors(imageResult: RetrieveImageResult) {
         guard mangaStore.prominentColors[manga.slug]?.isEmpty ?? true else { return }
-
+        
         Task.detached(priority: .medium) {
+
             let image = imageResult.image
             let resizedImage = image.resize(width: 50, height: 50)
 
             guard let image = resizedImage else { return }
-            let averageCoverColor = image.avrageColor
+            let averageCoverColor = image.averageColor
             let prominentColors = await image.prominentColors()
 
             Task { @MainActor in

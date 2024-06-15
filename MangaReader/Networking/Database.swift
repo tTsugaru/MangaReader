@@ -11,7 +11,7 @@ extension Encodable {
     }
 }
 
-class Database {
+actor Database {
     static let shared = Database()
     private init() {}
 

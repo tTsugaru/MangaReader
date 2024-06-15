@@ -9,6 +9,7 @@ struct CompactChapterListScreen: View {
 
     @State private var chapterItemViewChanged: Bool = false
 
+    #warning("fix expanding")
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -17,10 +18,12 @@ struct CompactChapterListScreen: View {
                         ForEach(Array(chapterListItems.enumerated()), id: \.element.id) { index, chapterItem in
                             ChapterItemView(
                                 chapterItem: chapterItem,
+                                expand: false,
                                 expandingChanged: $chapterItemViewChanged,
                                 isFirst: index == 0,
                                 isLast: index == chapterListItems.endIndex - 1
                             ) { chapterListItem in
+                                guard let chapterListItem else { return }
                                 path.append(ChapterNavigation(chapterId: chapterListItem.id, currentChapterImageId: nil))
                             }
                         }

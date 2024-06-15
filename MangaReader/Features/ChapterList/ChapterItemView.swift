@@ -3,16 +3,23 @@ import SwiftUI
 struct ChapterItemView: View {
     @State private var isHovering = false
     
-    @ObservedObject var chapterItem: ChapterListItem
+    var chapterItem: ChapterListItem
+    var expand: Bool
     var expandingChanged: Binding<Bool>
     
     var isFirst = false
     var isLast = false
 
-    var onChapterSelect: ((ChapterListItem) -> Void)?
+    var onChapterSelect: ((ChapterListItem?) -> Void)?
     
-    init(chapterItem: ChapterListItem, expandingChanged: Binding<Bool>, isFirst: Bool = false, isLast: Bool = false, onChapterSelect: ((ChapterListItem) -> Void)? = nil) {
+    init(chapterItem: ChapterListItem,
+         expand: Bool,
+         expandingChanged: Binding<Bool>,
+         isFirst: Bool = false,
+         isLast: Bool = false,
+         onChapterSelect: ((ChapterListItem?) -> Void)? = nil) {
         self.chapterItem = chapterItem
+        self.expand = expand
         self.expandingChanged = expandingChanged
         self.isFirst = isFirst
         self.isLast = isLast
@@ -26,8 +33,8 @@ struct ChapterItemView: View {
                 .foregroundColor(isHovering ? Color.black.opacity(0.5) : Color.black.opacity(0.3))
                 .clipShape(
                     .rect(cornerRadii: RectangleCornerRadii(topLeading: isFirst ? 10 : 0,
-                                                            bottomLeading: isLast || chapterItem.showChildren ? 10 : 0,
-                                                            bottomTrailing: isLast || chapterItem.showChildren ? 10 : 0,
+                                                            bottomLeading: isLast || expand ? 10 : 0,
+                                                            bottomTrailing: isLast || expand ? 10 : 0,
                                                             topTrailing: isFirst ? 10 : 0)
                     )
                 )
@@ -37,8 +44,8 @@ struct ChapterItemView: View {
                         Spacer()
                         if !(chapterItem.children?.isEmpty ?? true) {
                             Image(systemName: "chevron.down")
-                                .rotationEffect(chapterItem.showChildren ? Angle(degrees: -180) : Angle(degrees: 0))
-                                .animation(.bouncy(duration: 0.25, extraBounce: 0.2), value: chapterItem.showChildren)
+                                .rotationEffect(expand ? Angle(degrees: -180) : Angle(degrees: 0))
+                                .animation(.bouncy(duration: 0.25, extraBounce: 0.2), value: expand)
                         }
                     }
                     .padding(.horizontal, 16)
@@ -49,13 +56,13 @@ struct ChapterItemView: View {
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    if (chapterItem.children?.isEmpty ?? true) && chapterItem.parent != nil {
+                    if (chapterItem.children?.isEmpty ?? true) && chapterItem.parentId != nil {
                         onChapterSelect?(chapterItem)
                     }
                     
                     guard !(chapterItem.children?.isEmpty ?? true) else { return }
                     expandingChanged.wrappedValue.toggle()
-                    chapterItem.showChildren.toggle()
+                    onChapterSelect?(nil)
                 }
                 .simultaneousGesture(
                     DragGesture(minimumDistance: 0) // Visual response on iOS/iPadOS cause there is no hover
@@ -69,10 +76,11 @@ struct ChapterItemView: View {
 
             if let children = chapterItem.children {
                 HStack {
-                    if chapterItem.showChildren {
+                    if expand {
                         VStack(alignment: .leading, spacing: 0) {
                             ForEach(Array(children.enumerated()), id: \.element.id) { index, child in
                                 ChapterItemView(chapterItem: child,
+                                                expand: false,
                                                 expandingChanged: expandingChanged,
                                                 isLast: index == children.endIndex - 1) { chapterListItem in
                                     onChapterSelect?(chapterListItem)
@@ -85,9 +93,9 @@ struct ChapterItemView: View {
                     Spacer()
                 }
                 .clipped()
-                .padding(.bottom, chapterItem.showChildren ? 8 : 0)
+                .padding(.bottom, expand ? 8 : 0)
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: chapterItem.showChildren)
+        .animation(.easeInOut(duration: 0.25), value: expand)
     }
 }

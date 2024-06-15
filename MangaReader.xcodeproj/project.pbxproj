@@ -26,6 +26,8 @@
 		3B3C59382B3681DB00B475C3 /* PrimitiveButtonStyle+RainbowButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3C59372B3681DB00B475C3 /* PrimitiveButtonStyle+RainbowButtonStyle.swift */; };
 		3B3C593E2B37166000B475C3 /* MangaReadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3C593D2B37166000B475C3 /* MangaReadState.swift */; };
 		3B3C59402B371C9B00B475C3 /* ChapterNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3C593F2B371C9B00B475C3 /* ChapterNavigation.swift */; };
+		3B444BAF2C1CD9DF00B13F0B /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = 3B444BAE2C1CD9DF00B13F0B /* Collections */; };
+		3B444BB12C1CD9DF00B13F0B /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 3B444BB02C1CD9DF00B13F0B /* OrderedCollections */; };
 		3B4790A22B2F3C260044D09D /* Color+Brightness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4790A12B2F3C260044D09D /* Color+Brightness.swift */; };
 		3B4790A62B2F57910044D09D /* RelateFrom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4790A52B2F57910044D09D /* RelateFrom.swift */; };
 		3B4790A82B2F57A50044D09D /* MDRelates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4790A72B2F57A50044D09D /* MDRelates.swift */; };
@@ -172,7 +174,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B444BAF2C1CD9DF00B13F0B /* Collections in Frameworks */,
 				3B333B322A80B1E900368534 /* Kingfisher in Frameworks */,
+				3B444BB12C1CD9DF00B13F0B /* OrderedCollections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,6 +445,8 @@
 			name = MangaReader;
 			packageProductDependencies = (
 				3B333B312A80B1E900368534 /* Kingfisher */,
+				3B444BAE2C1CD9DF00B13F0B /* Collections */,
+				3B444BB02C1CD9DF00B13F0B /* OrderedCollections */,
 			);
 			productName = MangaReader;
 			productReference = 3BD8F0262A7D6E0000A84F8E /* MangaReader.app */;
@@ -454,7 +460,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					3BD8F0252A7D6E0000A84F8E = {
 						CreatedOnToolsVersion = 15.0;
@@ -472,6 +478,7 @@
 			mainGroup = 3BD8F01D2A7D6E0000A84F8E;
 			packageReferences = (
 				3B333B302A80B1E900368534 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				3B444BAD2C1CD9DF00B13F0B /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			productRefGroup = 3BD8F0272A7D6E0000A84F8E /* Products */;
 			projectDirPath = "";
@@ -613,6 +620,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -676,6 +684,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -705,6 +714,7 @@
 				CODE_SIGN_ENTITLEMENTS = MangaReader/MangaReader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"MangaReader/Preview Content\"";
 				DEVELOPMENT_TEAM = 45UA95MB3U;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -731,7 +741,8 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -744,6 +755,7 @@
 				CODE_SIGN_ENTITLEMENTS = MangaReader/MangaReader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"MangaReader/Preview Content\"";
 				DEVELOPMENT_TEAM = 45UA95MB3U;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -770,7 +782,8 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -803,8 +816,16 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.12.0;
+			};
+		};
+		3B444BAD2C1CD9DF00B13F0B /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -814,6 +835,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3B333B302A80B1E900368534 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		3B444BAE2C1CD9DF00B13F0B /* Collections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B444BAD2C1CD9DF00B13F0B /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = Collections;
+		};
+		3B444BB02C1CD9DF00B13F0B /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B444BAD2C1CD9DF00B13F0B /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
