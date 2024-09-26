@@ -3,8 +3,9 @@ import SwiftUI
 
 @MainActor
 struct MangaListView: View {
-    private var manga: MangaListViewProtocol
-
+    
+    var manga: MangaListViewProtocol
+    
     init(manga: MangaListViewProtocol) {
         self.manga = manga
     }
@@ -24,32 +25,25 @@ struct MangaListView: View {
     var body: some View {
         KFImage(manga.imageDownloadURL)
             .backgroundDecode()
-            .onSuccess { populateMangaColors(imageResult: $0) }
             .cacheOriginalImage()
             .startLoadingBeforeViewAppear()
             .setProcessor(DownsamplingImageProcessor(size: CGSize(width: 180 * 2, height: 230 * 2)))
             .resizable()
             .aspectRatio(11 / 14, contentMode: .fit)
+        #if os(macOS)
             .overlay {
-                #if os(macOS)
-                    Color.black
-                        .opacity(isHovering ? 0 : 0.3)
-                        .animation(.easeInOut)
-                #endif
+                Color.black
+                    .opacity(isHovering ? 0 : 0.3)
+                    .animation(.easeInOut)
             }
-            .animation(.easeInOut(duration: animationSpeed)) { content in
-                content
-                    .overlay {
-                        if isHovering {
-                            LinearGradient(colors: [.black.opacity(1), .clear], startPoint: .bottom, endPoint: .center)
-                        }
-                    }
-            }
+        #endif
 
-            .animation(.bouncy(duration: animationSpeed, extraBounce: 0.3)) { content in
-                content
-                    .scaleEffect(isHovering ? 1.1 : 1)
+            .overlay {
+                if isHovering {
+                    LinearGradient(colors: [.black.opacity(1), .clear], startPoint: .bottom, endPoint: .center)
+                }
             }
+            .scaleEffect(isHovering ? 1.1 : 1)
             .overlay {
                 VStack {
                     Spacer()
@@ -70,24 +64,5 @@ struct MangaListView: View {
                     .scaleEffect(phase.isIdentity ? 1 : 0.85)
                     .blur(radius: phase.isIdentity ? 0 : 10)
             }
-    }
-
-    private func populateMangaColors(imageResult: RetrieveImageResult) {
-        guard mangaStore.prominentColors[manga.slug]?.isEmpty ?? true else { return }
-
-        Task {
-            let image = imageResult.image
-            let resizedImage = image.resize(width: 50, height: 50)
-            
-            guard let image = resizedImage else { return }
-            let averageCoverColor = image.averageColor
-               
-//            let prominentColors = await Task.detached(priority: .medium) {
-//                return await image.prominentColors()
-//            }.result.get()
-//            
-//            mangaStore.prominentColors[manga.slug] = prominentColors
-            mangaStore.averageCoverColors[manga.slug] = averageCoverColor
-        }
     }
 }

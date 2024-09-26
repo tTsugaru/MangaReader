@@ -13,7 +13,7 @@ struct Appearance {
     static let shared = Appearance()
 
     func setupAppearance() {
-        if !Platform.isMacOS {
+        #if !os(macOS)
             let appearance = UITabBarAppearance()
             appearance.backgroundEffect = UIBlurEffect(style: .systemThinMaterial)
             UITabBar.appearance().standardAppearance = appearance
@@ -23,7 +23,7 @@ struct Appearance {
             navigationAppearance.backgroundEffect = UIBlurEffect(style: .systemThinMaterial)
             UINavigationBar.appearance().standardAppearance = navigationAppearance
             UINavigationBar.appearance().compactAppearance = navigationAppearance
-        }
+        #endif
     }
 }
 

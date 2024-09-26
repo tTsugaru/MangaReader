@@ -5,8 +5,7 @@ import SwiftUI
 
 @MainActor
 struct MangaDetailScreen: View {
-    @EnvironmentObject private var windowObserver: WindowObserver
-
+    
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.modelContext) private var modelContext
 
@@ -228,10 +227,7 @@ struct MangaDetailScreen: View {
                                 contentSection
                             }
                             .padding(.horizontal, 16)
-
-                            #if os(macOS)
-                                Spacer()
-                            #endif
+                            .frame(maxHeight: .infinity, alignment: .top)
                         }
                     }
                     .padding(.top, horizontalSizeClass == .compact ? 8 : 16)
@@ -288,17 +284,29 @@ struct MangaDetailScreen: View {
                     CustomBackButton()
                 }
             }
-            #else
-            .overlay {
-                        customNavigationView
-                    }
-                    .onChange(of: windowObserver.windowIsResizing) { _, isResizing in
-                        animate = !isResizing
-                    }
             #endif
                     .foregroundStyle(isLightCoverColor ? .black : .white)
                     .tint(isLightCoverColor ? .black : .white)
                     .navigationTitle("test")
+        }
+    }
+    
+    private func populateMangaColors(imageResult: RetrieveImageResult) {
+        guard mangaStore.prominentColors[manga.slug]?.isEmpty ?? true else { return }
+        
+        Task {
+            let image = imageResult.image
+            let resizedImage = image.resize(width: 50, height: 50)
+            
+            guard let image = resizedImage else { return }
+            let averageCoverColor = image.averageColor
+            
+            //            let prominentColors = await Task.detached(priority: .medium) {
+            //                return await image.prominentColors()
+            //            }.result.get()
+            //
+            //            mangaStore.prominentColors[manga.slug] = prominentColors
+            mangaStore.averageCoverColors[manga.slug] = averageCoverColor
         }
     }
 }
