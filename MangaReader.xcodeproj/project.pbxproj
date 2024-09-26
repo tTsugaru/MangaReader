@@ -38,6 +38,8 @@
 		3B5AB4122B343FD40040AD00 /* MUComicCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5AB4112B343FD40040AD00 /* MUComicCategory.swift */; };
 		3B5AB4142B3440050040AD00 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5AB4132B3440050040AD00 /* Category.swift */; };
 		3B5B91DF2A8D634B004C74FB /* FloatingCloudsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5B91DE2A8D634B004C74FB /* FloatingCloudsView.swift */; };
+		3B7E94DF2CA5C9E0001E555D /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7E94DE2CA5C9DB001E555D /* Appearance.swift */; };
+		3B7E94E12CA5CF94001E555D /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7E94E02CA5CF94001E555D /* Platform.swift */; };
 		3B8046D52B3B09BF00FBEF8C /* MangaListViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8046D42B3B09BF00FBEF8C /* MangaListViewProtocol.swift */; };
 		3B8AA74E2A7D92FE0051E61C /* MangaListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA74D2A7D92FE0051E61C /* MangaListScreen.swift */; };
 		3B8AA7502A7D93280051E61C /* MangaListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8AA74F2A7D93280051E61C /* MangaListViewModel.swift */; };
@@ -117,6 +119,8 @@
 		3B5AB4112B343FD40040AD00 /* MUComicCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUComicCategory.swift; sourceTree = "<group>"; };
 		3B5AB4132B3440050040AD00 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		3B5B91DE2A8D634B004C74FB /* FloatingCloudsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingCloudsView.swift; sourceTree = "<group>"; };
+		3B7E94DE2CA5C9DB001E555D /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
+		3B7E94E02CA5CF94001E555D /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
 		3B8046D42B3B09BF00FBEF8C /* MangaListViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaListViewProtocol.swift; sourceTree = "<group>"; };
 		3B8AA74D2A7D92FE0051E61C /* MangaListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaListScreen.swift; sourceTree = "<group>"; };
 		3B8AA74F2A7D93280051E61C /* MangaListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaListViewModel.swift; sourceTree = "<group>"; };
@@ -366,6 +370,7 @@
 			children = (
 				3BD8F0312A7D6E0300A84F8E /* MangaReader.entitlements */,
 				3BD8F02F2A7D6E0300A84F8E /* Assets.xcassets */,
+				3B7E94DE2CA5C9DB001E555D /* Appearance.swift */,
 				3BD8F0292A7D6E0000A84F8E /* MangaReaderApp.swift */,
 				3B8AA7512A7D93540051E61C /* Networking */,
 				3B8AA74B2A7D92DC0051E61C /* Features */,
@@ -388,6 +393,7 @@
 		3BDE01E32B32EFBD002B4075 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				3B7E94E02CA5CF94001E555D /* Platform.swift */,
 				3BDE01E42B32EFCE002B4075 /* MangaStore.swift */,
 				3BFC50CE2B7D821E0069E0CA /* UserDefaults.swift */,
 				3BFC50D02B7D822F0069E0CA /* Config.swift */,
@@ -528,6 +534,7 @@
 				3BF56E472B332525005D6CA7 /* Cloud.swift in Sources */,
 				3BB238732B2E50B100A00F2E /* DynamicStack.swift in Sources */,
 				3B8AA74E2A7D92FE0051E61C /* MangaListScreen.swift in Sources */,
+				3B7E94E12CA5CF94001E555D /* Platform.swift in Sources */,
 				3B4790AA2B2F57BE0044D09D /* RelateTo.swift in Sources */,
 				3BA345712B39B84B007D1C27 /* HistoryScreenViewModel.swift in Sources */,
 				3B3C592E2B35C65700B475C3 /* Database.swift in Sources */,
@@ -561,6 +568,7 @@
 				3BDE01E02B31E177002B4075 /* MangaDetailViewModel.swift in Sources */,
 				3B5AB4142B3440050040AD00 /* Category.swift in Sources */,
 				3BB2386F2B2E3CEA00A00F2E /* KFCrossPlatformImage+AverageColor.swift in Sources */,
+				3B7E94DF2CA5C9E0001E555D /* Appearance.swift in Sources */,
 				3BB2387F2B2E5B8C00A00F2E /* Links.swift in Sources */,
 				3B9070D92B303E4900B88E41 /* ChapterItemView.swift in Sources */,
 				3BF56E572B337F52005D6CA7 /* ReaderScreen.swift in Sources */,
@@ -721,6 +729,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -731,10 +740,10 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "\"\" UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = at.rushifaaa.multiplatform.MangaReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -762,6 +771,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -772,10 +782,10 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "\"\" UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = at.rushifaaa.multiplatform.MangaReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";

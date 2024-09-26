@@ -97,7 +97,7 @@ ReaderScreen: View {
                                             let editedMangaReadState = viewModel.editMangaReadState(currentMangaReadState: mangaReadState,
                                                                                                     chapterImageId: downloadURL.absoluteString)
                                             modelContext.insert(editedMangaReadState)
-                                            logger.debug("Edited MangaReadState \(editedMangaReadState.mangaSlug) \(String(editedMangaReadState.chapterNumber ?? 0))")
+                                            logger.debug("Edited MangaReadState \(editedMangaReadState.mangaSlug ?? "") \(String(editedMangaReadState.chapterNumber ?? 0))")
 
                                             guard let nextChapter = viewModel.chapterDetailViewModel?.next?.hid, (viewModel.images.endIndex - 1) == index else { return }
                                             await viewModel.getChapterDetail(chapterId: nextChapter)

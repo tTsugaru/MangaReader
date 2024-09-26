@@ -14,20 +14,31 @@ actor ColorCollector {
     var colors: [Color] = []
 
     func createColors() async {
-        await withTaskGroup(of: Void.self) { group in
+        await withTaskGroup(of: [Color].self) { group in
             for row in rows {
                 group.addTask {
+                    var colors = [Color]()
                     for x in 0 ..< self.width {
                         let index = x * 4
                         let red = CGFloat(row[index]) / 255.0
                         let green = CGFloat(row[index + 1]) / 255.0
                         let blue = CGFloat(row[index + 2]) / 255.0
                         let alpha = CGFloat(row[index + 3]) / 255.0
-
-                        await self.addColors([Color(red: red, green: green, blue: blue, opacity: alpha)])
+                        
+                        colors.append(Color(red: red, green: green, blue: blue, opacity: alpha))
                     }
+                    
+                    return colors
                 }
             }
+
+            var colors: [Color] = []
+
+            for await color in group {
+                colors.append(contentsOf: color)
+            }
+
+            self.addColors(colors)
         }
     }
 

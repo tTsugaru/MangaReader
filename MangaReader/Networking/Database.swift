@@ -13,6 +13,7 @@ extension Encodable {
 
 actor Database {
     static let shared = Database()
+    
     private init() {}
 
 //    let container = CKContainer.default()
