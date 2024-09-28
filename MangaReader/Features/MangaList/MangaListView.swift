@@ -10,7 +10,6 @@ struct MangaListView: View {
         self.manga = manga
     }
 
-    @ObservedObject private var mangaStore = MangaStore.shared
     @State private var isHovering = false
 
     private var animationSpeed: CGFloat = 0.2

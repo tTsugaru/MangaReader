@@ -7,8 +7,6 @@ struct MangaListScreen: View {
     @State private var path = NavigationPath()
     @State private var selectedManga: MangaViewModel?
 
-    @ObservedObject private var mangaStore = MangaStore.shared
-
     @ObservedObject var viewModel: MangaListViewModel
 
     /// Deciding Columns on sizeClasses

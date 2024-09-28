@@ -7,17 +7,18 @@ struct CoverViewModel {
         self.model = model
     }
     
-    var b2Key: String {
+    var b2Key: String? {
         return model.b2key
     }
     var h: Int {
-        return model.h
+        return model.h ?? 0
     }
     var w: Int {
-        return model.w
+        return model.w ?? 0
     }
     
     var downloadURL: URL? {
-        return URL(string: "https://meo.comick.pictures/\(self.b2Key)")
+        guard let b2Key = self.b2Key else { return nil }
+        return URL(string: "https://meo.comick.pictures/\(b2Key)")
     }
 }

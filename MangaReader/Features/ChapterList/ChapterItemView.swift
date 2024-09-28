@@ -2,16 +2,16 @@ import SwiftUI
 
 struct ChapterItemView: View {
     @State private var isHovering = false
-    
+
     var chapterItem: ChapterListItem
     var expand: Bool
     var expandingChanged: Binding<Bool>
-    
+
     var isFirst = false
     var isLast = false
 
     var onChapterSelect: ((ChapterListItem?) -> Void)?
-    
+
     init(chapterItem: ChapterListItem,
          expand: Bool,
          expandingChanged: Binding<Bool>,
@@ -59,11 +59,12 @@ struct ChapterItemView: View {
                     if (chapterItem.children?.isEmpty ?? true) && chapterItem.parentId != nil {
                         onChapterSelect?(chapterItem)
                     }
-                    
+
                     guard !(chapterItem.children?.isEmpty ?? true) else { return }
                     expandingChanged.wrappedValue.toggle()
                     onChapterSelect?(nil)
                 }
+            #if !os(macOS)
                 .simultaneousGesture(
                     DragGesture(minimumDistance: 0) // Visual response on iOS/iPadOS cause there is no hover
                         .onChanged { _ in
@@ -73,6 +74,8 @@ struct ChapterItemView: View {
                             isHovering = false
                         }
                 )
+            #endif
+                .zIndex(2)
 
             if let children = chapterItem.children {
                 HStack {
@@ -85,7 +88,7 @@ struct ChapterItemView: View {
                                                 isLast: index == children.endIndex - 1) { chapterListItem in
                                     onChapterSelect?(chapterListItem)
                                 }
-                                    .padding(.horizontal, 32)
+                                .padding(.horizontal, 32)
                             }
                         }
                         .transition(.move(edge: .top))
@@ -94,6 +97,7 @@ struct ChapterItemView: View {
                 }
                 .clipped()
                 .padding(.bottom, expand ? 8 : 0)
+                .zIndex(0)
             }
         }
         .animation(.easeInOut(duration: 0.25), value: expand)

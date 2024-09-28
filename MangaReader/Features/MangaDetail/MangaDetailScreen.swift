@@ -5,11 +5,10 @@ import SwiftUI
 
 @MainActor
 struct MangaDetailScreen: View {
-    
+
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.modelContext) private var modelContext
 
-    @ObservedObject private var mangaStore = MangaStore.shared
     @StateObject private var viewModel = MangaDetailScreenViewModel()
 
     @Query private var mangaReadStates: [MangaReadState]
@@ -19,6 +18,8 @@ struct MangaDetailScreen: View {
     @State private var isLightCoverColor = false
     @State private var onHoverOverBackButton = false
     @State private var chapterItemViewChanged: Bool = false // AnimationState
+    @State private var prominentColors = [Color]()
+    @State private var averageCoverColor: Color?
 
     private var path: Binding<NavigationPath>
     private var mangaSlug: String
@@ -43,8 +44,8 @@ struct MangaDetailScreen: View {
 
     @ViewBuilder
     private func continueButton(mangaReadState: MangaReadState?) -> some View {
-        let colors = mangaStore.prominentColors[mangaSlug]?.map { $0.lighter() } ?? []
-        let isLightColor = mangaStore.averageCoverColors[mangaSlug]?.isLightColor ?? true
+        let colors = prominentColors.map { $0.lighter() }
+        let isLightColor = averageCoverColor?.isLightColor ?? false
         let defaultColors: [Color] = [.black, .gray, .black]
 
         if let mangaReadState, let chapterNumber = mangaReadState.chapterNumber, let chapterHid = mangaReadState.chapterHid {
@@ -73,6 +74,7 @@ struct MangaDetailScreen: View {
     private func coverImageView(geometry _: GeometryProxy) -> some View {
         if let coverViewModel = viewModel.mangaDetail?.coverViewModel, let downloadURL = coverViewModel.downloadURL {
             KFImage(downloadURL)
+                .onSuccess { self.populateMangaColors(imageResult: $0) }
                 .fade(duration: 0.2)
                 .startLoadingBeforeViewAppear()
                 .onFailure { error in
@@ -217,7 +219,7 @@ struct MangaDetailScreen: View {
             ScrollView {
                 VStack {
                     VStack(spacing: 16) {
-                        if viewModel.isLoading, !(mangaStore.prominentColors[mangaSlug]?.isEmpty ?? true) {
+                        if viewModel.isLoading {
                             ProgressView()
                         } else {
                             headerSection
@@ -240,8 +242,8 @@ struct MangaDetailScreen: View {
             .animation(.easeInOut(duration: 0.25), value: animate)
             .frame(width: geometry.size.width)
             .background {
-                if let colors = mangaStore.prominentColors[mangaSlug], !colors.isEmpty {
-                    FloatingCloudsView(colors: colors)
+                if !prominentColors.isEmpty {
+                    FloatingCloudsView(colors: prominentColors)
                         .ignoresSafeArea()
                 }
             }
@@ -249,7 +251,7 @@ struct MangaDetailScreen: View {
             .clipped() // Prevents FloatingCloudsView to be shown first when screen is Appearing
             #endif
             .background {
-                if let coverColor = mangaStore.averageCoverColors[mangaSlug] {
+                if let coverColor = averageCoverColor {
                     coverColor
                         .ignoresSafeArea()
                         .onAppear {
@@ -284,29 +286,37 @@ struct MangaDetailScreen: View {
                     CustomBackButton()
                 }
             }
+            #else
+            .toolbar {
+                        if let title = viewModel.mangaDetail?.title {
+                            ToolbarItem(placement: .principal) {
+                                Text(title)
+                                    .multilineTextAlignment(.center)
+                                    .font(.title2)
+                                    .bold()
+                            }
+                        }
+                    }
             #endif
                     .foregroundStyle(isLightCoverColor ? .black : .white)
                     .tint(isLightCoverColor ? .black : .white)
-                    .navigationTitle("test")
         }
     }
-    
+
     private func populateMangaColors(imageResult: RetrieveImageResult) {
-        guard mangaStore.prominentColors[manga.slug]?.isEmpty ?? true else { return }
-        
         Task {
             let image = imageResult.image
             let resizedImage = image.resize(width: 50, height: 50)
-            
+
             guard let image = resizedImage else { return }
             let averageCoverColor = image.averageColor
-            
-            //            let prominentColors = await Task.detached(priority: .medium) {
-            //                return await image.prominentColors()
-            //            }.result.get()
-            //
-            //            mangaStore.prominentColors[manga.slug] = prominentColors
-            mangaStore.averageCoverColors[manga.slug] = averageCoverColor
+
+            let prominentColors = await Task.detached(priority: .medium) {
+                return await image.prominentColors()
+            }.result.get()
+
+            self.prominentColors = prominentColors
+            self.averageCoverColor = averageCoverColor
         }
     }
 }
