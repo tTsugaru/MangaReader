@@ -45,10 +45,12 @@ struct MangaDetailScreen: View {
     @ViewBuilder
     private func continueButton(mangaReadState: MangaReadState?) -> some View {
         let colors = prominentColors.map { $0.lighter() }
-        
         let defaultColors: [Color] = [.black, .gray, .black]
 
-        if let mangaReadState, let chapterNumber = mangaReadState.chapterNumber, let chapterHid = mangaReadState.chapterHid {
+        if let mangaReadState,
+           let chapterNumber = mangaReadState.chapterNumber,
+           let chapterHid = mangaReadState.chapterHid {
+
             Button("Continue Chap. \(chapterNumber)".uppercased()) {
                 handleNavigation(chapterId: chapterHid, currentChapterImageId: mangaReadState.currentChapterImageId)
             }
@@ -78,7 +80,7 @@ struct MangaDetailScreen: View {
                 .fade(duration: 0.2)
                 .startLoadingBeforeViewAppear()
                 .onFailure { error in
-                    print(error)
+                    logger.error("\(error)")
                 }
                 .placeholder {
                     ProgressView()
@@ -87,26 +89,36 @@ struct MangaDetailScreen: View {
                 .scaledToFit()
                 .frame(maxWidth: CGFloat(coverViewModel.w))
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .shadow(color: .black, radius: 9)
         }
     }
 
     private var headerSection: some View {
-        DynamicStack {
-            if let year = viewModel.mangaDetail?.year {
-                Text("🗓️ Year: ") + Text(String(year))
+        VStack(spacing: 8) {
+            if let title = viewModel.mangaDetail?.title {
+                Text(title)
+                    .font(.title2)
+                    .multilineTextAlignment(.leading)
+                    .bold()
             }
 
-            if let authors = viewModel.mangaDetail?.authors, !authors.isEmpty {
-                Text("✒️ Authors: ") + Text(authors)
+            DynamicStack {
+                if let year = viewModel.mangaDetail?.year {
+                    Text("🗓️ Year: ") + Text(String(year))
+                }
+
+                if let authors = viewModel.mangaDetail?.authors, !authors.isEmpty {
+                    Text("✒️ Authors: ") + Text(authors)
+                }
             }
+            .font(horizontalSizeClass == .compact ? .body : .title2)
         }
-        .font(horizontalSizeClass == .compact ? .body : .title2)
+        .padding(.horizontal, 16)
     }
 
     private func coverSection(geometry: GeometryProxy) -> some View {
         VStack(spacing: 0) {
             coverImageView(geometry: geometry)
+                .frame(maxWidth: .infinity, alignment: .center)
 
             if let artists = viewModel.mangaDetail?.artists, !artists.isEmpty {
                 HStack(alignment: .top) {
@@ -126,12 +138,15 @@ struct MangaDetailScreen: View {
                 }
             }
         }
+        .compositingGroup()
+        .shadow(color: .black, radius: 9)
     }
 
     private var chapterItemView: some View {
         VStack(spacing: 0) {
             ForEach(Array(viewModel.chapterItems.enumerated()), id: \.element.id) { index, chapterItem in
-                ChapterItemView(chapterItem: chapterItem, expand: viewModel.expandedChapterList[chapterItem.id, default: false],
+                ChapterItemView(chapterItem: chapterItem,
+                                expand: viewModel.expandedChapterList[chapterItem.id, default: false],
                                 expandingChanged: $chapterItemViewChanged,
                                 isFirst: index == 0,
                                 isLast: index == viewModel.chapterItems.endIndex - 1,
@@ -214,6 +229,8 @@ struct MangaDetailScreen: View {
         .ignoresSafeArea()
     }
 
+    // MARK: - Body
+
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -250,62 +267,49 @@ struct MangaDetailScreen: View {
             }
             .animation(.easeInOut(duration: 0.25), value: prominentColors)
             #if os(macOS)
-            .clipped() // Prevents FloatingCloudsView to be shown first when screen is Appearing
+                .clipped() // Prevents FloatingCloudsView to be shown first when screen is Appearing
             #endif
-            .background {
-                if let coverColor = averageCoverColor {
-                    coverColor
-                        .ignoresSafeArea()
-                        .onAppear {
-                            isLightCoverColor = coverColor.isLightColor
-                        }
-                        .transition(.opacity)
+                .background {
+                    if let coverColor = averageCoverColor {
+                        coverColor
+                            .ignoresSafeArea()
+                            .onAppear {
+                                isLightCoverColor = coverColor.isLightColor
+                            }
+                            .transition(.opacity)
+                    } else {
+                        Color("background", bundle: Bundle.main)
+                            .ignoresSafeArea()
+                            .transition(.opacity)
+                    }
                 }
-                else {
-                    Color("background", bundle: Bundle.main)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                }
-            }
-            .animation(.easeInOut(duration: 0.25), value: averageCoverColor)
-            .task(priority: .userInitiated) {
-                await viewModel.fetchData(mangaSlug: mangaSlug)
+                .animation(.easeInOut(duration: 0.25), value: averageCoverColor)
+                .task(priority: .userInitiated) {
+                    await viewModel.fetchData(mangaSlug: mangaSlug)
 
-                guard !mangaReadStates.contains(where: { $0.mangaSlug == mangaSlug }) else { return }
-                modelContext.insert(MangaReadState(mangaSlug: mangaSlug))
-                logger.debug("💾 Inserted unknown Manga - \(mangaSlug)")
-            }
+                    guard !mangaReadStates.contains(where: { $0.mangaSlug == mangaSlug }) else { return }
+                    modelContext.insert(MangaReadState(mangaSlug: mangaSlug))
+                    logger.debug("💾 Inserted unknown Manga - \(mangaSlug)")
+                }
             // Negating check so its just not available for macOS
             #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
+            .toolbarBackground(.clear, for: .navigationBar)
+            #else
             .toolbar {
                 if let title = viewModel.mangaDetail?.title {
                     ToolbarItem(placement: .principal) {
                         Text(title)
                             .multilineTextAlignment(.center)
+                            .font(.title2)
                             .bold()
                     }
                 }
-
-                ToolbarItem(placement: .topBarLeading) {
-                    CustomBackButton()
-                }
             }
-            #else
-            .toolbar {
-                        if let title = viewModel.mangaDetail?.title {
-                            ToolbarItem(placement: .principal) {
-                                Text(title)
-                                    .multilineTextAlignment(.center)
-                                    .font(.title2)
-                                    .bold()
-                            }
-                        }
-                    }
             #endif
-                    .foregroundStyle(isLightCoverColor ? .black : .white)
-                    .tint(isLightCoverColor ? .black : .white)
+            .foregroundStyle(isLightCoverColor ? .black : .white)
+            .tint(isLightCoverColor ? .black : .white)
         }
     }
 
