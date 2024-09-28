@@ -11,9 +11,13 @@ struct MangaListScreen: View {
 
     /// Deciding Columns on sizeClasses
     private var columns: [GridItem] {
+        #if os(macOS)
+        return Array(repeating: GridItem(), count: 7)
+        #else
         let compactGrid = [GridItem(), GridItem()]
         let largeGrid = [GridItem(), GridItem(), GridItem()]
         return horizontalSizeClass == .compact ? compactGrid : largeGrid
+        #endif
     }
 
     private var gridView: some View {

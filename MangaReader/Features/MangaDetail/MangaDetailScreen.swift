@@ -45,19 +45,19 @@ struct MangaDetailScreen: View {
     @ViewBuilder
     private func continueButton(mangaReadState: MangaReadState?) -> some View {
         let colors = prominentColors.map { $0.lighter() }
-        let isLightColor = averageCoverColor?.isLightColor ?? false
+        
         let defaultColors: [Color] = [.black, .gray, .black]
 
         if let mangaReadState, let chapterNumber = mangaReadState.chapterNumber, let chapterHid = mangaReadState.chapterHid {
             Button("Continue Chap. \(chapterNumber)".uppercased()) {
                 handleNavigation(chapterId: chapterHid, currentChapterImageId: mangaReadState.currentChapterImageId)
             }
-            .buttonStyle(.rainbow(colors: isLightColor ? defaultColors : colors))
+            .buttonStyle(.rainbow(colors: colors.isEmpty ? defaultColors : colors))
         } else if let firstChapterId = viewModel.mangaDetail?.firstChapterId, !viewModel.chapterItems.isEmpty {
             Button("Start reading".uppercased()) {
                 handleNavigation(chapterId: firstChapterId, currentChapterImageId: nil)
             }
-            .buttonStyle(.rainbow(colors: isLightColor ? defaultColors : colors))
+            .buttonStyle(.rainbow(colors: colors.isEmpty ? defaultColors : colors))
         }
     }
 
@@ -245,8 +245,10 @@ struct MangaDetailScreen: View {
                 if !prominentColors.isEmpty {
                     FloatingCloudsView(colors: prominentColors)
                         .ignoresSafeArea()
+                        .transition(.opacity)
                 }
             }
+            .animation(.easeInOut(duration: 0.25), value: prominentColors)
             #if os(macOS)
             .clipped() // Prevents FloatingCloudsView to be shown first when screen is Appearing
             #endif
@@ -257,11 +259,15 @@ struct MangaDetailScreen: View {
                         .onAppear {
                             isLightCoverColor = coverColor.isLightColor
                         }
-                } else {
+                        .transition(.opacity)
+                }
+                else {
                     Color("background", bundle: Bundle.main)
                         .ignoresSafeArea()
+                        .transition(.opacity)
                 }
             }
+            .animation(.easeInOut(duration: 0.25), value: averageCoverColor)
             .task(priority: .userInitiated) {
                 await viewModel.fetchData(mangaSlug: mangaSlug)
 
