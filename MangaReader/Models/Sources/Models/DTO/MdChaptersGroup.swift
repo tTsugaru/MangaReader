@@ -9,7 +9,7 @@ import Foundation
 
 public struct MdChaptersGroup: Codable, Sendable {
     public let mdGroups: MdGroups
-    
+
     enum CodingKeys: String, CodingKey {
         case mdGroups = "md_groups"
     }

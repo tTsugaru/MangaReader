@@ -11,7 +11,7 @@ let package = Package(
         .library(
             name: "Networking",
             targets: ["Networking"]
-        )
+        ),
     ],
     dependencies: [
         .package(path: "../Models")
@@ -24,8 +24,6 @@ let package = Package(
             dependencies: [
                 .product(name: "Models", package: "Models")
             ]
-        )
-        
-
+        ),
     ]
 )

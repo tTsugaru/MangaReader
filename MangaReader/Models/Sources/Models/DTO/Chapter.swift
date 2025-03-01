@@ -21,7 +21,7 @@ public struct Chapter: Codable, Sendable {
     public let hid: String
     public let identities: Identities?
     public let mdChaptersGroups: [MdChaptersGroup]
-    
+
     enum CodingKeys: String, CodingKey {
         case id, chap, title, vol, lang
         case createdAt = "created_at"

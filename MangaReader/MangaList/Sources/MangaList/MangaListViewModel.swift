@@ -1,9 +1,9 @@
 import Combine
-import Models
 import Foundation
 import Kingfisher
-import SwiftUI
+import Models
 import Networking
+import SwiftUI
 
 @MainActor
 public class MangaListViewModel: ObservableObject {
@@ -17,14 +17,16 @@ public class MangaListViewModel: ObservableObject {
     
     @Published public var oldSelectedManga: MangaViewModel?
     
-    public init() {}
+    public init() {
+        // no-op
+    }
     
     public func getAllMangas() async {
         isLoading = true
         error = nil
         do {
             let networkTask = Task.detached {
-                return try await Networking.shared.search(page: 1, limit: 30).map { MangaViewModel(model: $0) }
+                return try await Networking.shared.search(page: 1, limit: 12).map { MangaViewModel(model: $0) }
             }
             
             mangas = try await networkTask.value
@@ -36,7 +38,7 @@ public class MangaListViewModel: ObservableObject {
         }
     }
     
-    public func loadNextPage(with limit: Int = 30) async {
+    public func loadNextPage(with limit: Int = 12) async {
         do {
             isLoadingNextPage = true
             error = nil

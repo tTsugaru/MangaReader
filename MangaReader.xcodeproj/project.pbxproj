@@ -22,6 +22,7 @@
 		3B1F53E62D72352200C6658D /* MangaList */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MangaList; sourceTree = "<group>"; };
 		3B1F53F72D72365E00C6658D /* Models */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Models; path = MangaReader/Models; sourceTree = SOURCE_ROOT; };
 		3B56BED22D73263A004EC00C /* Utility */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Utility; sourceTree = "<group>"; };
+		3BA907A52D7399DE00DE6757 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		3BD8F0262A7D6E0000A84F8E /* MangaReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MangaReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BD8F0292A7D6E0000A84F8E /* MangaReaderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaReaderApp.swift; sourceTree = "<group>"; };
 		3BD8F02F2A7D6E0300A84F8E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -57,6 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				3BD8F0282A7D6E0000A84F8E /* MangaReader */,
+				3BA907A52D7399DE00DE6757 /* .swiftlint.yml */,
 				3BD8F0272A7D6E0000A84F8E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -106,6 +108,7 @@
 			buildConfigurationList = 3BD8F0372A7D6E0300A84F8E /* Build configuration list for PBXNativeTarget "MangaReader" */;
 			buildPhases = (
 				3BD8F0222A7D6E0000A84F8E /* Sources */,
+				3B6653092D739256008F2B7B /* SwiftLint */,
 				3BD8F0232A7D6E0000A84F8E /* Frameworks */,
 				3BD8F0242A7D6E0000A84F8E /* Resources */,
 			);
@@ -172,6 +175,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3B6653092D739256008F2B7B /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"/opt/homebrew/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n  swiftlint --config .swiftlint.yml autocorrect\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3BD8F0222A7D6E0000A84F8E /* Sources */ = {
@@ -318,6 +343,7 @@
 				DEVELOPMENT_TEAM = 45UA95MB3U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
@@ -360,6 +386,7 @@
 				DEVELOPMENT_TEAM = 45UA95MB3U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";

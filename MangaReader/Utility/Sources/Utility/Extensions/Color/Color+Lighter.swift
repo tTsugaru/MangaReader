@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-extension Color {
-    public func lighter(by percentage: CGFloat = 0.2) -> Color {
+public extension Color {
+    func lighter(by percentage: CGFloat = 0.2) -> Color {
         #if os(macOS)
             guard let color = NSColor(self).adjusted(by: abs(percentage)) else {
                 return self

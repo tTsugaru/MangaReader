@@ -1,3 +1,4 @@
+// swiftlint:disable override_in_extension
 #if canImport(UIKit)
     import UIKit
 
@@ -7,8 +8,9 @@
             interactivePopGestureRecognizer?.delegate = self
         }
 
-        public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        public func gestureRecognizerShouldBegin(_: UIGestureRecognizer) -> Bool {
             return viewControllers.count > 1
         }
     }
 #endif
+// swiftlint:enable override_in_extension

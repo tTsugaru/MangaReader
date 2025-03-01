@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Color+Darker.swift
 //  Utility
 //
 //  Created by Jakub Gencer on 01.03.25.

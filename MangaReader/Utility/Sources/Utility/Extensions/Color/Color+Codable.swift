@@ -1,5 +1,5 @@
 //
-//  CodingKeys.swift
+//  Color+Codable.swift
 //  Utility
 //
 //  Created by Jakub Gencer on 01.03.25.
@@ -14,11 +14,11 @@ extension Color: Codable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let r = try container.decode(Double.self, forKey: .red)
-        let g = try container.decode(Double.self, forKey: .green)
-        let b = try container.decode(Double.self, forKey: .blue)
+        let red = try container.decode(Double.self, forKey: .red)
+        let green = try container.decode(Double.self, forKey: .green)
+        let blue = try container.decode(Double.self, forKey: .blue)
         
-        self.init(red: r, green: g, blue: b)
+        self.init(red: red, green: green, blue: blue)
     }
     
     public func encode(to encoder: Encoder) throws {

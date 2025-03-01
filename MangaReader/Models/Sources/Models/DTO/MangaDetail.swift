@@ -11,4 +11,3 @@ public struct MangaDetail: Codable, Sendable {
     public let matureContent: Bool
     public let checkVol2Chap1: Bool
 }
-

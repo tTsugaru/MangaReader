@@ -2,18 +2,13 @@ import Models
 import Styles
 import SwiftUI
 
-@available(iOS, message: "Only available on iOS")
+@available(macOS, unavailable)
 public struct CompactChapterListScreen: View {
-    
-    @Binding private var path: NavigationPath
-    private var mangaSlug: String
     private var chapterListItems: [ChapterListItem]
 
-    @State private var chapterItemViewChanged: Bool = false
-    
-    public init(path: Binding<NavigationPath>, mangaSlug: String, chapterListItems: [ChapterListItem]) {
-        self._path = path
-        self.mangaSlug = mangaSlug
+    @State private var chapterItemViewChanged = false
+
+    public init(chapterListItems: [ChapterListItem]) {
         self.chapterListItems = chapterListItems
     }
 
@@ -30,9 +25,9 @@ public struct CompactChapterListScreen: View {
                                 expandingChanged: $chapterItemViewChanged,
                                 isFirst: index == 0,
                                 isLast: index == chapterListItems.endIndex - 1
-                            ) { chapterListItem in
-                                guard let chapterListItem else { return }
-                                path.append(ChapterNavigation(chapterId: chapterListItem.id, currentChapterImageId: nil))
+                            ) { _ in
+//                                guard let chapterListItem else { return }
+//                                let chapterNavigation = ChapterNavigation(chapterId: chapterListItem.id, currentChapterImageId: nil)
                             }
                         }
                         Spacer()

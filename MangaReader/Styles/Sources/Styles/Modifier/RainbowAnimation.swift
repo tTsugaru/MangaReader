@@ -7,8 +7,8 @@ struct RainbowAnimation: ViewModifier {
         self.colors = colors
     }
 
-    @State private var isOn: Bool = false
-    
+    @State private var isOn = false
+
     private let hueColors = stride(from: 0, to: 1, by: 0.01).map {
         Color(hue: $0, saturation: 1, brightness: 1)
     }
@@ -21,7 +21,7 @@ struct RainbowAnimation: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        var gradient: LinearGradient? = nil
+        var gradient: LinearGradient?
 
         if let colors, !colors.isEmpty {
             gradient = LinearGradient(gradient: Gradient(colors: colors + colors), startPoint: .leading, endPoint: .trailing)

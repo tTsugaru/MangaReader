@@ -9,7 +9,7 @@ public enum API {
 
     private var url: URL {
         let baseURL = "https://api.comick.fun"
-        
+
         let path = switch self {
         case .trending: "/top"
         case .search: "/v1.0/search"
@@ -41,17 +41,14 @@ public enum API {
         if let cachedURLResponse {
             let httpRespnse = cachedURLResponse.response as? HTTPURLResponse
             print(Date(), "💾 - Requesting data for \(editedURL.absoluteString) |", httpRespnse?.allHeaderFields["Cache-Control"] ?? "No Info")
-            
+
             let data = cachedURLResponse.data
-            let cachedData = try JSONDecoder().decode(T.self, from: data)
-            
-            return cachedData
-        } else {
-            print(Date(), "🌎 - Requesting data from \(editedURL.absoluteString)")
-            
-            let (data, _) = try await URLSession.shared.data(for: urlRequest)
-            let fetchedData = try JSONDecoder().decode(T.self, from: data)
-            return fetchedData
+            return try JSONDecoder().decode(T.self, from: data)
         }
+
+        print(Date(), "🌎 - Requesting data from \(editedURL.absoluteString)")
+
+        let (data, _) = try await URLSession.shared.data(for: urlRequest)
+        return try JSONDecoder().decode(T.self, from: data)
     }
 }

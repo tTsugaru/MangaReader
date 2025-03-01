@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct MangaButtonStyle: PrimitiveButtonStyle {
-    @State var isHoveringOver: Bool = false
+    @State var isHoveringOver = false
 
     public func makeBody(configuration: Configuration) -> some View {
         HStack {
@@ -19,7 +19,7 @@ public struct MangaButtonStyle: PrimitiveButtonStyle {
         .background(isHoveringOver ? Color.black.opacity(0.5) : Color.black.opacity(0.3))
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .contentShape(Rectangle())
-        .onHover { self.isHoveringOver = $0 }
+        .onHover { isHoveringOver = $0 }
         .onTapGesture {
             configuration.trigger()
         }

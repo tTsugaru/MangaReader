@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct RainbowButtonStyle: PrimitiveButtonStyle {
-    @State var isHoveringOver: Bool = false
+    @State var isHoveringOver = false
     @State var hoverLocation: CGPoint = .zero
 
     let colors: [Color]?
@@ -15,17 +15,17 @@ public struct RainbowButtonStyle: PrimitiveButtonStyle {
             Spacer()
             configuration.label
                 .bold()
-                .rainbowAnimation(colors: self.colors)
+                .rainbowAnimation(colors: colors)
                 .padding(16)
             Spacer()
         }
         .background(isHoveringOver ? Color.black.opacity(0.5) : Color.black.opacity(0.3))
         .background {
             GeometryReader { geometry in
-                if self.isHoveringOver && hoverLocation != .zero {
+                if isHoveringOver, hoverLocation != .zero {
                     Circle()
-                        .offset(x: self.hoverLocation.x - geometry.size.width / 2, y: self.hoverLocation.y - geometry.size.height / 2)
-                        .rainbowAnimation(colors: self.colors)
+                        .offset(x: hoverLocation.x - geometry.size.width / 2, y: hoverLocation.y - geometry.size.height / 2)
+                        .rainbowAnimation(colors: colors)
                         .blur(radius: 10)
                 }
             }
@@ -37,9 +37,9 @@ public struct RainbowButtonStyle: PrimitiveButtonStyle {
                 switch hoverPhase {
                 case let .active(hoverLocation):
                     self.hoverLocation = hoverLocation
-                    self.isHoveringOver = true
+                    isHoveringOver = true
                 case .ended:
-                    self.isHoveringOver = false
+                    isHoveringOver = false
                 }
             }
         }
@@ -57,4 +57,3 @@ public struct RainbowButtonStyle: PrimitiveButtonStyle {
         )
     }
 }
-

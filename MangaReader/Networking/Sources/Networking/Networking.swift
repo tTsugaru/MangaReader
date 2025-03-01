@@ -1,32 +1,37 @@
 import Foundation
-import SwiftUI
 import Models
+import SwiftUI
 
+// swiftlint:disable cyclomatic_complexity
 public actor Networking {
     public static let shared = Networking()
-    private init() {}
+
+    private init() {
+        // Private
+    }
 
     // TODO: Try to simplify
-    public func search(with genres: [String] = [],
-                excludes: [String] = [],
-                type _: SearchType = .none,
-                tags: [String] = [],
-                demographic: [Int] = [],
-                page: Int = 1,
-                limit: Int = 50,
-                time: Int? = nil,
-                country: [String]? = nil,
-                minChapterCount: Int? = nil,
-                fromYear: Int? = nil,
-                toYear: Int? = nil,
-                status: MangaStatus? = nil,
-                tachiyomi _: Bool = true,
-                completed: Bool? = nil,
-                sort: SearchSortType? = nil,
-                excludeMyList: Bool? = nil,
-                searchString: String = "",
-                showAltTitle: Bool? = nil) async throws -> [Manga]
-    {
+    public func search(
+        with genres: [String] = [],
+        excludes: [String] = [],
+        type _: SearchType = .empty,
+        tags: [String] = [],
+        demographic: [Int] = [],
+        page: Int = 1,
+        limit: Int = 50,
+        time: Int? = nil,
+        country: [String]? = nil,
+        minChapterCount: Int? = nil,
+        fromYear: Int? = nil,
+        toYear: Int? = nil,
+        status: MangaStatus? = nil,
+        tachiyomi _: Bool = true,
+        completed: Bool? = nil,
+        sort: SearchSortType? = nil,
+        excludeMyList: Bool? = nil,
+        searchString: String = "",
+        showAltTitle: Bool? = nil
+    ) async throws -> [Manga] {
         var params: [String: [String]] = [:]
 
         if searchString.isEmpty {
@@ -83,23 +88,25 @@ public actor Networking {
 
         return try await API.search.request(param: params)
     }
-    
+
     public func getMangaDetails(slug: String) async throws -> MangaDetail {
         var params = [String: [String]]()
-        
+
         params["tachiyomi"] = ["true"]
-        
+
         return try await API.manga.request(path: slug, param: params, cachePolicy: .returnCacheDataElseLoad)
     }
-    
+
     public func getChapters(hid: String, limit: Int = 300) async throws -> ChapterResponse {
         var params = [String: [String]]()
         params["limit"] = [String(limit)]
-        
+
         return try await API.mangaChapters(hid: hid).request(param: params)
     }
-    
+
     public func getChapterDetail(hid: String) async throws -> ChapterDetailResponse {
         return try await API.chapter(hid: hid).request(param: ["tachiyomi": ["true"]])
     }
 }
+
+// swiftlint:enable cyclomatic_complexity

@@ -9,8 +9,10 @@ import Foundation
 import SwiftUI
 
 public class Theme: ObservableObject {
-    
     @Published public var toolbarTint: Color = .white
-    
-    public init() {}
+    @Published public var tabBarTint: Color = .blue
+
+    public init() {
+        // no-op
+    }
 }

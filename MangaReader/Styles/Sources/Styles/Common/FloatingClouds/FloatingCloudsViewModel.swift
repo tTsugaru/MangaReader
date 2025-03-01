@@ -14,7 +14,7 @@ class FloatingCloudsViewModel: ObservableObject {
     ]
 
     func createFloatingCloudsColorViewModels(colors: [Color]) {
-        colors.forEach { color in
+        for color in colors {
             cloudsColorViewModel.append(
                 FloatingCloudsColorViewModel(
                     color: color,

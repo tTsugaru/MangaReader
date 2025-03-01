@@ -8,20 +8,21 @@ import Utility
 
 @MainActor
 public struct MangaDetailScreen: View {
+    @Environment(\.horizontalSizeClass)
+    private var horizontalSizeClass
 
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext)
+    private var modelContext
+
     @EnvironmentObject private var theme: Theme
 
     @StateObject private var viewModel = MangaDetailScreenViewModel()
 
     @Query private var mangaReadStates: [MangaReadState]
 
-    @State private var animate = false
-    @State private var isDismissing = false
     @State private var isLightCoverColor = false
     @State private var onHoverOverBackButton = false
-    @State private var chapterItemViewChanged: Bool = false // AnimationState
+    @State private var chapterItemViewChanged = false // AnimationState
     @State private var prominentColors = [Color]()
     @State private var averageCoverColor: Color?
 
@@ -49,10 +50,7 @@ public struct MangaDetailScreen: View {
         let colors = prominentColors.map { $0.lighter() }
         let defaultColors: [Color] = [.black, .gray, .black]
 
-        if let mangaReadState,
-           let chapterNumber = mangaReadState.chapterNumber,
-           let chapterHid = mangaReadState.chapterHid {
-
+        if let mangaReadState, let chapterNumber = mangaReadState.chapterNumber, let chapterHid = mangaReadState.chapterHid {
             Button("Continue Chap. \(chapterNumber)".uppercased()) {
                 handleNavigation(chapterId: chapterHid, currentChapterImageId: mangaReadState.currentChapterImageId)
             }
@@ -66,10 +64,8 @@ public struct MangaDetailScreen: View {
     }
 
     private var chaptersButton: some View {
-        Button("Chapters") {
-//            path.wrappedValue.append(viewModel.chapterItems)
-        }
-        .buttonStyle(.mangaButtonStyle)
+        NavigationLink("Chapters", value: viewModel.chapterItems)
+            .buttonStyle(.mangaButtonStyle)
     }
 
     // MARK: Views
@@ -78,7 +74,7 @@ public struct MangaDetailScreen: View {
     private func coverImageView() -> some View {
         if let coverViewModel = viewModel.mangaDetail?.coverViewModel, let downloadURL = coverViewModel.downloadURL {
             KFImage(downloadURL)
-                .onSuccess { self.populateMangaColors(imageResult: $0) }
+                .onSuccess { populateMangaColors(imageResult: $0) }
                 .fade(duration: 0.2)
                 .startLoadingBeforeViewAppear()
                 .onFailure { error in
@@ -89,7 +85,7 @@ public struct MangaDetailScreen: View {
                 }
                 .resizable()
                 .scaledToFit()
-                .frame(maxWidth: CGFloat(coverViewModel.w))
+                .frame(maxWidth: CGFloat(coverViewModel.width))
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         }
     }
@@ -193,44 +189,6 @@ public struct MangaDetailScreen: View {
         }
     }
 
-    private var customNavigationView: some View {
-        VStack {
-            HStack {
-                Image(systemName: "chevron.left")
-                    .imageScale(.large)
-                    .padding(16)
-                    .background(onHoverOverBackButton ? .black.opacity(0.2) : .clear)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        isDismissing = true
-                        dismiss?()
-                    }
-                    .onHover { hover in
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            onHoverOverBackButton = hover
-                        }
-                    }
-                    .frame(alignment: .leading)
-
-                if let title = viewModel.mangaDetail?.title {
-                    Text(title)
-                        .font(horizontalSizeClass == .compact ? .title : .largeTitle)
-                        .bold()
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .background {
-                #if os(macOS)
-                    BlurView(material: .toolTip, blendingMode: .withinWindow)
-                #endif
-            }
-        }
-        .frame(maxHeight: .infinity, alignment: .top)
-        .foregroundStyle(.white)
-        .ignoresSafeArea()
-    }
-
     // MARK: - Body
 
     public var body: some View {
@@ -240,21 +198,20 @@ public struct MangaDetailScreen: View {
                     if viewModel.isLoading {
                         ProgressView()
                     } else {
-                            headerSection
+                        headerSection
 
-                            DynamicStack(alignment: .top, spacing: 16) {
-                                coverSection()
-                                contentSection
-                            }
-                            .padding(.horizontal, 16)
-                            .frame(maxHeight: .infinity, alignment: .top)
+                        DynamicStack(alignment: .top, spacing: 16) {
+                            coverSection()
+                            contentSection
+                        }
+                        .padding(.horizontal, 16)
+                        .frame(maxHeight: .infinity, alignment: .top)
                     }
                 }
                 .padding(.top, horizontalSizeClass == .compact ? 8 : 16)
             }
             .padding(16)
         }
-        .animation(.easeInOut(duration: 0.25), value: animate)
         .background {
             if !prominentColors.isEmpty {
                 FloatingCloudsView(colors: prominentColors)

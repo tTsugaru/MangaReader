@@ -11,16 +11,16 @@ public struct CoverViewModel: Sendable {
         return model.b2key
     }
     
-    public var h: Int {
-        return model.h ?? 0
+    public var height: Int {
+        return model.height ?? 0
     }
     
-    public var w: Int {
-        return model.w ?? 0
+    public var width: Int {
+        return model.width ?? 0
     }
     
     public var downloadURL: URL? {
-        guard let b2Key = self.b2Key else { return nil }
+        guard let b2Key else { return nil }
         return URL(string: "https://meo.comick.pictures/\(b2Key)")
     }
 }

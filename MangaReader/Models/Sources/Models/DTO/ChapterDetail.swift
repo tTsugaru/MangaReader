@@ -30,7 +30,7 @@ public struct ChapterDetail: Codable, Sendable {
     public let noindex: Bool?
     public let coverUrl: String?
     public let images: [ChapterImage]?
-    
+
     enum CodingKeys: String, CodingKey {
         case id, chap, vol, title, hid
         case groupName = "group_name"

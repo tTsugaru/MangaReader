@@ -1,7 +1,7 @@
 import Foundation
-import SwiftData
 import Models
 import Networking
+import SwiftData
 
 @MainActor
 class HistoryScreenViewModel: ObservableObject {
@@ -25,13 +25,12 @@ class HistoryScreenViewModel: ObservableObject {
             }
 
             isLoading = false
-
         } catch {
             isLoading = false
             self.error = error
         }
     }
-    
+
     func deleteMangaReadStates(for mangaSlug: String, modelContext: ModelContext) {
         do {
             try modelContext.delete(model: MangaReadState.self, where: #Predicate { $0.mangaSlug == mangaSlug })

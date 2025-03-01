@@ -27,6 +27,5 @@ let package = Package(
                 .product(name: "Styles", package: "Styles")
             ]
         ),
-
     ]
 )

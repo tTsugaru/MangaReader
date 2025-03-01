@@ -3,14 +3,16 @@ import Styles
 import SwiftUI
 
 public struct MangaListScreen: View {
-
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.horizontalSizeClass)
+    private var horizontalSizeClass
 
     @State private var selectedManga: MangaViewModel?
 
-    @StateObject public var viewModel: MangaListViewModel = MangaListViewModel()
+    @StateObject private var viewModel = MangaListViewModel()
 
-    public init() {}
+    public init() {
+        // no-op
+    }
 
     /// Deciding Columns on sizeClasses
     private var columns: [GridItem] {
@@ -27,7 +29,7 @@ public struct MangaListScreen: View {
         LazyVGrid(columns: columns, alignment: .center) {
             ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
                 NavigationLink(value: manga) {
-                    MangaListView(manga: manga)       
+                    MangaListView(manga: manga)
                 }
                 .buttonStyle(.plain)
                 .task(priority: .userInitiated) {
@@ -44,9 +46,8 @@ public struct MangaListScreen: View {
         .scrollTargetLayout()
     }
 
-    @ViewBuilder
-    public var body: some View {
-        ScrollViewReader { reader in
+    @ViewBuilder public var body: some View {
+        ScrollViewReader { _ in
             ScrollView {
                 gridView
             }

@@ -2,6 +2,7 @@ import Foundation
 import Kingfisher
 import SwiftUI
 
+// swiftlint:disable identifier_name
 public actor ColorCollector {
     private let rows: [ArraySlice<UInt8>]
     private let width: Int
@@ -116,3 +117,4 @@ public extension KFCrossPlatformImage {
         resize(targetSize: CGSize(width: width, height: height))
     }
 }
+// swiftlint:enable identifier_name

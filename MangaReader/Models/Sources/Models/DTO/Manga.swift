@@ -24,7 +24,7 @@ public struct Manga: Codable, Sendable {
     public let covers: [Cover]?
     public let muComics: MUComics?
     public let coverURL: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case hid
@@ -35,7 +35,7 @@ public struct Manga: Codable, Sendable {
         case ratingCount = "rating_count"
         case followCount = "follow_count"
         case desc = "description"
-        case status = "status"
+        case status
         case lastChapter = "last_chapter"
         case translationCompleted = "translation_completed"
         case viewCount = "view_count"

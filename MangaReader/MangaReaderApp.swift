@@ -1,15 +1,14 @@
-import SwiftData
-import SwiftUI
+import Core
 import Models
 import Styles
-import Core
+import SwiftData
+import SwiftUI
 
 @main
 struct MangaReaderApp: App {
-
     init() {
         Appearance.shared.setupAppearance()
-        
+
         // Setup URLCache for caching images
         URLSession.shared.configuration.urlCache = URLCache(memoryCapacity: 500 * 1024 * 1024, diskCapacity: 800 * 1024 * 1024)
         URLSession.shared.configuration.requestCachePolicy = .returnCacheDataElseLoad
@@ -26,4 +25,10 @@ struct MangaReaderApp: App {
             .windowStyle(.hiddenTitleBar)
         #endif
     }
+}
+
+#Preview {
+    ContentView()
+        .preferredColorScheme(.dark)
+        .environmentObject(Theme())
 }

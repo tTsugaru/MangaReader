@@ -6,12 +6,14 @@ import SwiftData
 
 @MainActor
 public class ReaderScreenViewModel: ObservableObject {
-    @Published public var readerTitle: String = ""
-    @Published public var isLoading: Bool = false
+    @Published public var readerTitle = ""
+    @Published public var isLoading = false
     @Published public var chapterDetailViewModel: ChapterDetailResponse?
     @Published public var images: [ChapterImageViewModel] = []
 
-    public init() {}
+    public init() {
+        // no-op
+    }
 
     public func getChapterDetail(chapterId: String) async {
         do {
@@ -41,7 +43,7 @@ public class ReaderScreenViewModel: ObservableObject {
         }
     }
 
-    public func editMangaReadState(currentMangaReadState: MangaReadState, chapterImageId: String) -> MangaReadState {
+    public func editMangaReadState(currentMangaReadState: MangaReadState) -> MangaReadState {
         if let chapterNumber = Int(chapterDetailViewModel?.chapter.chap ?? ""), chapterNumber >= (currentMangaReadState.chapterNumber ?? 0) {
             currentMangaReadState.chapterNumber = chapterNumber
             currentMangaReadState.chapterHid = chapterDetailViewModel?.chapter.hid

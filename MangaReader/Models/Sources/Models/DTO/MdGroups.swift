@@ -8,6 +8,6 @@
 import Foundation
 
 public struct MdGroups: Codable, Sendable {
-   public let title: String
-   public let slug: String
+    public let title: String
+    public let slug: String
 }

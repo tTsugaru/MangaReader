@@ -5,7 +5,7 @@ extension Encodable {
     func asDictionary() throws -> [String: Any] {
         let data = try JSONEncoder().encode(self)
         guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
-            throw NSError()
+            return [:]
         }
         return dictionary
     }
@@ -13,8 +13,10 @@ extension Encodable {
 
 actor Database {
     static let shared = Database()
-    
-    private init() {}
+
+    private init() {
+        // Private
+    }
 
 //    let container = CKContainer.default()
 //

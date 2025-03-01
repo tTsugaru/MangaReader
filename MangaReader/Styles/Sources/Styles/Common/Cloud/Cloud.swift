@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct Cloud: View {
-    @StateObject var provider = CloudProvider()
-    @State var move = false
+    @StateObject private var provider = CloudProvider()
+    @State private var move = false
 
     let proxy: GeometryProxy
     let color: Color

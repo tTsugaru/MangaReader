@@ -17,19 +17,21 @@ public struct ChapterImageViewModel {
     public var url: URL? {
         if let b2Key = model.b2Key {
             return URL(string: "https://meo.comick.pictures/\(b2Key)")
-        } else if let url = model.url {
-            return URL(string: url)
-        } else {
-            return nil
         }
+        
+        if let url = model.url {
+            return URL(string: url)
+        }
+        
+        return nil
     }
     
     public var width: Int {
-        return model.w
+        return model.width
     }
     
     public var height: Int {
-        return model.h
+        return model.height
     }
     
     public var mangaSlug: String?

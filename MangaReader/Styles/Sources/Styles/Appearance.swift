@@ -9,11 +9,12 @@ import SwiftUI
 
 @MainActor
 public struct Appearance {
-
     public static let shared = Appearance()
 
-    private init() {}
-    
+    private init() {
+        // no-op
+    }
+
     public func setupAppearance() {
         #if !os(macOS)
             let appearance = UITabBarAppearance()
@@ -28,4 +29,3 @@ public struct Appearance {
         #endif
     }
 }
-

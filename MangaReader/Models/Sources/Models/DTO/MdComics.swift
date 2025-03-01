@@ -16,7 +16,7 @@ public struct MdComics: Codable, Sendable {
     public let chapterNumbersResetOnNewVolumeManual: Bool
     public let noindex: Bool
     public let muComics: MUComics
-    
+
     enum CodingKeys: String, CodingKey {
         case id, title, country, slug, desc, links, genres, hid
         case contentRating = "content_rating"

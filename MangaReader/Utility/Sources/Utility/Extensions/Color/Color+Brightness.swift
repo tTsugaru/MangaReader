@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+// swiftlint:disable nesting
 extension Color {
     enum Brightness {
         case light, medium, dark, transparent
@@ -25,14 +26,17 @@ extension Color {
     }
 
     var brightness: Brightness {
-        var b: CGFloat = 0
-        var a: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+
         #if os(iOS)
-        let color = UIColor(self)
+            let color = UIColor(self)
         #elseif os(macOS)
-        let color = NSColor(self)
+            let color = NSColor(self)
         #endif
-        color.getHue(nil, saturation: nil, brightness: &b, alpha: &a)
-        return .init(brightness: b, alpha: a)
+        color.getHue(nil, saturation: nil, brightness: &brightness, alpha: &alpha)
+        return .init(brightness: brightness, alpha: alpha)
     }
 }
+
+// swiftlint:enable nesting

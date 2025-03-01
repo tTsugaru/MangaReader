@@ -7,9 +7,15 @@
 
 import Foundation
 
-#warning("add support for images with b2Key")
 public struct ChapterImage: Codable, Sendable {
     public let url: String?
-    public let w, h: Int
+    public let width, height: Int
     public let b2Key: String?
+
+    enum CodingKeys: String, CodingKey {
+        case url
+        case width = "w"
+        case height = "h"
+        case b2Key
+    }
 }

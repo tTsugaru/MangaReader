@@ -1,6 +1,6 @@
 import Foundation
 
-public enum MangaStatus: Int, Sendable{
+public enum MangaStatus: Int, Sendable {
     case unknown = 0
     case ongoing = 1
     case completed = 2

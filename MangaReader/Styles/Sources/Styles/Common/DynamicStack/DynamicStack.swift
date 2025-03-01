@@ -8,7 +8,8 @@
 import SwiftUI
 
 public struct DynamicStack<Content>: View where Content: View {
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.horizontalSizeClass)
+    private var horizontalSizeClass
 
     private let content: () -> Content
     private let alignment: DynamicStackAlignment?

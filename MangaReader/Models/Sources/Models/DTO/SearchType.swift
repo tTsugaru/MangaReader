@@ -5,5 +5,5 @@ public enum SearchType: String, Sendable {
     case user
     case group
     case comic
-    case none = ""
+    case empty = ""
 }

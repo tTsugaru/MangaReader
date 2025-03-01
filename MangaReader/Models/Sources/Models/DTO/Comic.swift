@@ -37,7 +37,7 @@ public struct Comic: Codable, Sendable {
     public let langName: String?
     public let langNative: String?
     public let coverUrl: String
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case hid
