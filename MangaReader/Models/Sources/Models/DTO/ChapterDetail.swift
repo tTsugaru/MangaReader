@@ -18,7 +18,7 @@ public struct ChapterDetail: Codable, Sendable {
     public let createdAt, updatedAt: String
     public let crawledAt: String?
     public let mdid: String?
-    public let commentCount, upCount, downCount: Int
+    public let commentCount, upCount, downCount: Int?
     public let status: String
     public let adsense: Bool
     public let lang: String

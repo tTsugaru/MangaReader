@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-extension Color {
+public extension Color {
     var isLightColor: Bool {
-        self.brightness == .light
+        brightness == .light
     }
 }

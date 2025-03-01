@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		3B1F53E92D72356A00C6658D /* MangaList in Frameworks */ = {isa = PBXBuildFile; productRef = 3B1F53E82D72356A00C6658D /* MangaList */; };
 		3B1F53FA2D72395C00C6658D /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = 3B1F53F92D72395C00C6658D /* Models */; };
-		3B7E94DF2CA5C9E0001E555D /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7E94DE2CA5C9DB001E555D /* Appearance.swift */; };
 		3BD8F02A2A7D6E0000A84F8E /* MangaReaderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD8F0292A7D6E0000A84F8E /* MangaReaderApp.swift */; };
 		3BD8F0302A7D6E0300A84F8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BD8F02F2A7D6E0300A84F8E /* Assets.xcassets */; };
 		3BD8F0342A7D6E0300A84F8E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BD8F0332A7D6E0300A84F8E /* Preview Assets.xcassets */; };
@@ -23,7 +22,6 @@
 		3B1F53E62D72352200C6658D /* MangaList */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MangaList; sourceTree = "<group>"; };
 		3B1F53F72D72365E00C6658D /* Models */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Models; path = MangaReader/Models; sourceTree = SOURCE_ROOT; };
 		3B56BED22D73263A004EC00C /* Utility */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Utility; sourceTree = "<group>"; };
-		3B7E94DE2CA5C9DB001E555D /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
 		3BD8F0262A7D6E0000A84F8E /* MangaReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MangaReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BD8F0292A7D6E0000A84F8E /* MangaReaderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MangaReaderApp.swift; sourceTree = "<group>"; };
 		3BD8F02F2A7D6E0300A84F8E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -76,7 +74,6 @@
 			children = (
 				3BD8F0312A7D6E0300A84F8E /* MangaReader.entitlements */,
 				3BD8F02F2A7D6E0300A84F8E /* Assets.xcassets */,
-				3B7E94DE2CA5C9DB001E555D /* Appearance.swift */,
 				3BD8F0292A7D6E0000A84F8E /* MangaReaderApp.swift */,
 				3B1F53F72D72365E00C6658D /* Models */,
 				3BDA6C322D732B630041332D /* Networking */,
@@ -182,7 +179,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BD8F02A2A7D6E0000A84F8E /* MangaReaderApp.swift in Sources */,
-				3B7E94DF2CA5C9E0001E555D /* Appearance.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

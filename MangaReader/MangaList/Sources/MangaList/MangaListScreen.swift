@@ -1,16 +1,15 @@
-import SwiftUI
 import Models
 import Styles
+import SwiftUI
 
 public struct MangaListScreen: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @State private var path = NavigationPath()
     @State private var selectedManga: MangaViewModel?
 
     @ObservedObject public var viewModel: MangaListViewModel
-    
+
     public init(viewModel: MangaListViewModel) {
         self.viewModel = viewModel
     }
@@ -18,24 +17,25 @@ public struct MangaListScreen: View {
     /// Deciding Columns on sizeClasses
     private var columns: [GridItem] {
         #if os(macOS)
-        return Array(repeating: GridItem(), count: 7)
+            return Array(repeating: GridItem(), count: 7)
         #else
-        let compactGrid = [GridItem(), GridItem()]
-        let largeGrid = [GridItem(), GridItem(), GridItem()]
-        return horizontalSizeClass == .compact ? compactGrid : largeGrid
+            let compactGrid = [GridItem(), GridItem()]
+            let largeGrid = [GridItem(), GridItem(), GridItem()]
+            return horizontalSizeClass == .compact ? compactGrid : largeGrid
         #endif
     }
 
     private var gridView: some View {
         LazyVGrid(columns: columns, alignment: .center) {
             ForEach(Array(zip(viewModel.mangas.indices, viewModel.mangas)), id: \.1) { index, manga in
-                MangaListView(manga: manga)
-                    .id(manga.slug)
-                    .onTapGesture { path.append(manga) }
-                    .task(priority: .userInitiated) {
-                        guard (viewModel.mangas.count - columns.count) == index else { return }
-                        await viewModel.loadNextPage()
-                    }
+                NavigationLink(value: manga) {
+                    MangaListView(manga: manga)       
+                }
+                .id(manga.slug)
+                .task(priority: .userInitiated) {
+                    guard (viewModel.mangas.count - columns.count) == index else { return }
+                    await viewModel.loadNextPage()
+                }
             }
 
             if viewModel.isLoadingNextPage {
@@ -48,24 +48,18 @@ public struct MangaListScreen: View {
 
     @ViewBuilder
     public var body: some View {
-        NavigationStack(path: $path) {
-            ScrollViewReader { reader in
-                ScrollView {
-                    gridView
-                }
-                .scrollIndicators(.never)
-                .background(Color("background", bundle: Bundle.main))
-                .refreshable {
-                    await viewModel.getAllMangas()
-                }
-                .task {
-                    guard viewModel.mangas.isEmpty else { return }
-                    await viewModel.getAllMangas()
-                }
+        ScrollViewReader { reader in
+            ScrollView {
+                gridView
             }
-            .navigationDestination(for: MangaViewModel.self) { mangaViewModel in
-//                MangaDetailScreen(path: $path, mangaSlug: mangaViewModel.slug)
-                EmptyView()
+            .scrollIndicators(.never)
+            .background(Color("background", bundle: Bundle.main))
+            .refreshable {
+                await viewModel.getAllMangas()
+            }
+            .task {
+                guard viewModel.mangas.isEmpty else { return }
+                await viewModel.getAllMangas()
             }
         }
     }

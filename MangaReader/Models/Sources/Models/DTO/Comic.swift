@@ -13,7 +13,7 @@ public struct Comic: Codable, Sendable {
     public let hentai: Bool?
     public let userFollowCount: Int
     public let followRank: Int?
-    public let commentCount: Int
+    public let commentCount: Int?
     public let followCount: Int
     public let description: String?
     public let parsedDescription: String?

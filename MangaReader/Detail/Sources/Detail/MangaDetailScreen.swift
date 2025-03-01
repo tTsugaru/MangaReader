@@ -1,9 +1,9 @@
 import CoreImage
 import Kingfisher
-import SwiftData
-import SwiftUI
 import Models
 import Styles
+import SwiftData
+import SwiftUI
 import Utility
 
 @MainActor
@@ -25,13 +25,11 @@ public struct MangaDetailScreen: View {
     @State private var prominentColors = [Color]()
     @State private var averageCoverColor: Color?
 
-    private var path: Binding<NavigationPath>
     private var mangaSlug: String
     private var dismiss: (() -> Void)?
     private var selectedChapterListItem: ((ChapterNavigation) -> Void)?
 
-    public init(path: Binding<NavigationPath>, mangaSlug: String, selectedChapterListItem: ((ChapterNavigation) -> Void)? = nil, dismiss: (() -> Void)? = nil) {
-        self.path = path
+    public init(mangaSlug: String, selectedChapterListItem: ((ChapterNavigation) -> Void)? = nil, dismiss: (() -> Void)? = nil) {
         self.mangaSlug = mangaSlug
         self.selectedChapterListItem = selectedChapterListItem
         self.dismiss = dismiss
@@ -41,7 +39,7 @@ public struct MangaDetailScreen: View {
         let chapterNavigation = ChapterNavigation(chapterId: chapterId, currentChapterImageId: currentChapterImageId)
 
         selectedChapterListItem?(chapterNavigation)
-        path.wrappedValue.append(chapterNavigation)
+//        path.wrappedValue.append(chapterNavigation)
     }
 
     // MARK: Button Views
@@ -69,7 +67,7 @@ public struct MangaDetailScreen: View {
 
     private var chaptersButton: some View {
         Button("Chapters") {
-            path.wrappedValue.append(viewModel.chapterItems)
+//            path.wrappedValue.append(viewModel.chapterItems)
         }
         .buttonStyle(.mangaButtonStyle)
     }
@@ -77,7 +75,7 @@ public struct MangaDetailScreen: View {
     // MARK: Views
 
     @ViewBuilder
-    private func coverImageView(geometry _: GeometryProxy) -> some View {
+    private func coverImageView() -> some View {
         if let coverViewModel = viewModel.mangaDetail?.coverViewModel, let downloadURL = coverViewModel.downloadURL {
             KFImage(downloadURL)
                 .onSuccess { self.populateMangaColors(imageResult: $0) }
@@ -119,9 +117,9 @@ public struct MangaDetailScreen: View {
         .padding(.horizontal, 16)
     }
 
-    private func coverSection(geometry: GeometryProxy) -> some View {
+    private func coverSection() -> some View {
         VStack(spacing: 0) {
-            coverImageView(geometry: geometry)
+            coverImageView()
                 .frame(maxWidth: .infinity, alignment: .center)
 
             if let artists = viewModel.mangaDetail?.artists, !artists.isEmpty {
@@ -236,84 +234,77 @@ public struct MangaDetailScreen: View {
     // MARK: - Body
 
     public var body: some View {
-        GeometryReader { geometry in
-            ScrollView {
-                VStack {
-                    VStack(spacing: 16) {
-                        if viewModel.isLoading {
-                            ProgressView()
-                        } else {
+        ScrollView {
+            VStack {
+                VStack(spacing: 16) {
+                    if viewModel.isLoading {
+                        ProgressView()
+                    } else {
                             headerSection
 
                             DynamicStack(alignment: .top, spacing: 16) {
-                                coverSection(geometry: geometry)
+                                coverSection()
                                 contentSection
                             }
                             .padding(.horizontal, 16)
                             .frame(maxHeight: .infinity, alignment: .top)
-                        }
                     }
-                    .padding(.top, horizontalSizeClass == .compact ? 8 : 16)
-                    .frame(width: horizontalSizeClass == .compact ? geometry.size.width : geometry.size.width * 0.85)
                 }
-                .frame(width: geometry.size.width)
-                .frame(minHeight: geometry.size.height)
-                .padding(16)
+                .padding(.top, horizontalSizeClass == .compact ? 8 : 16)
             }
-            .animation(.easeInOut(duration: 0.25), value: animate)
-            .frame(width: geometry.size.width)
+            .padding(16)
+        }
+        .animation(.easeInOut(duration: 0.25), value: animate)
+        .background {
+            if !prominentColors.isEmpty {
+                FloatingCloudsView(colors: prominentColors)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: prominentColors)
+        #if os(macOS)
+            .clipped() // Prevents FloatingCloudsView to be shown first when screen is Appearing
+        #endif
             .background {
-                if !prominentColors.isEmpty {
-                    FloatingCloudsView(colors: prominentColors)
+                if let coverColor = averageCoverColor {
+                    coverColor
+                        .ignoresSafeArea()
+                        .onAppear {
+                            isLightCoverColor = coverColor.isLightColor
+                            theme.toolbarTint = isLightCoverColor ? coverColor.darker() : coverColor.lighter()
+                        }
+                        .transition(.opacity)
+                } else {
+                    Color("background", bundle: Bundle.main)
                         .ignoresSafeArea()
                         .transition(.opacity)
+                        .onAppear {
+                            isLightCoverColor = false
+                            theme.toolbarTint = .white
+                        }
                 }
             }
-            .animation(.easeInOut(duration: 0.25), value: prominentColors)
-            #if os(macOS)
-                .clipped() // Prevents FloatingCloudsView to be shown first when screen is Appearing
-            #endif
-                .background {
-                    if let coverColor = averageCoverColor {
-                        coverColor
-                            .ignoresSafeArea()
-                            .onAppear {
-                                isLightCoverColor = coverColor.isLightColor
-                                theme.toolbarTint = isLightCoverColor ? .black : .white
-                            }
-                            .transition(.opacity)
-                    } else {
-                        Color("background", bundle: Bundle.main)
-                            .ignoresSafeArea()
-                            .transition(.opacity)
-                            .onAppear {
-                                isLightCoverColor = false
-                                theme.toolbarTint = .white
-                            }
-                    }
-                }
-                .animation(.easeInOut(duration: 0.25), value: averageCoverColor)
-                .task(priority: .userInitiated) {
-                    await viewModel.fetchData(mangaSlug: mangaSlug)
+            .animation(.easeInOut(duration: 0.25), value: averageCoverColor)
+            .task(priority: .userInitiated) {
+                await viewModel.fetchData(mangaSlug: mangaSlug)
 
-                    guard !mangaReadStates.contains(where: { $0.mangaSlug == mangaSlug }) else { return }
-                    modelContext.insert(MangaReadState(mangaSlug: mangaSlug))
-                    logger.debug("💾 Inserted unknown Manga - \(mangaSlug)")
-                }
-                .toolbar {
-                    if let title = viewModel.mangaDetail?.title {
-                        ToolbarItem(placement: .principal) {
-                            Text(title)
-                                .multilineTextAlignment(.center)
-                                .font(.title2)
-                                .bold()
-                        }
+                guard !mangaReadStates.contains(where: { $0.mangaSlug == mangaSlug }) else { return }
+                modelContext.insert(MangaReadState(mangaSlug: mangaSlug))
+                logger.debug("💾 Inserted unknown Manga - \(mangaSlug)")
+            }
+            .toolbar {
+                if let title = viewModel.mangaDetail?.title {
+                    ToolbarItem(placement: .principal) {
+                        Text(title)
+                            .multilineTextAlignment(.center)
+                            .font(.title2)
+                            .bold()
                     }
                 }
-                .foregroundStyle(isLightCoverColor ? .black : .white)
-                .tint(isLightCoverColor ? .black : .white)
-                
-        }
+            }
+            .foregroundStyle(isLightCoverColor ? .black : .white)
+            .tint(isLightCoverColor ? .black : .white)
     }
 
     private func populateMangaColors(imageResult: RetrieveImageResult) {

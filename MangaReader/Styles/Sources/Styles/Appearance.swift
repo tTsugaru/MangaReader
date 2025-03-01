@@ -8,11 +8,13 @@
 import SwiftUI
 
 @MainActor
-struct Appearance {
+public struct Appearance {
 
-    static let shared = Appearance()
+    public static let shared = Appearance()
 
-    func setupAppearance() {
+    private init() {}
+    
+    public func setupAppearance() {
         #if !os(macOS)
             let appearance = UITabBarAppearance()
             appearance.backgroundEffect = UIBlurEffect(style: .systemThinMaterial)

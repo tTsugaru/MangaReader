@@ -15,6 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../MangaList"),
+        .package(path: "../Detail"),
         .package(path: "../History")
     ],
     targets: [
@@ -24,6 +25,7 @@ let package = Package(
             name: "Core",
             dependencies: [
                 .product(name: "MangaList", package: "MangaList"),
+                .product(name: "Detail", package: "Detail"),
                 .product(name: "History", package: "History")
             ]
         ),
