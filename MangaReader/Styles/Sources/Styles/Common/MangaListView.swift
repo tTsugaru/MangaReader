@@ -23,6 +23,7 @@ public struct MangaListView: View {
 
     public var body: some View {
         KFImage(manga.imageDownloadURL)
+            .backgroundDecode()
             .cacheOriginalImage()
             .startLoadingBeforeViewAppear()
             .setProcessor(DownsamplingImageProcessor(size: CGSize(width: 180 * 2, height: 230 * 2)))

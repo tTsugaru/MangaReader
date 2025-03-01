@@ -60,7 +60,8 @@ public struct ChapterItemView: View {
         VStack(spacing: 0) {
             HStack {
                 Text(chapterItem.title)
-                Spacer()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
                 if !(chapterItem.children?.isEmpty ?? true) {
                     Image(systemName: "chevron.down")
                         .accessibilityLabel(expand ? "expanded" : "collapsed")

@@ -25,6 +25,7 @@ public struct MangaDetailScreen: View {
     @State private var chapterItemViewChanged = false // AnimationState
     @State private var prominentColors = [Color]()
     @State private var averageCoverColor: Color?
+    @State private var selectedChapterItem: ChapterListItem?
 
     private var mangaSlug: String
     private var dismiss: (() -> Void)?
@@ -36,13 +37,6 @@ public struct MangaDetailScreen: View {
         self.dismiss = dismiss
     }
 
-    private func handleNavigation(chapterId: String, currentChapterImageId: String? = nil) {
-        let chapterNavigation = ChapterNavigation(chapterId: chapterId, currentChapterImageId: currentChapterImageId)
-
-        selectedChapterListItem?(chapterNavigation)
-//        path.wrappedValue.append(chapterNavigation)
-    }
-
     // MARK: Button Views
 
     @ViewBuilder
@@ -51,15 +45,11 @@ public struct MangaDetailScreen: View {
         let defaultColors: [Color] = [.black, .gray, .black]
 
         if let mangaReadState, let chapterNumber = mangaReadState.chapterNumber, let chapterHid = mangaReadState.chapterHid {
-            Button("Continue Chap. \(chapterNumber)".uppercased()) {
-                handleNavigation(chapterId: chapterHid, currentChapterImageId: mangaReadState.currentChapterImageId)
-            }
-            .buttonStyle(.rainbow(colors: colors.isEmpty ? defaultColors : colors))
+            NavigationLink("Continue Chap. \(chapterNumber)".uppercased(), value: ChapterNavigation(chapterId: chapterHid, currentChapterImageId: mangaReadState.currentChapterImageId))
+                .buttonStyle(.rainbow(colors: colors.isEmpty ? defaultColors : colors))
         } else if let firstChapterId = viewModel.mangaDetail?.firstChapterId, !viewModel.chapterItems.isEmpty {
-            Button("Start reading".uppercased()) {
-                handleNavigation(chapterId: firstChapterId, currentChapterImageId: nil)
-            }
-            .buttonStyle(.rainbow(colors: colors.isEmpty ? defaultColors : colors))
+            NavigationLink("Start reading".uppercased(), value: ChapterNavigation(chapterId: firstChapterId, currentChapterImageId: nil))
+                .buttonStyle(.rainbow(colors: colors.isEmpty ? defaultColors : colors))
         }
     }
 
@@ -117,27 +107,24 @@ public struct MangaDetailScreen: View {
         VStack(spacing: 0) {
             coverImageView()
                 .frame(maxWidth: .infinity, alignment: .center)
+                .shadow(color: .black, radius: 9)
 
             if let artists = viewModel.mangaDetail?.artists, !artists.isEmpty {
-                HStack(alignment: .top) {
-                    Text("✍🏻 Artists: ") + Text(artists)
-                }
-                .padding(8)
-                .font(horizontalSizeClass == .compact ? .body : .title2)
-                .background {
-                    Color.black.opacity(0.3)
-                        .clipShape(
-                            .rect(cornerRadii: RectangleCornerRadii(topLeading: 0,
-                                                                    bottomLeading: 10,
-                                                                    bottomTrailing: 10,
-                                                                    topTrailing: 0)
+                Text("✍🏻 Artists: \(artists)")
+                    .padding(8)
+                    .font(horizontalSizeClass == .compact ? .body : .title2)
+                    .background {
+                        Color.black.opacity(0.3)
+                            .clipShape(
+                                .rect(cornerRadii: RectangleCornerRadii(topLeading: 0,
+                                                                        bottomLeading: 10,
+                                                                        bottomTrailing: 10,
+                                                                        topTrailing: 0)
+                                )
                             )
-                        )
-                }
+                    }
             }
         }
-        .compositingGroup()
-        .shadow(color: .black, radius: 9)
     }
 
     private var chapterItemView: some View {
@@ -150,7 +137,7 @@ public struct MangaDetailScreen: View {
                                 isLast: index == viewModel.chapterItems.endIndex - 1,
                                 onChapterSelect: { listItem in
                                     if let listItem {
-                                        handleNavigation(chapterId: listItem.id)
+                                        selectedChapterItem = listItem
                                     } else {
                                         viewModel.handleExpanding(for: chapterItem.id)
                                     }
@@ -159,6 +146,13 @@ public struct MangaDetailScreen: View {
         }
         .animation(.easeInOut(duration: 0.25), value: chapterItemViewChanged)
         .transition(.move(edge: .top))
+        .background {
+            if let id = selectedChapterItem?.id {
+                NavigationLink("", value: ChapterNavigation(chapterId: id))
+                    .labelsHidden()
+                    .buttonStyle(.plain)
+            }
+        }
     }
 
     private var contentSection: some View {
@@ -197,6 +191,7 @@ public struct MangaDetailScreen: View {
                 VStack(spacing: 16) {
                     if viewModel.isLoading {
                         ProgressView()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                     } else {
                         headerSection
 
@@ -223,13 +218,15 @@ public struct MangaDetailScreen: View {
         #if os(macOS)
             .clipped() // Prevents FloatingCloudsView to be shown first when screen is Appearing
         #endif
+            .frame(maxWidth: .infinity)
             .background {
                 if let coverColor = averageCoverColor {
                     coverColor
                         .ignoresSafeArea()
                         .onAppear {
                             isLightCoverColor = coverColor.isLightColor
-                            theme.toolbarTint = isLightCoverColor ? coverColor.darker() : coverColor.lighter()
+                            let tintColor = isLightCoverColor ? coverColor.darker(by: 0.5) : coverColor.lighter(by: 0.5)
+                            theme.toolbarTint = tintColor
                         }
                         .transition(.opacity)
                 } else {
@@ -250,18 +247,11 @@ public struct MangaDetailScreen: View {
                 modelContext.insert(MangaReadState(mangaSlug: mangaSlug))
                 logger.debug("💾 Inserted unknown Manga - \(mangaSlug)")
             }
-            .toolbar {
-                if let title = viewModel.mangaDetail?.title {
-                    ToolbarItem(placement: .principal) {
-                        Text(title)
-                            .multilineTextAlignment(.center)
-                            .font(.title2)
-                            .bold()
-                    }
-                }
-            }
-            .foregroundStyle(isLightCoverColor ? .black : .white)
+            .foregroundStyle(theme.toolbarTint)
             .tint(isLightCoverColor ? .black : .white)
+            .onDisappear {
+                theme.tabBarTint = Styles.TintColor.tabBar
+            }
     }
 
     private func populateMangaColors(imageResult: RetrieveImageResult) {
