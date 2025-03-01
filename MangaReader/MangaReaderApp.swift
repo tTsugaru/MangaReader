@@ -1,6 +1,9 @@
 import CoreData
 import SwiftData
 import SwiftUI
+import Models
+import Styles
+import Core
 
 @main
 struct MangaReaderApp: App {
@@ -52,8 +55,9 @@ struct MangaReaderApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationView()
+            Core.NavigationView()
                 .preferredColorScheme(.dark)
+                .environmentObject(Theme())
         }
         .modelContainer(for: [MangaReadState.self])
         #if os(macOS)
