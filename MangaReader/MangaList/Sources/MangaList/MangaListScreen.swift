@@ -8,11 +8,9 @@ public struct MangaListScreen: View {
 
     @State private var selectedManga: MangaViewModel?
 
-    @ObservedObject public var viewModel: MangaListViewModel
+    @StateObject public var viewModel: MangaListViewModel = MangaListViewModel()
 
-    public init(viewModel: MangaListViewModel) {
-        self.viewModel = viewModel
-    }
+    public init() {}
 
     /// Deciding Columns on sizeClasses
     private var columns: [GridItem] {
@@ -31,7 +29,7 @@ public struct MangaListScreen: View {
                 NavigationLink(value: manga) {
                     MangaListView(manga: manga)       
                 }
-                .id(manga.slug)
+                .buttonStyle(.plain)
                 .task(priority: .userInitiated) {
                     guard (viewModel.mangas.count - columns.count) == index else { return }
                     await viewModel.loadNextPage()
