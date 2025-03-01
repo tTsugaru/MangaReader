@@ -17,7 +17,7 @@ struct MangaReaderApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Core.NavigationView()
+            ContentView()
                 .preferredColorScheme(.dark)
                 .environmentObject(Theme())
         }

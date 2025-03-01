@@ -1,29 +1,24 @@
+import Detail
 import History
 import MangaList
 import Models
 import Styles
 import SwiftData
 import SwiftUI
-import Detail
 
-public struct NavigationView: View {
+public struct ContentView: View {
 
     @EnvironmentObject private var theme: Theme
 
     @State private var selectedTabIndex: Int = 0
-    @State private var tabStack: [Int: NavigationPath] = [:]
 
     public init() {}
 
     public var body: some View {
         TabView(selection: $selectedTabIndex) {
             Tab(value: 0) {
-                NavigationStack(path: Binding(get: {
-                    tabStack[selectedTabIndex, default: NavigationPath()]
-                }, set: {
-                    tabStack[selectedTabIndex] = $0
-                })) {
-                    MangaListScreen(viewModel: MangaListViewModel())
+                NavigationStack {
+                    MangaListScreen()
                         .navigationDestination(for: MangaViewModel.self) { mangaViewModel in
                             MangaDetailScreen(mangaSlug: mangaViewModel.slug)
                         }
@@ -36,11 +31,7 @@ public struct NavigationView: View {
             }
 
             Tab(value: 1) {
-                NavigationStack(path: Binding(get: {
-                    tabStack[selectedTabIndex, default: NavigationPath()]
-                }, set: {
-                    tabStack[selectedTabIndex] = $0
-                })) {
+                NavigationStack {
                     Text("Under construction...")
                 }
             } label: {
@@ -51,11 +42,7 @@ public struct NavigationView: View {
             }
 
             Tab(value: 2) {
-                NavigationStack(path: Binding(get: {
-                    tabStack[selectedTabIndex, default: NavigationPath()]
-                }, set: {
-                    tabStack[selectedTabIndex] = $0
-                })) {
+                NavigationStack {
                     HistoryScreen()
                 }
             } label: {
@@ -73,6 +60,6 @@ public struct NavigationView: View {
 }
 
 #Preview() {
-    NavigationView()
+    ContentView()
         .environmentObject(Theme())
 }
